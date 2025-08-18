@@ -10,7 +10,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.TransactionRecordAck;
+import sanbing.jcpp.proto.gen.ProtocolProto.TransactionRecordResponse;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
@@ -33,11 +33,11 @@ public class YunKuaiChongV150TransactionRecordAckDLCmd extends YunKuaiChongDownl
     public void execute(TcpSession tcpSession, YunKuaiChongDwonlinkMessage yunKuaiChongDwonlinkMessage, ProtocolContext ctx) {
         log.info("{} 云快充1.5.0交易记录确认", tcpSession);
 
-        if (!yunKuaiChongDwonlinkMessage.getMsg().hasTransactionRecordAck()) {
+        if (!yunKuaiChongDwonlinkMessage.getMsg().hasTransactionRecordResponse()) {
             return;
         }
 
-        TransactionRecordAck transactionRecordAck = yunKuaiChongDwonlinkMessage.getMsg().getTransactionRecordAck();
+        TransactionRecordResponse transactionRecordAck = yunKuaiChongDwonlinkMessage.getMsg().getTransactionRecordResponse();
 
         YunKuaiChongUplinkMessage requestData = JacksonUtil.fromBytes(yunKuaiChongDwonlinkMessage.getMsg().getRequestData().toByteArray(), YunKuaiChongUplinkMessage.class);
 

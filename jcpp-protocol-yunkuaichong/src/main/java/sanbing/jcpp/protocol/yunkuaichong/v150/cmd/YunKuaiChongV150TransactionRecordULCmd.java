@@ -172,7 +172,7 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
                 .build();
 
         // 构建交易记录
-        TransactionRecord transactionRecord = TransactionRecord.newBuilder()
+        TransactionRecordRequest transactionRecordRequest = TransactionRecordRequest.newBuilder()
                 .setPileCode(pileCode)
                 .setGunCode(gunCode)
                 .setTradeNo(tradeNo)
@@ -188,7 +188,7 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
 
         // 转发到后端
         UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(pileCode, tcpSession, yunKuaiChongUplinkMessage)
-                .setTransactionRecord(transactionRecord)
+                .setTransactionRecordRequest(transactionRecordRequest)
                 .build();
 
         tcpSession.getForwarder().sendMessage(uplinkQueueMessage);

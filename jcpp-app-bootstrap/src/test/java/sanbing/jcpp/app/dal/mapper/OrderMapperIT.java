@@ -42,7 +42,7 @@ class OrderMapperIT extends AbstractTestBase {
                 .id(UUID.randomUUID())
                 .internalOrderNo(IdUtil.getSnowflake(1, 1).nextIdStr())
                 .externalOrderNo(IdUtil.getSnowflake(1, 1).nextIdStr())
-                .pileOrderNo(RandomStringUtils.randomNumeric(16))
+                .pileOrderNo(RandomStringUtils.secure().nextNumeric(16))
                 .createdTime(LocalDateTime.now())
                 .additionalInfo(JacksonUtil.newObjectNode())
                 .updatedTime(LocalDateTime.now())

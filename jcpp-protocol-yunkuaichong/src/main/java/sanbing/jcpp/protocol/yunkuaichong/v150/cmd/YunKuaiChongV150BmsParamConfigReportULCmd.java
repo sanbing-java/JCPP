@@ -11,7 +11,7 @@ import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.BmsParamConfigReport;
+import sanbing.jcpp.proto.gen.ProtocolProto.BmsParamConfigReportProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -92,7 +92,7 @@ public class YunKuaiChongV150BmsParamConfigReportULCmd extends YunKuaiChongUplin
         BigDecimal pileMinOutputCurrent = readCurrent(byteBuf);
 
         // 转发到后端
-        BmsParamConfigReport bmsParamConfigReport = BmsParamConfigReport.newBuilder()
+        BmsParamConfigReportProto bmsParamConfigReportProto = BmsParamConfigReportProto.newBuilder()
                 .setTs(ts)
                 .setPileCode(pileCode)
                 .setTradeNo(tradeNo)
@@ -109,8 +109,8 @@ public class YunKuaiChongV150BmsParamConfigReportULCmd extends YunKuaiChongUplin
                 .setPileMaxOutputCurrent(pileMaxOutputCurrent.toPlainString())
                 .setPileMinOutputCurrent(pileMinOutputCurrent.toPlainString())
                 .build();
-        UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(bmsParamConfigReport.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)
-                .setBmsParamConfigReport(bmsParamConfigReport)
+        UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(bmsParamConfigReportProto.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)
+                .setBmsParamConfigReportProto(bmsParamConfigReportProto)
                 .build();
         tcpSession.getForwarder().sendMessage(uplinkQueueMessage);
 

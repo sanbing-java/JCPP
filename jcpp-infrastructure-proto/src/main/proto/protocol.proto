@@ -65,9 +65,9 @@ message UplinkQueueMessage {
   SetPricingResponse setPricingResponse = 27;
   RemoteStartChargingResponse remoteStartChargingResponse = 28;
   RemoteStopChargingResponse remoteStopChargingResponse = 29;
-  TransactionRecord transactionRecord = 30;
+  TransactionRecordRequest transactionRecordRequest = 30;
   BmsChargingErrorProto bmsChargingErrorProto = 31;
-  BmsParamConfigReport bmsParamConfigReport = 33;
+  BmsParamConfigReportProto bmsParamConfigReportProto = 33;
   BmsChargingInfoProto bmsChargingInfoProto = 34;
   BmsAbortProto bmsAbortProto = 35;
   RestartPileResponse restartPileResponse = 36;
@@ -93,7 +93,7 @@ message DownlinkRequestMessage {
   SetPricingRequest setPricingRequest = 24;
   RemoteStartChargingRequest remoteStartChargingRequest = 25;
   RemoteStopChargingRequest remoteStopChargingRequest = 26;
-  TransactionRecordAck transactionRecordAck = 27;
+  TransactionRecordResponse transactionRecordResponse = 27;
   RestartPileRequest restartPileRequest = 28;
   OtaRequest otaRequest = 29;
 }
@@ -318,7 +318,7 @@ message TransactionDetail {
   optional TimePeriodDetail timePeriod = 3;   // 时段电量明细
 }
 
-message TransactionRecord {
+message TransactionRecordRequest {
   string pileCode = 4;                    // 充电桩编码
   string gunCode = 5;                     // 枪编号
   string tradeNo = 6;                     // 交易流水号
@@ -341,12 +341,12 @@ message BmsChargingErrorProto {
   optional string additionalInfo = 20;
 }
 
-message TransactionRecordAck {
+message TransactionRecordResponse {
   string tradeNo = 6;
   bool success = 7;
 }
 
-message BmsParamConfigReport {
+message BmsParamConfigReportProto {
   int64 ts = 1;                   // 时间戳
   string pileCode = 2;             // 桩编码
   string gunCode = 3;              // 枪编码

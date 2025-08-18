@@ -63,7 +63,7 @@ public class AppConsumerStats {
             gunRunStatusCounter.increment();
         } else if (msg.hasChargingProgressProto()) {
             chargingProgressCounter.increment();
-        } else if (msg.hasTransactionRecord()) {
+        } else if (msg.hasTransactionRecordRequest()) {
             transactionRecordCounter.increment();
         }
 

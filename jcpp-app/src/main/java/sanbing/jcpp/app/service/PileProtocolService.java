@@ -68,7 +68,7 @@ public interface PileProtocolService {
     /**
      * 交易记录上报
      */
-    void onTransactionRecord(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+    void onTransactionRecordRequest(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
      * 启动充电

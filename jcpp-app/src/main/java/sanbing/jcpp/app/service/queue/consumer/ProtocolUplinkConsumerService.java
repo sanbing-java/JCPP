@@ -188,15 +188,15 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                             pileProtocolService.onRemoteStopChargingResponse(uplinkQueueMsg, callback);
 
-                        } else if (uplinkQueueMsg.hasTransactionRecord()) {
+                        } else if (uplinkQueueMsg.hasTransactionRecordRequest()) {
 
-                            pileProtocolService.onTransactionRecord(uplinkQueueMsg, callback);
+                            pileProtocolService.onTransactionRecordRequest(uplinkQueueMsg, callback);
 
                         } else if (uplinkQueueMsg.hasBmsChargingErrorProto()) {
 
                             pileProtocolService.onBmsChargingErrorProto(uplinkQueueMsg, callback);
 
-                        } else if (uplinkQueueMsg.hasBmsParamConfigReport()) {
+                        } else if (uplinkQueueMsg.hasBmsParamConfigReportProto()) {
 
                             pileProtocolService.onBmsParamConfigReport(uplinkQueueMsg, callback);
 
