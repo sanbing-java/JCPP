@@ -344,6 +344,7 @@ message BmsChargingErrorProto {
 message TransactionRecordResponse {
   string tradeNo = 6;
   bool success = 7;
+  optional string additionalInfo = 20;
 }
 
 message BmsParamConfigReportProto {

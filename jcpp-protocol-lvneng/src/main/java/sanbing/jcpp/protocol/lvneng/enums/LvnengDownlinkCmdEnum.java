@@ -18,8 +18,13 @@ public enum LvnengDownlinkCmdEnum {
 
     LOGIN_ACK((short) 105),
 
-    SYNC_TIME((short) 3)
-   ;
+    SYNC_TIME((short) 3),
+
+    HEARTBEAT_ACK((short) 101),
+
+    REAL_TIME_DATA_ACK((short) 103),
+
+    TRANSACTION_RECORD_ACK((short) 201);
 
     private final short cmd;
 

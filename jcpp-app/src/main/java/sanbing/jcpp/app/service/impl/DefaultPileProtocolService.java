@@ -6,6 +6,7 @@
  */
 package sanbing.jcpp.app.service.impl;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import sanbing.jcpp.infrastructure.proto.model.PricingModel;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel.FlagPrice;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel.Period;
 import sanbing.jcpp.infrastructure.queue.Callback;
+import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 
@@ -254,6 +256,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
     @Override
     public void onTransactionRecordRequest(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩交易记录上报 {}", uplinkQueueMessage);
+        ObjectNode additionalInfo = JacksonUtil.newObjectNode();
 
         TransactionRecordRequest transactionRecordRequest = uplinkQueueMessage.getTransactionRecordRequest();
 
@@ -262,10 +265,12 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
         // 构造下行计费
         DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
+
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.TRANSACTION_RECORD_ACK.name());
         downlinkMessageBuilder.setTransactionRecordResponse(TransactionRecordResponse.newBuilder()
                 .setTradeNo(tradeNo)
                 .setSuccess(true)
+                .setAdditionalInfo(additionalInfo.toString())
                 .build());
 
         downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, pileCode);
