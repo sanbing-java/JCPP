@@ -434,6 +434,25 @@ public class DefaultPileProtocolService implements PileProtocolService {
         callback.onSuccess();
     }
 
+    @Override
+    public void onLockStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到地锁状态信息 {}", uplinkQueueMessage);
+        GroundLockStatusProto groundLockStatusProto = uplinkQueueMessage.getGroundLockStatusProto();
+        String pileCode = groundLockStatusProto.getPileCode();
+        String gunCode = groundLockStatusProto.getGunCode();
+        int lockStatus = groundLockStatusProto.getLockStatus();
+        int parkStatus = groundLockStatusProto.getParkStatus();
+        int lockBattery = groundLockStatusProto.getLockBattery();
+        int alarmStatus = groundLockStatusProto.getAlarmStatus();
+        
+        log.info("地锁状态信息: 桩编码: {}, 枪号: {}, 车位锁状态: {}, 车位状态: {}, 地锁电量: {}%, 报警状态: {}", 
+                pileCode, gunCode, lockStatus, parkStatus, lockBattery, alarmStatus);
+        
+        // TODO 处理相关业务逻辑，比如保存地锁状态信息到数据库
+        
+        callback.onSuccess();
+    }
+
     private static Period createPeriod(int sn, LocalTime beginTime, LocalTime endTime, PricingModelFlag flag) {
         Period period = new Period();
         period.setSn(sn);

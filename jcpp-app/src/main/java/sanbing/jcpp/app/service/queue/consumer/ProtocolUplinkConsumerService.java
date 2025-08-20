@@ -220,6 +220,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                             pileProtocolService.onOtaResponse(uplinkQueueMsg, callback);
 
+                        } else if (uplinkQueueMsg.hasGroundLockStatusProto()) {
+                        
+                            pileProtocolService.onLockStatus(uplinkQueueMsg, callback);
+                        
                         } else {
 
                             callback.onSuccess();

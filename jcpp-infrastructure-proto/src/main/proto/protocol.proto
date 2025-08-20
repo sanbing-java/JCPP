@@ -73,6 +73,7 @@ message UplinkQueueMessage {
   RestartPileResponse restartPileResponse = 36;
   BmsHandshakeProto bmsHandshakeProto = 37;
   OtaResponse otaResponse = 38;
+  GroundLockStatusProto groundLockStatusProto = 39;
 
 }
 
@@ -419,5 +420,17 @@ message BmsHandshakeProto {
   int32 bmsPropertyRightLabel = 15;      // BMS电池组产权标识
   string carVinCode = 16;                // 车辆识别码(VIN)
   string bmsSoftwareVersion = 17;        // BMS软件版本号
+  optional string additionalInfo = 20;   // 附加信息
+}
+
+message GroundLockStatusProto {
+  int64 ts = 1;                          // 时间戳
+  string pileCode = 2;                   // 桩编号
+  string gunCode = 3;                    // 枪号
+  int32 lockStatus = 4;                  // 车位锁状态
+  int32 parkStatus = 5;                  // 车位状态
+  int32 lockBattery = 6;                 // 地锁电量状态 (百分比值0~100)
+  int32 alarmStatus = 7;                 // 报警状态
+  int32 reserved = 8;                    // 预留位
   optional string additionalInfo = 20;   // 附加信息
 }

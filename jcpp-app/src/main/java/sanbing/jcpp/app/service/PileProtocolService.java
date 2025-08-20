@@ -122,9 +122,20 @@ public interface PileProtocolService {
      */
     void onOtaResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
-    /*
-     * BMS充电握手
+    /**
+     * 处理BMS握手信息
+     *
+     * @param uplinkQueueMessage 上行消息
+     * @param callback           回调
      */
     void onBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 处理地锁状态信息
+     *
+     * @param uplinkQueueMessage 上行消息
+     * @param callback           回调
+     */
+    void onLockStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
 }
