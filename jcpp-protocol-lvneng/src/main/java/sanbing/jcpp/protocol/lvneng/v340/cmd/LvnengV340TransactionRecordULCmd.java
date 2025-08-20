@@ -69,7 +69,7 @@ public class LvnengV340TransactionRecordULCmd extends LvnengUplinkCmdExe {
         additionalInfo.put("充电枪位置类型", gunType);
 
         //5 充电枪口
-        byte gunCode = byteBuf.readByte();
+        int gunCode = byteBuf.readByte();
         additionalInfo.put("充电枪口", gunCode);
 
         //6 卡号

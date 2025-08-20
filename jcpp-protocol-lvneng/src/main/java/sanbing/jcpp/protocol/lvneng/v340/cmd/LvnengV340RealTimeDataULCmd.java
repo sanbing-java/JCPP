@@ -67,7 +67,7 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
         additionalInfo.put("充电枪数量", gunsNum);
 
         //5 充电枪口
-        byte gunCode = byteBuf.readByte();
+        int gunCode = byteBuf.readByte();
         additionalInfo.put("充电枪口", gunCode);
 
         //6 充电枪类型
@@ -272,7 +272,7 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
         realTimeDataAck(tcpSession, gunCode);
     }
 
-    private void realTimeDataAck(TcpSession tcpSession, byte gunCode) {
+    private void realTimeDataAck(TcpSession tcpSession, int gunCode) {
         ByteBuf pingAckMsgBody = Unpooled.buffer(5);
         pingAckMsgBody.writeShortLE(0);
         pingAckMsgBody.writeShortLE(0);

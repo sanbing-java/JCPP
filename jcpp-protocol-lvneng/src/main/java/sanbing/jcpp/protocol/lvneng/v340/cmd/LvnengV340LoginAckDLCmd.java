@@ -96,7 +96,7 @@ public class LvnengV340LoginAckDLCmd extends LvnengDownlinkCmdExe {
 
     private void registerSyncTimeTask(TcpSession tcpSession, byte[] pileCodeBytes, LvnengUplinkMessage requestData) {
         tcpSession.addSchedule(SCHEDULE_KEY_AUTO_SYNC_TIME, k -> {
-                    log.info("{} 云快充3.4开始注册定时对时任务", tcpSession);
+            log.info("{} 绿能3.4开始注册定时对时任务", tcpSession);
                     return PROTOCOL_SESSION_SCHEDULED.scheduleAtFixedRate(() ->
                                     syncTime(tcpSession, pileCodeBytes, requestData),
                             0, RandomUtil.randomInt(420, 480), TimeUnit.MINUTES);
