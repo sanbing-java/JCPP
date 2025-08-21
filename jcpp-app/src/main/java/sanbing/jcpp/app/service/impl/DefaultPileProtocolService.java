@@ -346,7 +346,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         log.info("充电桩与 BMS 充电错误上报 {}", uplinkQueueMessage);
     }
 
-    public void onBmsAbort(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+    public void postBmsAbort(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电阶段BMS中止报文 {}", uplinkQueueMessage);
         // TODO 处理相关业务逻辑
         callback.onSuccess();
@@ -412,7 +412,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
-    public void onBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+    public void postBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到BMS充电握手信息 {}", uplinkQueueMessage);
         BmsHandshakeProto bmsHandshakeProto = uplinkQueueMessage.getBmsHandshakeProto();
         String tradeNo = bmsHandshakeProto.getTradeNo();
@@ -435,7 +435,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
-    public void onLockStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+    public void postLockStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到地锁状态信息 {}", uplinkQueueMessage);
         GroundLockStatusProto groundLockStatusProto = uplinkQueueMessage.getGroundLockStatusProto();
         String pileCode = groundLockStatusProto.getPileCode();

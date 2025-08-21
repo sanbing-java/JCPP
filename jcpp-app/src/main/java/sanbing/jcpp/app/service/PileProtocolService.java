@@ -75,7 +75,6 @@ public interface PileProtocolService {
      */
     void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo);
 
-
     /**
      * 重启充电
      */
@@ -106,11 +105,10 @@ public interface PileProtocolService {
      */
     void onRestartPileResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
-
     /**
      * 充电阶段BMS中止
      */
-    void onBmsAbort(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+    void postBmsAbort(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
      *  远程更新
@@ -128,7 +126,7 @@ public interface PileProtocolService {
      * @param uplinkQueueMessage 上行消息
      * @param callback           回调
      */
-    void onBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+    void postBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
      * 处理地锁状态信息
@@ -136,6 +134,6 @@ public interface PileProtocolService {
      * @param uplinkQueueMessage 上行消息
      * @param callback           回调
      */
-    void onLockStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+    void postLockStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
 }

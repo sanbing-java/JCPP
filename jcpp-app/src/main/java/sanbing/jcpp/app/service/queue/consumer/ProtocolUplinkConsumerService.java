@@ -206,7 +206,7 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                         } else if (uplinkQueueMsg.hasBmsAbortProto()) {
 
-                            pileProtocolService.onBmsAbort(uplinkQueueMsg, callback);
+                            pileProtocolService.postBmsAbort(uplinkQueueMsg, callback);
 
                         } else if (uplinkQueueMsg.hasRestartPileResponse()) {
 
@@ -214,15 +214,15 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                         } else if (uplinkQueueMsg.hasBmsHandshakeProto()) {
 
-                            pileProtocolService.onBmsHandshake(uplinkQueueMsg, callback);
+                            pileProtocolService.postBmsHandshake(uplinkQueueMsg, callback);
 
                         } else if (uplinkQueueMsg.hasOtaResponse()) {
 
                             pileProtocolService.onOtaResponse(uplinkQueueMsg, callback);
 
                         } else if (uplinkQueueMsg.hasGroundLockStatusProto()) {
-                        
-                            pileProtocolService.onLockStatus(uplinkQueueMsg, callback);
+
+                            pileProtocolService.postLockStatus(uplinkQueueMsg, callback);
                         
                         } else {
 

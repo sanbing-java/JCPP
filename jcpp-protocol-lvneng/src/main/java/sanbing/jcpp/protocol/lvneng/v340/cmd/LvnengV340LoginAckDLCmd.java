@@ -11,7 +11,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
@@ -108,11 +107,8 @@ public class LvnengV340LoginAckDLCmd extends LvnengDownlinkCmdExe {
         TracerContextUtil.newTracer();
         MDCUtils.recordTracer();
         log.info("{} 绿能3.4开始下发对时报文", tcpSession);
-        ByteBuf syncTimeMsgBody = Unpooled.buffer(14);
-        syncTimeMsgBody.writeBytes(pileCodeBytes);
-        syncTimeMsgBody.writeBytes(CP56Time2aUtil.encode(LocalDateTime.now()));
 
-        ByteBuf msgBodyBuf = Unpooled.buffer();
+        ByteBuf msgBodyBuf = Unpooled.buffer(20);
         // 预留1
         msgBodyBuf.writeShortLE(0);
         // 预留1
@@ -128,7 +124,7 @@ public class LvnengV340LoginAckDLCmd extends LvnengDownlinkCmdExe {
         encodeAndWriteFlush(SYNC_TIME,
                 tcpSession.nextSeqNo(SequenceNumberLength.SHORT),
                 requestData.getEncryptionFlag(),
-                syncTimeMsgBody,
+                msgBodyBuf,
                 tcpSession);
     }
 
