@@ -1,3 +1,9 @@
+/**
+ * 开源代码，仅供学习和交流研究使用，商用请联系三丙
+ * 微信：mohan_88888
+ * 抖音：程序员三丙
+ * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
 import cn.hutool.core.date.DateUtil;
@@ -9,8 +15,6 @@ import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
-import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
-import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
