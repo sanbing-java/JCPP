@@ -266,6 +266,45 @@ service:
           linger-ms: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_KAFKA_LINGER_MS:0}"
           buffer-memory: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_BUFFER_MEMORY:33554432}"
           other-properties: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_QUEUE_KAFKA_OTHER_PROPERTIES:}"
+    yunkuaichongV170:
+      enabled: "${PROTOCOLS_YUNKUAICHONGV170_ENABLED:true}"
+      listener:
+        tcp:
+          bind-address: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_BIND_ADDRESS:0.0.0.0}"
+          bind-port: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_BIND_PORT:38003}"
+          boss-group-thread_count: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_BOSS_GROUP_THREADS:4}"
+          worker-group-thread-count: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_WORKER_GROUP_THREADS:16}"
+          so-keep-alive: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_SO_KEEPALIVE:true}"
+          so-backlog: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_SO_BACKLOG:128}"
+          so-rcvbuf: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_SO_RCVBUF:65536}"
+          so-sndbuf: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_SO_SNDBUF:65536}"
+          nodelay: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_NODELAY:true}"
+          handler:
+            idle-timeout-seconds: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_HANDLER_IDLE_TIMEOUT_SECONDS:600}"
+            max_connections: "${PROTOCOLS_YUNKUAICHONGV170_LISTENER_TCP_HANDLER_MAX_CONNECTIONS:100000}"
+            # 默认为二进制类型的拆包器
+            # 可选JSON类型的拆包器  "${PROTOCOLS_YUNKUAICHONGV170_NETTY_HANDLER_BINARY_CONFIGURATION:type:JSON}"
+            # 可选纯文本类型的拆包器 "${PROTOCOLS_YUNKUAICHONGV170_NETTY_HANDLER_BINARY_CONFIGURATION:type:TEXT;maxFrameLength:128;stripDelimiter:true;messageSeparator:null;charsetName:UTF-8}"
+            configuration: "${PROTOCOLS_YUNKUAICHONGV170_NETTY_HANDLER_BINARY_CONFIGURATION:type:BINARY;decoder:sanbing.jcpp.protocol.listener.tcp.decoder.JCPPLengthFieldBasedFrameDecoder;byteOrder:LITTLE_ENDIAN;head:68;lengthFieldOffset:1;lengthFieldLength:1;lengthAdjustment:2;initialBytesToStrip:0}"
+      forwarder:
+        # 如果是单体服务，可选kafka、memory，未来计划扩展RocketMQ, GRpc、REST
+        type: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_TYPE:memory}"
+        memory:
+          topic: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_MEMORY_TOPIC:protocol_uplink}"
+        kafka:
+          topic: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_TOPIC:protocol_uplink}"
+          jcpp-partition: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_JCPP_PARTITION:true}" # 是否利用JCPP的分片框架
+          # 以下配置只有在service.type为protocol时且jcpp-partition为false时才生效
+          bootstrap-servers: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_SERVERS:kafka:9092}"
+          acks: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_ACKS:1}"
+          # 可选 protobuf（推荐）、json
+          encoder: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_ENCODER:protobuf}"
+          retries: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_RETRIES:1}"
+          compression-type: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_COMPRESSION_TYPE:none}" # none, gzip, snappy, lz4, zstd
+          batch-size: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_BATCH_SIZE:16384}"
+          linger-ms: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_KAFKA_LINGER_MS:0}"
+          buffer-memory: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_BUFFER_MEMORY:33554432}"
+          other-properties: "${PROTOCOLS_YUNKUAICHONGV170_FORWARD_QUEUE_KAFKA_OTHER_PROPERTIES:}"
     lvnengV340:
       enabled: "${PROTOCOLS_LVNENG340_ENABLED:true}"
       listener:

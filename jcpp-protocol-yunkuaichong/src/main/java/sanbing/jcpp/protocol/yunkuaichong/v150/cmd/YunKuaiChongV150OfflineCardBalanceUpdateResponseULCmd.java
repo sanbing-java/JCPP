@@ -21,6 +21,8 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.util.Map;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 
 /**
  * 云快充1.5.0  余额更新应答
@@ -28,7 +30,7 @@ import java.util.Map;
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(0x41)
+@YunKuaiChongCmd(value = 0x41, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OfflineCardBalanceUpdateResponseULCmd extends YunKuaiChongUplinkCmdExe {
 
     private static final Map<Byte, String> UPDATE_RESULT;

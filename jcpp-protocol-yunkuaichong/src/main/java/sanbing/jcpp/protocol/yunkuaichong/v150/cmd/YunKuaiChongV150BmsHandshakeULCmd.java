@@ -24,13 +24,15 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.nio.charset.StandardCharsets;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0 充电握手
  *
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x15)
+@YunKuaiChongCmd(value = 0x15, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150BmsHandshakeULCmd extends YunKuaiChongUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {

@@ -21,13 +21,15 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0 远程停机命令回复
  *
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x35)
+@YunKuaiChongCmd(value = 0x35, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150RemoteStopResultULCmd extends YunKuaiChongUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {

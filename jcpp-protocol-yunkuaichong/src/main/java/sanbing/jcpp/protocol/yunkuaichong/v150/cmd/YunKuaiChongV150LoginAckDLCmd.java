@@ -32,6 +32,7 @@ import static sanbing.jcpp.protocol.domain.SessionCloseReason.MANUALLY;
 import static sanbing.jcpp.protocol.listener.tcp.TcpSession.SCHEDULE_KEY_AUTO_SYNC_TIME;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.FAILURE_BYTE;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.SUCCESS_BYTE;
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.LOGIN_ACK;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.SYNC_TIME;
 
@@ -41,7 +42,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x02)
+@YunKuaiChongCmd(value = 0x02, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150LoginAckDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

@@ -16,6 +16,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.OTA_REQUEST;
 
 
@@ -25,7 +26,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(0x94)
+@YunKuaiChongCmd(value = 0x94, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OtaRequestDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

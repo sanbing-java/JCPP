@@ -7,8 +7,6 @@
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
 
-import java.util.Map;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +18,10 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import java.util.Map;
+
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 
 /**
  * 云快充1.5.0  离线卡数据同步应答
@@ -27,7 +29,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(0x43)
+@YunKuaiChongCmd(value = 0x43, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OfflineCardSyncResponseULCmd extends YunKuaiChongUplinkCmdExe {
 
     private static final Map<Byte, Map<Byte, String>> FAILURE_REASON;

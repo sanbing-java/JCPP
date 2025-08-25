@@ -16,6 +16,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_STOP_CHARGING;
 
 /**
@@ -24,7 +25,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x36)
+@YunKuaiChongCmd(value = 0x36, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150RemoteStopDLCmd extends YunKuaiChongDownlinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongDwonlinkMessage yunKuaiChongDwonlinkMessage, ProtocolContext ctx) {

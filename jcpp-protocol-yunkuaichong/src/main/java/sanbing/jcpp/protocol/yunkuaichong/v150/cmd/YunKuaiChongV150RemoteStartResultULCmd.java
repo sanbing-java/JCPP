@@ -21,13 +21,15 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0 远程启动充电命令回复
  *
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x33)
+@YunKuaiChongCmd(value = 0x33, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150RemoteStartResultULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

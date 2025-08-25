@@ -21,6 +21,8 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.time.LocalDateTime;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0 对时结果
  *
@@ -28,7 +30,7 @@ import java.time.LocalDateTime;
  * @since 1.0.0
  */
 @Slf4j
-@YunKuaiChongCmd(0x55)
+@YunKuaiChongCmd(value = 0x55, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150TimeSyncResultULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

@@ -18,6 +18,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.SYNC_TIME;
 
 /**
@@ -27,7 +28,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @since 1.0.0
  */
 @Slf4j
-@YunKuaiChongCmd(0x56)
+@YunKuaiChongCmd(value = 0x56, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150TimeSyncDLCmd extends YunKuaiChongDownlinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongDwonlinkMessage yunKuaiChongDwonlinkMessage, ProtocolContext ctx) {

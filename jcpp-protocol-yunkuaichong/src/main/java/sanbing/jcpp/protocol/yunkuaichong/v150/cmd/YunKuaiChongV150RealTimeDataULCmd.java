@@ -28,13 +28,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0上传实时监测数据
  *
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x13)
+@YunKuaiChongCmd(value = 0x13, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe {
 
     // 故障说明列表

@@ -20,12 +20,14 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0充电桩计费模型请求
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x09)
+@YunKuaiChongCmd(value = 0x09, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150QueryPricingModelULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

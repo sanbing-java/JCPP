@@ -19,12 +19,14 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充协议上行命令处理类 - 地锁状态/报警信息帧 (V1.5.0版本)
  * 命令码：0x61 (地锁状态/报警信息帧上行命令)
  */
 @Slf4j
-@YunKuaiChongCmd(0x61)
+@YunKuaiChongCmd(value = 0x61, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150LockStatusULCmd extends YunKuaiChongUplinkCmdExe {
 
     /**

@@ -21,6 +21,8 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 
 /**
  * 云快充1.5.0计费模型验证请求
@@ -28,7 +30,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x05)
+@YunKuaiChongCmd(value = 0x05, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150VerifyPricingModelULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

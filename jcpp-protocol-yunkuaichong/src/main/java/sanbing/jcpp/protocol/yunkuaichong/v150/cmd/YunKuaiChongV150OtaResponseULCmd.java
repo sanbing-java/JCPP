@@ -19,6 +19,8 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.util.Map;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 
 /**
  * 云快充1.5.0  远程更新应答
@@ -26,7 +28,7 @@ import java.util.Map;
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(0x93)
+@YunKuaiChongCmd(value = 0x93, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OtaResponseULCmd extends YunKuaiChongUplinkCmdExe {
 
     private static final Map<Byte, String> UPGRADE_STATUS;

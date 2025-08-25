@@ -22,6 +22,7 @@ import java.util.Arrays;
 
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.FAILURE_BYTE;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.SUCCESS_BYTE;
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.VERIFY_PRICING_ACK;
 
 /**
@@ -30,7 +31,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x06)
+@YunKuaiChongCmd(value = 0x06, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150VerifyPricingModelAckDLCmd extends YunKuaiChongDownlinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongDwonlinkMessage yunKuaiChongDwonlinkMessage, ProtocolContext ctx) {

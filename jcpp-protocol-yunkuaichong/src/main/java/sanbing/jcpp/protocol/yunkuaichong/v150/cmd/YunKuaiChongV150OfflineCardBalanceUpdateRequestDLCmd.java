@@ -19,6 +19,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.math.BigDecimal;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.OFFLINE_CARD_BALANCE_UPDATE_REQUEST;
 
 
@@ -28,7 +29,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(0x42)
+@YunKuaiChongCmd(value = 0x42, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OfflineCardBalanceUpdateRequestDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

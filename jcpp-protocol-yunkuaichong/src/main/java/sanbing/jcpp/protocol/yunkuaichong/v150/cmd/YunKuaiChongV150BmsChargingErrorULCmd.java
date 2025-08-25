@@ -21,11 +21,13 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0充电桩错误报文
  */
 @Slf4j
-@YunKuaiChongCmd(0x1B)
+@YunKuaiChongCmd(value = 0x1B, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150BmsChargingErrorULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

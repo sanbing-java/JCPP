@@ -4,7 +4,7 @@
  * 抖音：程序员三丙
  * 付费课程知识星球：https://t.zsxq.com/aKtXo
  */
-package sanbing.jcpp.protocol.yunkuaichong.v160;
+package sanbing.jcpp.protocol.yunkuaichong.v170;
 
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.annotation.ProtocolComponent;
@@ -12,17 +12,17 @@ import sanbing.jcpp.protocol.ProtocolBootstrap;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolMessageProcessor;
 
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.YUNKUAICHONG_V160;
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.YUNKUAICHONG_V170;
 
 /**
  * @author baigod
  */
 
-@ProtocolComponent(YUNKUAICHONG_V160)
+@ProtocolComponent(YUNKUAICHONG_V170)
 @Slf4j
-public class YunkuaichongV160ProtocolBootstrap extends ProtocolBootstrap {
+public class YunkuaichongV170ProtocolBootstrap extends ProtocolBootstrap {
 
-    public static final String PROTOCOL_NAME = YUNKUAICHONG_V160;
+    public static final String PROTOCOL_NAME = YUNKUAICHONG_V170;
 
     @Override
     protected String getProtocolName() {

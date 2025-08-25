@@ -22,11 +22,13 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.nio.charset.StandardCharsets;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0充电桩登录认证
  */
 @Slf4j
-@YunKuaiChongCmd(0x01)
+@YunKuaiChongCmd(value = 0x01, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150LoginULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

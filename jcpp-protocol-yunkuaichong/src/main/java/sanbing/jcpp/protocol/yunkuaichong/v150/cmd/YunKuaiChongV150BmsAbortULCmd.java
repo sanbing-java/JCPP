@@ -26,11 +26,13 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充1.5.0 充电阶段BMS中止
  */
 @Slf4j
-@YunKuaiChongCmd(0x1D)
+@YunKuaiChongCmd(value = 0x1D, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

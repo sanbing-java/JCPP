@@ -16,13 +16,14 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_RESTART_PILE;
 
 /**
  * 云快充1.5.0 运营平台远程重启充电桩
  */
 @Slf4j
-@YunKuaiChongCmd(0x92)
+@YunKuaiChongCmd(value = 0x92, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150RestartPileDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag.*;
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.QUERY_PRICING_ACK;
 
 /**
@@ -33,7 +34,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(0x0A)
+@YunKuaiChongCmd(value = 0x0A, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150QueryPricingModelAckDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

@@ -12,17 +12,17 @@ import sanbing.jcpp.protocol.ProtocolBootstrap;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolMessageProcessor;
 
-import static sanbing.jcpp.protocol.yunkuaichong.v150.YunkuaichongV150ProtocolBootstrap.PROTOCOL_NAME;
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.YUNKUAICHONG_V150;
 
 /**
  * @author baigod
  */
 
-@ProtocolComponent(PROTOCOL_NAME)
+@ProtocolComponent(YUNKUAICHONG_V150)
 @Slf4j
 public class YunkuaichongV150ProtocolBootstrap extends ProtocolBootstrap {
 
-    public static final String PROTOCOL_NAME = "yunkuaichongV150";
+    public static final String PROTOCOL_NAME = YUNKUAICHONG_V150;
 
     @Override
     protected String getProtocolName() {

@@ -4,8 +4,9 @@
  * 抖音：程序员三丙
  * 付费课程知识星球：https://t.zsxq.com/aKtXo
  */
-package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
+package sanbing.jcpp.protocol.yunkuaichong.v170.cmd;
 
+import cn.hutool.core.util.HexUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -25,20 +26,19 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V150;
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V160;
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V170;
 
 /**
- * 云快充1.5.0 交易记录
+ * 云快充1.7.0 交易记录
  *
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x3B, protocolNames = {V150, V160})
-public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCmdExe {
+@YunKuaiChongCmd(value = 0x3D, protocolNames = {V170})
+public class YunKuaiChongV170TransactionRecordULCmd extends YunKuaiChongUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
-        log.info("{} 云快充1.5.0交易记录", tcpSession);
+        log.info("{} 云快充1.7.0交易记录", tcpSession);
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
@@ -67,90 +67,108 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         byteBuf.readBytes(endTimeBytes);
         Instant endTime = CP56Time2aUtil.decode(endTimeBytes).atZone(ZoneId.systemDefault()).toInstant();
 
-        // 6.尖单价
+        // ========== V1.7.0 新增字段 - 在结束时间后立即读取 ==========
+        // 6.电表表号
+        byte[] meterNoBytes = new byte[6];
+        byteBuf.readBytes(meterNoBytes);
+        String meterNo = BCDUtil.toString(meterNoBytes);
+        additionalInfo.put("电表表号", meterNo);
+
+        // 7.电表密文
+        byte[] meterContextEncyptB = new byte[34];
+        byteBuf.readBytes(meterContextEncyptB);
+        additionalInfo.put("电表密文", HexUtil.encodeHexStr(meterContextEncyptB));
+
+        // 8.电表协议版本号
+        additionalInfo.put("电表协议版本号", byteBuf.readUnsignedShortLE());
+
+        // 9.加密方式
+        additionalInfo.put("加密方式", byteBuf.readUnsignedByte());
+
+        // 10.尖单价
         BigDecimal topPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
         additionalInfo.put("尖单价", topPrice);
-        // 7. 尖电量
+        // 11. 尖电量
         BigDecimal topEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
-        // 8.计损尖电量
+        // 12.计损尖电量
         BigDecimal topLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
         additionalInfo.put("计损尖电量", topLoseEnergy);
-        // 9.尖金额
+        // 13.尖金额
         BigDecimal topAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
-        // 10.峰单价
+        // 14.峰单价
         BigDecimal peakPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
         additionalInfo.put("峰单价", peakPrice);
-        // 11. 峰电量
+        // 15. 峰电量
         BigDecimal peakEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
-        // 12.计损峰电量
+        // 16.计损峰电量
         BigDecimal peakLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
         additionalInfo.put("计损峰电量", peakLoseEnergy);
-        // 13.峰金额
+        // 17.峰金额
         BigDecimal peakAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
-        // 14.平单价
+        // 18.平单价
         BigDecimal flatPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
         additionalInfo.put("平单价", flatPrice);
-        // 15. 平电量
+        // 19. 平电量
         BigDecimal flatEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
-        // 16.计损平电量
+        // 20.计损平电量
         BigDecimal flatLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
         additionalInfo.put("计损平电量", flatLoseEnergy);
-        // 17.平金额
+        // 21.平金额
         BigDecimal flatAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
-        // 18.谷单价
+        // 22.谷单价
         BigDecimal valleyPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
         additionalInfo.put("谷单价", valleyPrice);
-        // 19. 谷电量
+        // 23. 谷电量
         BigDecimal valleyEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
-        // 20.计损谷电量
+        // 24.计损谷电量
         BigDecimal valleyLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
         additionalInfo.put("计损谷电量", valleyLoseEnergy);
-        // 21.谷金额
+        // 25.谷金额
         BigDecimal valleyAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
-        // 22.电表总起值
+        // 26.电表总起值
         byte[] meterStartValueBytes = new byte[5];
         byteBuf.readBytes(meterStartValueBytes);
         BigDecimal startMeterValue = reduceMagnification(readLongLE5Byte(meterStartValueBytes), 10000, 4);
         additionalInfo.put("电表总起值", startMeterValue);
 
-        // 23.电表总止值
+        // 27.电表总止值
         byte[] meterEndValueBytes = new byte[5];
         byteBuf.readBytes(meterEndValueBytes);
         BigDecimal endMeterValue = reduceMagnification(readLongLE5Byte(meterEndValueBytes), 10000, 4);
         additionalInfo.put("电表总止值", endMeterValue);
 
-        // 24.总电量
+        // 28.总电量
         BigDecimal totalEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000, 4);
-        // 25.计损总电量
+        // 29.计损总电量
         BigDecimal totalLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000, 4);
         additionalInfo.put("计损总电量", totalLoseEnergy);
-        // 26 .消费金额
+        // 30 .消费金额
         BigDecimal totalAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
-        // 27.电动汽车唯一标识
+        // 31.电动汽车唯一标识
         byte[] carVINBytes = new byte[17];
         byteBuf.readBytes(carVINBytes);
         String bmsVinCode = new String(carVINBytes, StandardCharsets.US_ASCII);
         additionalInfo.put("电动汽车唯一标识", bmsVinCode);
 
-        // 28.交易标识 0x01：app 启动0x02：卡启动 0x04：离线卡启动 0x05: vin 码启动充电
+        // 32.交易标识 0x01：app 启动0x02：卡启动 0x04：离线卡启动 0x05: vin 码启动充电
         byte tradeFlag = byteBuf.readByte();
         additionalInfo.put("交易标识", mapStartFlag(tradeFlag));
 
-        // 29.交易日期、时间
+        // 33.交易日期、时间
         byte[] tradeTimeBytes = new byte[7];
         byteBuf.readBytes(tradeTimeBytes);
         Instant tradeTime = CP56Time2aUtil.decode(tradeTimeBytes).atZone(ZoneId.systemDefault()).toInstant();
 
-        // 30.停止原因
+        // 34.停止原因
         byte stopReasonByte = byteBuf.readByte();
         String stopReason = mapStopReason(stopReasonByte);
 
-        //31 物理卡号
+        // 35. 物理卡号
         byte[] cardNoBytes = new byte[8];
         byteBuf.readBytes(cardNoBytes);
         String cardNo = BCDUtil.toString(cardNoBytes);

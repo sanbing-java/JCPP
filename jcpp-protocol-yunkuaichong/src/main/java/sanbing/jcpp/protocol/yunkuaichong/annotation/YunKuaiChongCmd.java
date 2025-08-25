@@ -18,4 +18,9 @@ public @interface YunKuaiChongCmd {
 
     int value();
 
+    /**
+     * 支持的协议名列表，必须明确指定
+     */
+    String[] protocolNames();
+
 }

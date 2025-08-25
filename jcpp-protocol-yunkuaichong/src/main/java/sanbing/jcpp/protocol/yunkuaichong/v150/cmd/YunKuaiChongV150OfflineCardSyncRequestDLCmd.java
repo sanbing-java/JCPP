@@ -6,8 +6,6 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.OFFLINE_CARD_SYNC_REQUEST;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,9 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.OFFLINE_CARD_SYNC_REQUEST;
+
 
 /**
  * 云快充1.5.0  离线卡数据同步
@@ -26,7 +27,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(0x44)
+@YunKuaiChongCmd(value = 0x44, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OfflineCardSyncRequestDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

@@ -21,12 +21,14 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.math.BigDecimal;
 
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
+
 /**
  * 云快充协议上行命令处理类 - 参数配置帧解析 (V1.5.0版本)
  * 命令码：0x17 (参数配置帧上行命令)
  */
 @Slf4j
-@YunKuaiChongCmd(0x17)
+@YunKuaiChongCmd(value = 0x17, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150BmsParamConfigReportULCmd extends YunKuaiChongUplinkCmdExe {
     // 电流值偏移量常量（单位：安培）
     private static final BigDecimal CURRENT_OFFSET = new BigDecimal("-400.0");
