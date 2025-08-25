@@ -455,7 +455,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
 
     @Override
-    public void onLimitUpdateResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+    public void onOfflineCardBalanceUpdateResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩远程账户余额更新应答 {}", uplinkQueueMessage);
 
         // TODO 处理相关业务逻辑
@@ -464,7 +464,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
-    public void limitUpdateRequest(LimitUpdateRequest request) {
+    public void offlineCardBalanceUpdateRequest(OfflineCardBalanceUpdateRequest request) {
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
 
@@ -474,8 +474,8 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setPileCode(request.getPileCode())
                 .setRequestIdMSB(requestId.getMostSignificantBits())
                 .setRequestIdLSB(requestId.getLeastSignificantBits())
-                .setDownlinkCmd(DownlinkCmdEnum.LIMIT_UPDATE_REQUEST.name())
-                .setLimitUpdateRequest(request);
+                .setDownlinkCmd(DownlinkCmdEnum.OFFLINE_CARD_BALANCE_UPDATE_REQUEST.name())
+                .setOfflineCardBalanceUpdateRequest(request);
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
     }
 

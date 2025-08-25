@@ -40,7 +40,7 @@ public enum YunKuaiChongDownlinkCmdEnum {
 
     OTA_REQUEST(0x94),
 
-    LIMIT_UPDATE_REQUEST(0x42),
+    OFFLINE_CARD_BALANCE_UPDATE_REQUEST(0x42),
 
     OFFLINE_CARD_SYNC_REQUEST(0x44),
 

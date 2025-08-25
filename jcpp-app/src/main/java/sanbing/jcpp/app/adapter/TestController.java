@@ -6,28 +6,18 @@
  */
 package sanbing.jcpp.app.adapter;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.google.common.collect.Lists;
-
-import jakarta.annotation.Resource;
 import sanbing.jcpp.app.service.PileProtocolService;
 import sanbing.jcpp.proto.gen.ProtocolProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.CardInfo;
-import sanbing.jcpp.proto.gen.ProtocolProto.FlagPriceProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardSyncRequest;
-import sanbing.jcpp.proto.gen.ProtocolProto.PeriodProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag;
-import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelRule;
-import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelType;
-import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingRequest;
+import sanbing.jcpp.proto.gen.ProtocolProto.*;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author baigod
@@ -186,10 +176,10 @@ public class TestController {
         return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/api/limitUpdateRequest")
-    public ResponseEntity<String> limitUpdateRequest() {
+    @GetMapping("/api/offlineCardBalanceUpdateRequest")
+    public ResponseEntity<String> offlineCardBalanceUpdateRequest() {
 
-        pileProtocolService.limitUpdateRequest(ProtocolProto.LimitUpdateRequest.newBuilder()
+        pileProtocolService.offlineCardBalanceUpdateRequest(OfflineCardBalanceUpdateRequest.newBuilder()
                 .setCardNo("1000000000123456")
                 .setPileCode("20231212000010")
                 .setGunCode("01")

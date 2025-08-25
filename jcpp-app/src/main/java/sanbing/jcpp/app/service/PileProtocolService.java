@@ -8,6 +8,8 @@ package sanbing.jcpp.app.service;
 
 import sanbing.jcpp.infrastructure.queue.Callback;
 import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardBalanceUpdateRequest;
+import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardSyncRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 
@@ -139,17 +141,17 @@ public interface PileProtocolService {
     /**
      * 远程账户余额更新
      */
-    void limitUpdateRequest(ProtocolProto.LimitUpdateRequest request);
+    void offlineCardBalanceUpdateRequest(OfflineCardBalanceUpdateRequest request);
 
     /**
      * 远程账户余额更新应答
      */
-    void onLimitUpdateResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+    void onOfflineCardBalanceUpdateResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
      * 离线卡数据同步
      */
-    void offlineCardSyncRequest(ProtocolProto.OfflineCardSyncRequest request);
+    void offlineCardSyncRequest(OfflineCardSyncRequest request);
 
     /**
      * 离线卡数据同步应答

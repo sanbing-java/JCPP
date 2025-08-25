@@ -6,19 +6,20 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
-import java.util.Map;
-
 import cn.hutool.core.text.CharSequenceUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardBalanceUpdateResponse;
+import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
+
+import java.util.Map;
 
 
 /**
@@ -28,7 +29,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
  */
 @Slf4j
 @YunKuaiChongCmd(0x41)
-public class YunKuaiChongV150LimitUpdateResponseULCmd extends YunKuaiChongUplinkCmdExe {
+public class YunKuaiChongV150OfflineCardBalanceUpdateResponseULCmd extends YunKuaiChongUplinkCmdExe {
 
     private static final Map<Byte, String> UPDATE_RESULT;
 
@@ -63,8 +64,8 @@ public class YunKuaiChongV150LimitUpdateResponseULCmd extends YunKuaiChongUplink
         // 修改结果  0x00-修改成功 0x01-设备编号错误 0x02-卡号错误
         byte updateResult = byteBuf.readByte();
 
-        ProtocolProto.UplinkQueueMessage queueMessage = uplinkMessageBuilder(pileCode, tcpSession, message)
-                .setLimitUpdateResponse(ProtocolProto.LimitUpdateResponse.newBuilder()
+        UplinkQueueMessage queueMessage = uplinkMessageBuilder(pileCode, tcpSession, message)
+                .setOfflineCardBalanceUpdateResponse(OfflineCardBalanceUpdateResponse.newBuilder()
                         .setPileCode(pileCode)
                         .setCardNo(cardNo)
                         .setSuccess(updateResult == 0x00)
