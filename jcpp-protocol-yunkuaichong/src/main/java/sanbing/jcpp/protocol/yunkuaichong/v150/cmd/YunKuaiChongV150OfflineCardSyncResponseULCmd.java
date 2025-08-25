@@ -6,6 +6,9 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
+
+import java.util.Map;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -17,33 +20,33 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
-import java.util.Map;
-
 
 /**
- * 云快充1.5.0  远程更新应答
+ * 云快充1.5.0  离线卡数据同步应答
  *
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(0x93)
-public class YunKuaiChongV150OtaResponseULCmd extends YunKuaiChongUplinkCmdExe {
+@YunKuaiChongCmd(0x43)
+public class YunKuaiChongV150OfflineCardSyncResponseULCmd extends YunKuaiChongUplinkCmdExe {
 
-    private static final Map<Byte, String> UPGRADE_STATUS;
+    private static final Map<Byte, Map<Byte, String>> FAILURE_REASON;
+
+
+    private static final String SUCCESS = "成功";
+
 
     static {
-        UPGRADE_STATUS = Map.of(
-            (byte) 0x00,"成功",
-            (byte) 0x01,"编号错误",
-            (byte) 0x02,"程序与桩型号不符",
-            (byte) 0x03, "下载更新文件超时"
+        FAILURE_REASON = Map.of(
+            (byte) 0x00,Map.of((byte)0x01,"卡号格式错误",(byte)0x02,"储存空间不足"),
+            (byte) 0x01,Map.of((byte)0x00,SUCCESS)
         );
     }
 
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage message, ProtocolContext ctx) {
-        log.info("{} 云快充1.5.0 远程更新应答", tcpSession);
+        log.info("{} 云快充1.5.0 离线卡数据同步应答", tcpSession);
 
         ByteBuf byteBuf = Unpooled.wrappedBuffer(message.getMsgBody());
         // 桩编号
@@ -51,18 +54,39 @@ public class YunKuaiChongV150OtaResponseULCmd extends YunKuaiChongUplinkCmdExe {
         byteBuf.readBytes(pileCodeBytes);
         String pileCode = BCDUtil.toString(pileCodeBytes);
 
-        // 升级状态 // 0x00成功  0x01编号错误 0x01程序与桩型号不符 0x01下载更新文件超时
-        byte upgradeStatus = byteBuf.readByte();
+        // 保存结果 0x00-失败 0x01-成功
+        byte saveResult = byteBuf.readByte();
+        byte failureReason = 0x00;
+
+        if (byteBuf.readableBytes() >= 1) {
+            // 失败原因   0x01-卡号格式错误 0x02-储存空间不足
+            failureReason = byteBuf.readByte();
+        }
 
         ProtocolProto.UplinkQueueMessage queueMessage = uplinkMessageBuilder(pileCode, tcpSession, message)
-                .setOtaResponse(ProtocolProto.OtaResponse.newBuilder()
+                .setOfflineCardSyncResponse(ProtocolProto.OfflineCardSyncResponse.newBuilder()
                         .setPileCode(pileCode)
-                        .setSuccess(upgradeStatus == 0x00)
-                        .setErrorMsg(UPGRADE_STATUS.getOrDefault(upgradeStatus,UNKNOWN_MSG))
+                        .setSuccess(saveResult == 0x01)
+                        .setErrorMsg(errorMsg(saveResult, failureReason))
                         .build())
                 .build();
         // 转发到后端
         tcpSession.getForwarder().sendMessage(queueMessage);
     }
 
+
+    private String errorMsg(byte saveResult, byte failureReason) {
+        if(saveResult == 0x01) {
+            return SUCCESS;
+        }
+        Map<Byte, String> saveResultMap = FAILURE_REASON.get(saveResult);
+        if(null == saveResultMap) {
+            return UNKNOWN_MSG;
+        }
+        return saveResultMap.getOrDefault(failureReason,UNKNOWN_MSG);
+    }
+
+
+
 }
+

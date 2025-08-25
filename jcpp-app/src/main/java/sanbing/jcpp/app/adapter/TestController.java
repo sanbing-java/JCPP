@@ -6,16 +6,28 @@
  */
 package sanbing.jcpp.app.adapter;
 
-import jakarta.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.common.collect.Lists;
+
+import jakarta.annotation.Resource;
 import sanbing.jcpp.app.service.PileProtocolService;
 import sanbing.jcpp.proto.gen.ProtocolProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
+import sanbing.jcpp.proto.gen.ProtocolProto.CardInfo;
+import sanbing.jcpp.proto.gen.ProtocolProto.FlagPriceProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardSyncRequest;
+import sanbing.jcpp.proto.gen.ProtocolProto.PeriodProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag;
+import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelRule;
+import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelType;
+import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingRequest;
 
 /**
  * @author baigod
@@ -170,6 +182,35 @@ public class TestController {
                     .setPort(8080)
                     .setUsername("bawan")
                     .build());
+
+        return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/api/limitUpdateRequest")
+    public ResponseEntity<String> limitUpdateRequest() {
+
+        pileProtocolService.limitUpdateRequest(ProtocolProto.LimitUpdateRequest.newBuilder()
+                .setCardNo("1000000000123456")
+                .setPileCode("20231212000010")
+                .setGunCode("01")
+                .setLimitYuan("1000")
+                .build());
+
+        return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/api/offlineCardSyncRequest")
+    public ResponseEntity<String> offlineCardSyncRequest() {
+
+        List<CardInfo> cardInfos = Lists.newArrayList(CardInfo.newBuilder().setCardNo("1000000000123456").setLogicCardNo("1000000000123456").build(),
+                CardInfo.newBuilder().setCardNo("1000000000123457").setLogicCardNo("1000000000123457").build(),
+                CardInfo.newBuilder().setCardNo("1000000000123458").setLogicCardNo("1000000000123458").build());
+
+        pileProtocolService.offlineCardSyncRequest(OfflineCardSyncRequest.newBuilder()
+                .setPileCode("20231212000010")
+                .setTotal(cardInfos.size())
+                .addAllCardInfo(cardInfos)
+                .build());
 
         return ResponseEntity.ok("success");
     }

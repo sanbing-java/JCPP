@@ -223,7 +223,15 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
                         } else if (uplinkQueueMsg.hasGroundLockStatusProto()) {
 
                             pileProtocolService.postLockStatus(uplinkQueueMsg, callback);
-                        
+
+                        } else if (uplinkQueueMsg.hasLimitUpdateResponse()) {
+
+                            pileProtocolService.onLimitUpdateResponse(uplinkQueueMsg, callback);
+
+                        } else if (uplinkQueueMsg.hasOfflineCardSyncResponse()) {
+
+                            pileProtocolService.onOfflineCardSyncResponse(uplinkQueueMsg, callback);
+
                         } else {
 
                             callback.onSuccess();

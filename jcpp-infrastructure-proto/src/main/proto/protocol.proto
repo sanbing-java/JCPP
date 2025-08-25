@@ -74,6 +74,8 @@ message UplinkQueueMessage {
   BmsHandshakeProto bmsHandshakeProto = 37;
   OtaResponse otaResponse = 38;
   GroundLockStatusProto groundLockStatusProto = 39;
+  LimitUpdateResponse limitUpdateResponse = 40;
+  OfflineCardSyncResponse offlineCardSyncResponse = 41;
 
 }
 
@@ -97,6 +99,8 @@ message DownlinkRequestMessage {
   TransactionRecordResponse transactionRecordResponse = 27;
   RestartPileRequest restartPileRequest = 28;
   OtaRequest otaRequest = 29;
+  LimitUpdateRequest limitUpdateRequest = 30;
+  OfflineCardSyncRequest offlineCardSyncRequest = 31;
 }
 
 message DownlinkResponseMessage {
@@ -433,4 +437,36 @@ message GroundLockStatusProto {
   int32 alarmStatus = 7;                 // 报警状态
   int32 reserved = 8;                    // 预留位
   optional string additionalInfo = 20;   // 附加信息
+}
+
+message LimitUpdateRequest {
+  string pileCode = 1;                    // 充电桩编码
+  string gunCode = 2;                     // 枪编号
+  string cardNo = 3;                      // 物理卡号
+  string limitYuan = 4;                   // 余额
+}
+
+message LimitUpdateResponse {
+  string pileCode = 1;                    // 充电桩编码
+  string cardNo = 2;                      // 物理卡号
+  bool success = 3;
+  optional string errorMsg = 4;
+}
+
+message OfflineCardSyncRequest {
+  string pileCode = 1;                    // 充电桩编码
+  int32 total = 2;                        // 下发卡个数
+  repeated CardInfo cardInfo = 3;         // 卡号集合
+}
+
+message CardInfo {
+  string cardNo = 1;                      // 物理卡号
+  string logicCardNo = 2;                 // 逻辑卡号
+}
+
+
+message OfflineCardSyncResponse {
+  string pileCode = 1;                    // 充电桩编码
+  bool success = 3;
+  optional string errorMsg = 4;
 }

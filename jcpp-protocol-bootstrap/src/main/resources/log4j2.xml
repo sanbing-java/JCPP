@@ -2,7 +2,7 @@
 <configuration status="INFO" monitorInterval="30">
 
     <properties>
-        <Property name="LOG_DIR">/home/sanbing/logs/jcpp</Property>
+        <Property name="LOG_DIR">./logs/jcpp</Property>
         <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss:SSS} [%X{TRACE_ID}] [%t] %p %c{1} %m%n%throwable</Property>
     </properties>
 

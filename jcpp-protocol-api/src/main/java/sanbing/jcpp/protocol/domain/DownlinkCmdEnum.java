@@ -30,4 +30,8 @@ public enum DownlinkCmdEnum {
     REMOTE_RESTART_PILE,
 
     OTA_REQUEST,
+
+    LIMIT_UPDATE_REQUEST,
+
+    OFFLINE_CARD_SYNC_REQUEST
 }

@@ -444,12 +444,63 @@ public class DefaultPileProtocolService implements PileProtocolService {
         int parkStatus = groundLockStatusProto.getParkStatus();
         int lockBattery = groundLockStatusProto.getLockBattery();
         int alarmStatus = groundLockStatusProto.getAlarmStatus();
-        
-        log.info("地锁状态信息: 桩编码: {}, 枪号: {}, 车位锁状态: {}, 车位状态: {}, 地锁电量: {}%, 报警状态: {}", 
+
+        log.info("地锁状态信息: 桩编码: {}, 枪号: {}, 车位锁状态: {}, 车位状态: {}, 地锁电量: {}%, 报警状态: {}",
                 pileCode, gunCode, lockStatus, parkStatus, lockBattery, alarmStatus);
-        
+
         // TODO 处理相关业务逻辑，比如保存地锁状态信息到数据库
-        
+
+        callback.onSuccess();
+    }
+
+
+    @Override
+    public void onLimitUpdateResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电桩远程账户余额更新应答 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
+
+        callback.onSuccess();
+    }
+
+    @Override
+    public void limitUpdateRequest(LimitUpdateRequest request) {
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(request.getPileCode())
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.LIMIT_UPDATE_REQUEST.name())
+                .setLimitUpdateRequest(request);
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
+    }
+
+    @Override
+    public void offlineCardSyncRequest(OfflineCardSyncRequest request) {
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(request.getPileCode())
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.OFFLINE_CARD_SYNC_REQUEST.name())
+                .setOfflineCardSyncRequest(request);
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
+    }
+
+    @Override
+    public void onOfflineCardSyncResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电桩离线卡数据同步应答 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
+
         callback.onSuccess();
     }
 

@@ -136,4 +136,23 @@ public interface PileProtocolService {
      */
     void postLockStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
+    /**
+     * 远程账户余额更新
+     */
+    void limitUpdateRequest(ProtocolProto.LimitUpdateRequest request);
+
+    /**
+     * 远程账户余额更新应答
+     */
+    void onLimitUpdateResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 离线卡数据同步
+     */
+    void offlineCardSyncRequest(ProtocolProto.OfflineCardSyncRequest request);
+
+    /**
+     * 离线卡数据同步应答
+     */
+    void onOfflineCardSyncResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 }

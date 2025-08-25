@@ -41,6 +41,10 @@ public class AbstractYunKuaiChongCmdExe {
 
     private static final DecimalFormat PRICING_ID_DECIMAL_FORMAT = new DecimalFormat("0000");
 
+
+    protected static final String UNKNOWN_MSG = "未知的异常";
+
+
     protected static String decodeTradeNo(byte[] tradeNo) {
         String tradeNoStr = BCDUtil.toString(tradeNo);
         return CharSequenceUtil.strip(tradeNoStr, "0", null);
