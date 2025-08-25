@@ -15,10 +15,10 @@ import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +34,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x3B, protocolNames = {V150, V160})
+@ProtocolCmd(value = 0x3B, protocolNames = {V150, V160})
 public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {

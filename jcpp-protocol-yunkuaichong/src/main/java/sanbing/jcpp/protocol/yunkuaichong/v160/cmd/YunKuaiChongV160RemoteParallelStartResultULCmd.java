@@ -16,10 +16,10 @@ import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.RemoteStartChargingResponse;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V160;
 
@@ -29,7 +29,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0xA3, protocolNames = {V160})
+@ProtocolCmd(value = 0xA3, protocolNames = {V160})
 public class YunKuaiChongV160RemoteParallelStartResultULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

@@ -12,13 +12,13 @@ import sanbing.jcpp.protocol.ProtocolBootstrap;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.lvneng.LvnengProtocolMessageProcessor;
 
-import static sanbing.jcpp.protocol.lvneng.v340.LvnengV340ProtocolBootstrap.PROTOCOL_NAME;
+import static sanbing.jcpp.protocol.lvneng.LvnengProtocolConstants.ProtocolNames.LVNENG_V340;
 
-@ProtocolComponent(PROTOCOL_NAME)
+@ProtocolComponent(LVNENG_V340)
 @Slf4j
 public class LvnengV340ProtocolBootstrap extends ProtocolBootstrap {
 
-    public static final String PROTOCOL_NAME = "lvnengV340";
+    public static final String PROTOCOL_NAME = LVNENG_V340;
     @Override
     protected String getProtocolName() {
         return PROTOCOL_NAME;

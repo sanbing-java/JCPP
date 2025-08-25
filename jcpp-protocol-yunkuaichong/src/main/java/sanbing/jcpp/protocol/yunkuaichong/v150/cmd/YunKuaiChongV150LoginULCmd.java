@@ -15,10 +15,10 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.LoginRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.nio.charset.StandardCharsets;
 
@@ -28,7 +28,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
  * 云快充1.5.0充电桩登录认证
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x01, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x01, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150LoginULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override

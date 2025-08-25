@@ -16,28 +16,29 @@ import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.LoginResponse;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
 import sanbing.jcpp.protocol.lvneng.LvnengDownlinkCmdExe;
 import sanbing.jcpp.protocol.lvneng.LvnengDwonlinkMessage;
 import sanbing.jcpp.protocol.lvneng.LvnengUplinkMessage;
-import sanbing.jcpp.protocol.lvneng.annotation.LvnengCmd;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.PROTOCOL_SESSION_SCHEDULED;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.LOGIN_ACK;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.SYNC_TIME_REQUEST;
 import static sanbing.jcpp.protocol.domain.SessionCloseReason.MANUALLY;
 import static sanbing.jcpp.protocol.listener.tcp.TcpSession.SCHEDULE_KEY_AUTO_SYNC_TIME;
-import static sanbing.jcpp.protocol.lvneng.enums.LvnengDownlinkCmdEnum.LOGIN_ACK;
-import static sanbing.jcpp.protocol.lvneng.enums.LvnengDownlinkCmdEnum.SYNC_TIME;
+import static sanbing.jcpp.protocol.lvneng.LvnengProtocolConstants.ProtocolNames.V340;
 
 /**
  * 绿能3.4 服务器应答充电桩签到命令
  */
 @Slf4j
-@LvnengCmd(105)
+@ProtocolCmd(value = 105, protocolNames = {V340})
 public class LvnengV340LoginAckDLCmd extends LvnengDownlinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, LvnengDwonlinkMessage lvnengDwonlinkMessage, ProtocolContext ctx) {
@@ -121,7 +122,7 @@ public class LvnengV340LoginAckDLCmd extends LvnengDownlinkCmdExe {
         //7  命令参数数据
         msgBodyBuf.writeBytes(BCDUtil.dateToBcd8(LocalDateTime.now()));
 
-        encodeAndWriteFlush(SYNC_TIME,
+        encodeAndWriteFlush(SYNC_TIME_REQUEST,
                 tcpSession.nextSeqNo(SequenceNumberLength.SHORT),
                 requestData.getEncryptionFlag(),
                 msgBodyBuf,

@@ -6,7 +6,7 @@
  */
 package sanbing.jcpp.protocol.lvneng;
 
-import cn.hutool.core.util.ClassUtil;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -16,18 +16,16 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
+import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 import sanbing.jcpp.protocol.domain.ListenerToHandlerMsg;
 import sanbing.jcpp.protocol.domain.SessionToHandlerMsg;
 import sanbing.jcpp.protocol.forwarder.Forwarder;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
-import sanbing.jcpp.protocol.lvneng.annotation.LvnengCmd;
-import sanbing.jcpp.protocol.lvneng.enums.LvnengDownlinkCmdEnum;
+import sanbing.jcpp.protocol.lvneng.mapping.LvnengDownlinkCmdConverter;
+import sanbing.jcpp.protocol.mapping.DownlinkCmdConverter;
+import sanbing.jcpp.protocol.routing.ProtocolCommandRouter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class LvnengProtocolMessageProcessor extends ProtocolMessageProcessor {
@@ -35,40 +33,26 @@ public class LvnengProtocolMessageProcessor extends ProtocolMessageProcessor {
     private static final int HEADER_SIZE = 9;  // 帧头(2) + 长度(2) + 加密标识(1) + 序号(1) + 命令字(2) + 校验和(1)
     private static final int FRAME_MIN_LENGTH = 9;  // 最小帧长度（无数据域的情况）
 
-    private final Map<Integer, LvnengUplinkCmdExe> uplinkCmdExeMap = new ConcurrentHashMap<>();
-    private final Map<Integer, LvnengDownlinkCmdExe> downlinkCmdExeMap = new ConcurrentHashMap<>();
+    private final ProtocolCommandRouter<LvnengUplinkCmdExe> uplinkRouter;
+    private final ProtocolCommandRouter<LvnengDownlinkCmdExe> downlinkRouter;
+    private final DownlinkCmdConverter downlinkCmdConverter;
 
     public LvnengProtocolMessageProcessor(Forwarder forwarder, ProtocolContext protocolContext) {
         super(forwarder, protocolContext);
 
-        Set<Class<?>> cmdClasses = ClassUtil.scanPackageByAnnotation(ClassUtil.getPackage(this.getClass()), LvnengCmd.class);
-        cmdClasses.stream().filter(LvnengUplinkCmdExe.class::isAssignableFrom)
-                .forEach(clazz -> {
-                    int cmd = clazz.getAnnotation(LvnengCmd.class).value();
-                    try {
-                        LvnengUplinkCmdExe lvnengUplinkCmdExe = (LvnengUplinkCmdExe) clazz.getDeclaredConstructor().newInstance();
-                        uplinkCmdExeMap.put(cmd, lvnengUplinkCmdExe);
-                    } catch (InstantiationException |
-                             IllegalAccessException |
-                             InvocationTargetException |
-                             NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        // 使用 CommandRouter 替代手动注册逻辑
+        this.uplinkRouter = new ProtocolCommandRouter<>(
+            this.getClass(),
+            LvnengUplinkCmdExe.class::isAssignableFrom
+        );
 
-        cmdClasses.stream().filter(LvnengDownlinkCmdExe.class::isAssignableFrom)
-                .forEach(clazz -> {
-                    int cmd = clazz.getAnnotation(LvnengCmd.class).value();
-                    try {
-                        LvnengDownlinkCmdExe lvnengDownlinkCmdExe = (LvnengDownlinkCmdExe) clazz.getDeclaredConstructor().newInstance();
-                        downlinkCmdExeMap.put(cmd, lvnengDownlinkCmdExe);
-                    } catch (InstantiationException |
-                             IllegalAccessException |
-                             InvocationTargetException |
-                             NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        this.downlinkRouter = new ProtocolCommandRouter<>(
+            this.getClass(),
+            LvnengDownlinkCmdExe.class::isAssignableFrom
+        );
+        
+        // 获取下行命令转换器单例
+        this.downlinkCmdConverter = LvnengDownlinkCmdConverter.getInstance();
     }
 
     @Override
@@ -143,7 +127,16 @@ public class LvnengProtocolMessageProcessor extends ProtocolMessageProcessor {
 
         ProtocolProto.DownlinkRequestMessage protocolDownlinkMsg = sessionToHandlerMsg.downlinkMsg();
 
-        int cmd = LvnengDownlinkCmdEnum.valueOf(protocolDownlinkMsg.getDownlinkCmd()).getCmd();
+        DownlinkCmdEnum downlinkCmd = DownlinkCmdEnum.valueOf(protocolDownlinkMsg.getDownlinkCmd());
+        
+        // 首先检查是否支持该命令
+        if (!downlinkCmdConverter.supports(downlinkCmd)) {
+            log.warn("绿能协议不支持下行命令: {}", downlinkCmd);
+            return;
+        }
+        
+        // 支持的命令直接转换（这里不会返回null）
+        Integer cmd = downlinkCmdConverter.convertToCmd(downlinkCmd);
 
         LvnengDwonlinkMessage message = new LvnengDwonlinkMessage();
         message.setId(new UUID(protocolDownlinkMsg.getMessageIdMSB(), protocolDownlinkMsg.getMessageIdLSB()));
@@ -163,12 +156,13 @@ public class LvnengProtocolMessageProcessor extends ProtocolMessageProcessor {
 
 
     private void exeCmd(LvnengUplinkMessage message, TcpSession session) {
-        LvnengUplinkCmdExe uplinkCmdExe = uplinkCmdExeMap.get(message.getCmd());
+        String protocolName = session.getProtocolName();
+        int cmd = message.getCmd();
+        
+        LvnengUplinkCmdExe uplinkCmdExe = uplinkRouter.getExecutor(protocolName, cmd);
 
         if (uplinkCmdExe == null) {
-
-            log.info("{} 绿能协议接收到未知的上行指令 0x{}", session, Integer.toHexString(message.getCmd()));
-
+            log.info("{} 绿能协议[{}]接收到未知的上行指令 0x{}", session, protocolName, Integer.toHexString(cmd));
             return;
         }
 
@@ -176,12 +170,13 @@ public class LvnengProtocolMessageProcessor extends ProtocolMessageProcessor {
     }
 
     private void exeCmd(LvnengDwonlinkMessage message, TcpSession session) {
-        LvnengDownlinkCmdExe downlinkCmdExe = downlinkCmdExeMap.get(message.getCmd());
+        String protocolName = session.getProtocolName();
+        int cmd = message.getCmd();
+        
+        LvnengDownlinkCmdExe downlinkCmdExe = downlinkRouter.getExecutor(protocolName, cmd);
 
         if (downlinkCmdExe == null) {
-
-            log.info("{} 绿能协议接收到未知的下行指令 0x{}", session, Integer.toHexString(message.getCmd()));
-
+            log.info("{} 绿能协议[{}]接收到未知的下行指令 0x{}", session, protocolName, Integer.toHexString(cmd));
             return;
         }
 

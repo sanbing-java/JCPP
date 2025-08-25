@@ -15,13 +15,13 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.HeartBeatRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.HEARTBEAT_ACK;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.HEARTBEAT;
 
 /**
  * 云快充1.5.0 充电桩心跳包
@@ -29,7 +29,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x03, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x03, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150HeartbeatULCmd extends YunKuaiChongUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
@@ -76,7 +76,7 @@ public class YunKuaiChongV150HeartbeatULCmd extends YunKuaiChongUplinkCmdExe {
         pingAckMsgBody.writeByte(gunCodeByte);
         pingAckMsgBody.writeByte(0);
 
-        encodeAndWriteFlush(HEARTBEAT,
+        encodeAndWriteFlush(HEARTBEAT_ACK,
                 yunKuaiChongUplinkMessage.getSequenceNumber(),
                 yunKuaiChongUplinkMessage.getEncryptionFlag(),
                 pingAckMsgBody,

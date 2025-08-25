@@ -20,10 +20,10 @@ import sanbing.jcpp.proto.gen.ProtocolProto.TransactionDetail;
 import sanbing.jcpp.proto.gen.ProtocolProto.TransactionRecordRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.lvneng.LvnengUplinkCmdExe;
 import sanbing.jcpp.protocol.lvneng.LvnengUplinkMessage;
-import sanbing.jcpp.protocol.lvneng.annotation.LvnengCmd;
 import sanbing.jcpp.protocol.lvneng.enums.LvnengPileFinishReasonEnum;
 import sanbing.jcpp.protocol.lvneng.enums.LvnengPileStartTypeEnum;
 
@@ -37,11 +37,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sanbing.jcpp.protocol.lvneng.LvnengProtocolConstants.ProtocolNames.V340;
+
 /**
  * 绿能3.4 充电桩上报充电订单
  */
 @Slf4j
-@LvnengCmd(203)
+@ProtocolCmd(value = 203, protocolNames = {V340})
 public class LvnengV340TransactionRecordULCmd extends LvnengUplinkCmdExe {
 
 
@@ -212,7 +214,6 @@ public class LvnengV340TransactionRecordULCmd extends LvnengUplinkCmdExe {
                 .setTransactionRecordRequest(transactionRecord)
                 .build();
         tcpSession.getForwarder().sendMessage(uplinkQueueMessage);
-
 
     }
 

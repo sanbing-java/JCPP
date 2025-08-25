@@ -12,22 +12,23 @@ import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.TransactionRecordResponse;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.lvneng.LvnengDownlinkCmdExe;
 import sanbing.jcpp.protocol.lvneng.LvnengDwonlinkMessage;
 import sanbing.jcpp.protocol.lvneng.LvnengUplinkMessage;
-import sanbing.jcpp.protocol.lvneng.annotation.LvnengCmd;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import static sanbing.jcpp.protocol.lvneng.enums.LvnengDownlinkCmdEnum.TRANSACTION_RECORD_ACK;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.TRANSACTION_RECORD_ACK;
+import static sanbing.jcpp.protocol.lvneng.LvnengProtocolConstants.ProtocolNames.V340;
 
 /**
  * 绿能3.4 服务器应答订单信息
  */
 @Slf4j
-@LvnengCmd(201)
+@ProtocolCmd(value = 201, protocolNames = {V340})
 public class LvnengV340TransactionRecordAckDLCmd extends LvnengDownlinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, LvnengDwonlinkMessage lvnengDwonlinkMessage, ProtocolContext ctx) {

@@ -15,20 +15,21 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.HeartBeatRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.lvneng.LvnengUplinkCmdExe;
 import sanbing.jcpp.protocol.lvneng.LvnengUplinkMessage;
-import sanbing.jcpp.protocol.lvneng.annotation.LvnengCmd;
 
 import java.nio.charset.StandardCharsets;
 
-import static sanbing.jcpp.protocol.lvneng.enums.LvnengDownlinkCmdEnum.HEARTBEAT_ACK;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.HEARTBEAT_ACK;
+import static sanbing.jcpp.protocol.lvneng.LvnengProtocolConstants.ProtocolNames.V340;
 
 /**
  * 绿能3.4 充电桩上传心跳包
  */
 @Slf4j
-@LvnengCmd(102)
+@ProtocolCmd(value = 102, protocolNames = {V340})
 public class LvnengV340HeartbeatULCmd extends LvnengUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, LvnengUplinkMessage lvnengUplinkMessage, ProtocolContext ctx) {

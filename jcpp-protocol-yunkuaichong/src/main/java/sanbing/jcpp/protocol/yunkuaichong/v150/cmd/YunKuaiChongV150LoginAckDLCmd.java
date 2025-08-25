@@ -16,25 +16,25 @@ import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.LoginResponse;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.PROTOCOL_SESSION_SCHEDULED;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.LOGIN_ACK;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.SYNC_TIME_REQUEST;
 import static sanbing.jcpp.protocol.domain.SessionCloseReason.MANUALLY;
 import static sanbing.jcpp.protocol.listener.tcp.TcpSession.SCHEDULE_KEY_AUTO_SYNC_TIME;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.FAILURE_BYTE;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.SUCCESS_BYTE;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.LOGIN_ACK;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.SYNC_TIME;
 
 /**
  * 云快充1.5.0登录认证应答
@@ -42,7 +42,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x02, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x02, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150LoginAckDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override
@@ -113,7 +113,7 @@ public class YunKuaiChongV150LoginAckDLCmd extends YunKuaiChongDownlinkCmdExe {
         syncTimeMsgBody.writeBytes(pileCodeBytes);
         syncTimeMsgBody.writeBytes(CP56Time2aUtil.encode(LocalDateTime.now()));
 
-        encodeAndWriteFlush(SYNC_TIME,
+        encodeAndWriteFlush(SYNC_TIME_REQUEST,
                 tcpSession.nextSeqNo(SequenceNumberLength.SHORT),
                 requestData.getEncryptionFlag(),
                 syncTimeMsgBody,

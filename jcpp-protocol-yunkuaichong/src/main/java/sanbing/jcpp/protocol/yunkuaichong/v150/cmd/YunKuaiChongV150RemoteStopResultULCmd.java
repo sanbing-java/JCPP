@@ -16,10 +16,10 @@ import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.RemoteStopChargingResponse;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 
@@ -29,7 +29,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x35, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x35, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150RemoteStopResultULCmd extends YunKuaiChongUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {

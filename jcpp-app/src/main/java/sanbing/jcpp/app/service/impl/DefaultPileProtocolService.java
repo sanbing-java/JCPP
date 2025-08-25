@@ -281,10 +281,33 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
-    public void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo) {
+    public void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo, 
+                           String logicalCardNo, String physicalCardNo, String parallelNo) {
 
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
+
+        RemoteStartChargingRequest.Builder requestBuilder = RemoteStartChargingRequest.newBuilder()
+                .setPileCode(pileCode)
+                .setGunCode(gunCode)
+                .setLimitYuan(limitYuan.toPlainString())
+                .setTradeNo(orderNo);
+
+        // 添加可选字段
+        if (logicalCardNo != null) {
+            requestBuilder.setLogicalCardNo(logicalCardNo);
+        }
+        if (physicalCardNo != null) {
+            requestBuilder.setPhysicalCardNo(physicalCardNo);
+        }
+        if (parallelNo != null) {
+            requestBuilder.setParallelNo(parallelNo);
+        }
+
+        // 根据是否有并充序号自动选择命令类型
+        DownlinkCmdEnum downlinkCmd = (parallelNo != null && !parallelNo.trim().isEmpty()) 
+                ? DownlinkCmdEnum.REMOTE_PARALLEL_START_CHARGING 
+                : DownlinkCmdEnum.REMOTE_START_CHARGING;
 
         DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
                 .setMessageIdMSB(messageId.getMostSignificantBits())
@@ -292,13 +315,8 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setPileCode(pileCode)
                 .setRequestIdMSB(requestId.getMostSignificantBits())
                 .setRequestIdLSB(requestId.getLeastSignificantBits())
-                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_START_CHARGING.name())
-                .setRemoteStartChargingRequest(RemoteStartChargingRequest.newBuilder()
-                        .setPileCode(pileCode)
-                        .setGunCode(gunCode)
-                        .setLimitYuan(limitYuan.toPlainString())
-                        .setTradeNo(orderNo)
-                        .build());
+                .setDownlinkCmd(downlinkCmd.name())
+                .setRemoteStartChargingRequest(requestBuilder.build());
 
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
@@ -476,7 +494,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
-    public void onTimeSync(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+    public void onTimeSyncResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("对时设置应答 {}", uplinkQueueMessage);
         TimeSyncResponse timeSyncResponse = uplinkQueueMessage.getTimeSyncResponse();
         String pileCode = timeSyncResponse.getPileCode();

@@ -11,13 +11,13 @@ import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.proto.gen.ProtocolProto.OtaRequest;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.OTA_REQUEST;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.OTA_REQUEST;
 
 
 /**
@@ -26,7 +26,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x94, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x94, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OtaRequestDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

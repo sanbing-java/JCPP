@@ -16,10 +16,10 @@ import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -34,8 +34,14 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x3D, protocolNames = {V170})
+@ProtocolCmd(value = 0x3D, protocolNames = {V170})
 public class YunKuaiChongV170TransactionRecordULCmd extends YunKuaiChongUplinkCmdExe {
+    
+    // V1.7.0 新增字段常量定义
+    private static final String METER_NO_KEY = "meterNo";
+    private static final String METER_ENCRYPTED_CONTEXT_KEY = "meterEncryptedContext";
+    private static final String METER_PROTOCOL_VERSION_KEY = "meterProtocolVersion";
+    private static final String ENCRYPTION_METHOD_KEY = "encryptionMethod";
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.info("{} 云快充1.7.0交易记录", tcpSession);
@@ -72,18 +78,18 @@ public class YunKuaiChongV170TransactionRecordULCmd extends YunKuaiChongUplinkCm
         byte[] meterNoBytes = new byte[6];
         byteBuf.readBytes(meterNoBytes);
         String meterNo = BCDUtil.toString(meterNoBytes);
-        additionalInfo.put("电表表号", meterNo);
+        additionalInfo.put(METER_NO_KEY, meterNo);
 
         // 7.电表密文
         byte[] meterContextEncyptB = new byte[34];
         byteBuf.readBytes(meterContextEncyptB);
-        additionalInfo.put("电表密文", HexUtil.encodeHexStr(meterContextEncyptB));
+        additionalInfo.put(METER_ENCRYPTED_CONTEXT_KEY, HexUtil.encodeHexStr(meterContextEncyptB));
 
         // 8.电表协议版本号
-        additionalInfo.put("电表协议版本号", byteBuf.readUnsignedShortLE());
+        additionalInfo.put(METER_PROTOCOL_VERSION_KEY, byteBuf.readUnsignedShortLE());
 
         // 9.加密方式
-        additionalInfo.put("加密方式", byteBuf.readUnsignedByte());
+        additionalInfo.put(ENCRYPTION_METHOD_KEY, byteBuf.readUnsignedByte());
 
         // 10.尖单价
         BigDecimal topPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);

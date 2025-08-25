@@ -8,6 +8,7 @@ package sanbing.jcpp.app.adapter;
 
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,26 @@ public class TestController {
     @GetMapping("/api/startCharge")
     public ResponseEntity<String> startCharge() {
 
-        pileProtocolService.startCharge("20231212000010", "01", new BigDecimal("50"), "12345678901234567890");
+        String orderNo = "ORD" + RandomStringUtils.secure().nextNumeric(20);
+        String logicalCardNo = RandomStringUtils.secure().nextNumeric(12);
+        String physicalCardNo = RandomStringUtils.secure().nextNumeric(12);
+
+        pileProtocolService.startCharge("20231212000010", "01", new BigDecimal("50"), orderNo, 
+                logicalCardNo, physicalCardNo, null);
+
+        return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/api/parallelStartCharge")
+    public ResponseEntity<String> parallelStartCharge() {
+
+        String orderNo = "PAR" + RandomStringUtils.secure().nextNumeric(20);
+        String logicalCardNo = RandomStringUtils.secure().nextNumeric(12);
+        String physicalCardNo = RandomStringUtils.secure().nextNumeric(12);
+        String parallelNo = RandomStringUtils.secure().nextNumeric(6);
+
+        pileProtocolService.startCharge("20231212000010", "01", new BigDecimal("100"), 
+                orderNo, logicalCardNo, physicalCardNo, parallelNo);
 
         return ResponseEntity.ok("success");
     }

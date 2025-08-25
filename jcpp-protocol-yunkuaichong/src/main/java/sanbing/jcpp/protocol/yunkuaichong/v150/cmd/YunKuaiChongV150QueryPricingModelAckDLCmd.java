@@ -14,10 +14,10 @@ import sanbing.jcpp.proto.gen.ProtocolProto.PeriodProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.QueryPricingResponse;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag.*;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.QUERY_PRICING_ACK;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.QUERY_PRICING_ACK;
 
 /**
  * 计费模型请求应答
@@ -34,7 +34,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x0A, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x0A, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150QueryPricingModelAckDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

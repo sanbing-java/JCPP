@@ -12,10 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.util.Map;
 
@@ -28,7 +28,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x93, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x93, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OtaResponseULCmd extends YunKuaiChongUplinkCmdExe {
 
     private static final Map<Byte, String> UPGRADE_STATUS;

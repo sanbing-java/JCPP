@@ -6,7 +6,7 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong;
 
-import cn.hutool.core.util.ClassUtil;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -16,71 +16,43 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
+import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 import sanbing.jcpp.protocol.domain.ListenerToHandlerMsg;
 import sanbing.jcpp.protocol.domain.SessionToHandlerMsg;
 import sanbing.jcpp.protocol.forwarder.Forwarder;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
-import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum;
+import sanbing.jcpp.protocol.mapping.DownlinkCmdConverter;
+import sanbing.jcpp.protocol.routing.ProtocolCommandRouter;
+import sanbing.jcpp.protocol.yunkuaichong.mapping.YunKuaiChongDownlinkCmdConverter;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static sanbing.jcpp.infrastructure.util.codec.ByteUtil.checkCrcSum;
 
 @Slf4j
 public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcessor {
-    // 修改为基于协议名+cmd的路由映射，格式为 "protocolName:cmd" -> CommandExecutor
-    private final Map<String, YunKuaiChongUplinkCmdExe> uplinkCmdExeMap = new ConcurrentHashMap<>();
-    private final Map<String, YunKuaiChongDownlinkCmdExe> downlinkCmdExeMap = new ConcurrentHashMap<>();
+    
+    private final ProtocolCommandRouter<YunKuaiChongUplinkCmdExe> uplinkRouter;
+    private final ProtocolCommandRouter<YunKuaiChongDownlinkCmdExe> downlinkRouter;
+    private final DownlinkCmdConverter downlinkCmdConverter;
 
     public YunKuaiChongProtocolMessageProcessor(Forwarder forwarder, ProtocolContext protocolContext) {
         super(forwarder, protocolContext);
 
-        Set<Class<?>> cmdClasses = ClassUtil.scanPackageByAnnotation(ClassUtil.getPackage(this.getClass()), YunKuaiChongCmd.class);
-        cmdClasses.stream().filter(YunKuaiChongUplinkCmdExe.class::isAssignableFrom)
-                .forEach(clazz -> {
-                    YunKuaiChongCmd annotation = clazz.getAnnotation(YunKuaiChongCmd.class);
-                    int cmd = annotation.value();
-                    String[] protocolNames = annotation.protocolNames();
-                    try {
-                        YunKuaiChongUplinkCmdExe yunKuaiChongUplinkCmdExe = (YunKuaiChongUplinkCmdExe) clazz.getDeclaredConstructor().newInstance();
-                        // 为每个支持的协议名注册命令执行器
-                        for (String protocolName : protocolNames) {
-                            String key = protocolName + ":" + cmd;
-                            uplinkCmdExeMap.put(key, yunKuaiChongUplinkCmdExe);
-                        }
-                    } catch (InstantiationException |
-                             IllegalAccessException |
-                             InvocationTargetException |
-                             NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        // 使用 CommandRouter 替代手动注册逻辑
+        this.uplinkRouter = new ProtocolCommandRouter<>(
+            this.getClass(),
+            YunKuaiChongUplinkCmdExe.class::isAssignableFrom
+        );
 
-        cmdClasses.stream().filter(YunKuaiChongDownlinkCmdExe.class::isAssignableFrom)
-                .forEach(clazz -> {
-                    YunKuaiChongCmd annotation = clazz.getAnnotation(YunKuaiChongCmd.class);
-                    int cmd = annotation.value();
-                    String[] protocolNames = annotation.protocolNames();
-                    try {
-                        YunKuaiChongDownlinkCmdExe yunKuaiChongDownlinkCmdExe = (YunKuaiChongDownlinkCmdExe) clazz.getDeclaredConstructor().newInstance();
-                        // 为每个支持的协议名注册命令执行器
-                        for (String protocolName : protocolNames) {
-                            String key = protocolName + ":" + cmd;
-                            downlinkCmdExeMap.put(key, yunKuaiChongDownlinkCmdExe);
-                        }
-                    } catch (InstantiationException |
-                             IllegalAccessException |
-                             InvocationTargetException |
-                             NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        this.downlinkRouter = new ProtocolCommandRouter<>(
+            this.getClass(),
+            YunKuaiChongDownlinkCmdExe.class::isAssignableFrom
+        );
+        
+        // 获取下行命令转换器单例
+        this.downlinkCmdConverter = YunKuaiChongDownlinkCmdConverter.getInstance();
     }
 
     @Override
@@ -170,7 +142,16 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
         DownlinkRequestMessage protocolDownlinkMsg = sessionToHandlerMsg.downlinkMsg();
 
-        int cmd = YunKuaiChongDownlinkCmdEnum.valueOf(protocolDownlinkMsg.getDownlinkCmd()).getCmd();
+        DownlinkCmdEnum downlinkCmd = DownlinkCmdEnum.valueOf(protocolDownlinkMsg.getDownlinkCmd());
+        
+        // 首先检查是否支持该命令
+        if (!downlinkCmdConverter.supports(downlinkCmd)) {
+            log.warn("云快充协议不支持下行命令: {}", downlinkCmd);
+            return;
+        }
+        
+        // 支持的命令直接转换（这里不会返回null）
+        Integer cmd = downlinkCmdConverter.convertToCmd(downlinkCmd);
 
         YunKuaiChongDwonlinkMessage message = new YunKuaiChongDwonlinkMessage();
         message.setId(new UUID(protocolDownlinkMsg.getMessageIdMSB(), protocolDownlinkMsg.getMessageIdLSB()));
@@ -191,9 +172,8 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
     private void exeCmd(YunKuaiChongUplinkMessage message, TcpSession session) {
         String protocolName = session.getProtocolName();
         int cmd = message.getCmd();
-        String key = protocolName + ":" + cmd;
         
-        YunKuaiChongUplinkCmdExe uplinkCmdExe = uplinkCmdExeMap.get(key);
+        YunKuaiChongUplinkCmdExe uplinkCmdExe = uplinkRouter.getExecutor(protocolName, cmd);
 
         if (uplinkCmdExe == null) {
             log.info("{} 云快充协议接收到未知的上行指令，协议: {}, 指令: 0x{}", 
@@ -207,9 +187,8 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
     private void exeCmd(YunKuaiChongDwonlinkMessage message, TcpSession session) {
         String protocolName = session.getProtocolName();
         int cmd = message.getCmd();
-        String key = protocolName + ":" + cmd;
         
-        YunKuaiChongDownlinkCmdExe downlinkCmdExe = downlinkCmdExeMap.get(key);
+        YunKuaiChongDownlinkCmdExe downlinkCmdExe = downlinkRouter.getExecutor(protocolName, cmd);
 
         if (downlinkCmdExe == null) {
             log.info("{} 云快充协议接收到未知的下行指令，协议: {}, 指令: 0x{}", 

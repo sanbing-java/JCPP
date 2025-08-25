@@ -12,9 +12,11 @@ import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.StringUtils;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
-import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum;
+import sanbing.jcpp.protocol.mapping.DownlinkCmdConverter;
+import sanbing.jcpp.protocol.yunkuaichong.mapping.YunKuaiChongDownlinkCmdConverter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,6 +40,11 @@ public class AbstractYunKuaiChongCmdExe {
 
     protected static final byte YUNKUAICHONG_HEAD = 0x68;
     protected static final int YUNKUAICHONG_NORMAL_ENCRYPTION_FLAG = 0;
+    
+    /**
+     * 下行命令转换器单例，用于将通用命令转换为协议特定命令值
+     */
+    private static final DownlinkCmdConverter DOWNLINK_CMD_CONVERTER = YunKuaiChongDownlinkCmdConverter.getInstance();
 
     private static final DecimalFormat PRICING_ID_DECIMAL_FORMAT = new DecimalFormat("0000");
 
@@ -104,8 +111,21 @@ public class AbstractYunKuaiChongCmdExe {
         return BCDUtil.toBytes(tradeNoStr);
     }
 
+    /**
+     * 编码卡号为BCD格式
+     * 云快充协议卡号为6字节（12位BCD码），需要做长度校验和补0操作
+     */
+    protected static byte[] encodeCardNo(String cardNo) {
+        if (StringUtils.length(cardNo) > 12) {
+            throw new IllegalArgumentException("云快充可接受最大卡号为12位");
+        }
 
-    protected byte[] encode(YunKuaiChongDownlinkCmdEnum downlinkCmd,
+        String cardNoStr = StringUtils.leftPad(cardNo, 12, '0');
+
+        return BCDUtil.toBytes(cardNoStr);
+    }
+
+    protected byte[] encode(int downlinkCmd,
                             int seqNo,
                             int encryptionFlag,
                             ByteBuf msgBody) {
@@ -115,7 +135,7 @@ public class AbstractYunKuaiChongCmdExe {
         response.writeByte(msgBodyLength + 4);
         response.writeShortLE(seqNo);
         response.writeByte(encryptionFlag);
-        response.writeByte(downlinkCmd.getCmd());
+        response.writeByte(downlinkCmd);
         response.writeBytes(msgBody);
 
         // 帧校验域：从序列号域到数据域的 CRC 校验，校验多项式为 0x180D,低字节在前，高字节在后
@@ -127,7 +147,7 @@ public class AbstractYunKuaiChongCmdExe {
         return toBytes(response);
     }
 
-    protected void encodeAndWriteFlush(YunKuaiChongDownlinkCmdEnum downlinkCmd,
+    protected void encodeAndWriteFlush(int downlinkCmd,
                                        int seqNo,
                                        int encryptionFlag,
                                        ByteBuf msgBody,
@@ -138,7 +158,7 @@ public class AbstractYunKuaiChongCmdExe {
         tcpSession.writeAndFlush(Unpooled.copiedBuffer(encode));
     }
 
-    protected void encodeAndWriteFlush(YunKuaiChongDownlinkCmdEnum downlinkCmd,
+    protected void encodeAndWriteFlush(int downlinkCmd,
                                        ByteBuf msgBody,
                                        TcpSession tcpSession) {
 
@@ -148,6 +168,34 @@ public class AbstractYunKuaiChongCmdExe {
                 msgBody);
 
         tcpSession.writeAndFlush(Unpooled.copiedBuffer(encode));
+    }
+
+    /**
+     * 便捷方法：直接使用 DownlinkCmdEnum 发送命令
+     */
+    protected void encodeAndWriteFlush(DownlinkCmdEnum downlinkCmdEnum,
+                                       int seqNo,
+                                       int encryptionFlag,
+                                       ByteBuf msgBody,
+                                       TcpSession tcpSession) {
+        if (!DOWNLINK_CMD_CONVERTER.supports(downlinkCmdEnum)) {
+            throw new IllegalArgumentException("云快充协议不支持下行命令: " + downlinkCmdEnum);
+        }
+        Integer cmd = DOWNLINK_CMD_CONVERTER.convertToCmd(downlinkCmdEnum);
+        encodeAndWriteFlush(cmd, seqNo, encryptionFlag, msgBody, tcpSession);
+    }
+
+    /**
+     * 便捷方法：直接使用 DownlinkCmdEnum 发送命令（自动生成序列号）
+     */
+    protected void encodeAndWriteFlush(DownlinkCmdEnum downlinkCmdEnum,
+                                       ByteBuf msgBody,
+                                       TcpSession tcpSession) {
+        if (!DOWNLINK_CMD_CONVERTER.supports(downlinkCmdEnum)) {
+            throw new IllegalArgumentException("云快充协议不支持下行命令: " + downlinkCmdEnum);
+        }
+        Integer cmd = DOWNLINK_CMD_CONVERTER.convertToCmd(downlinkCmdEnum);
+        encodeAndWriteFlush(cmd, msgBody, tcpSession);
     }
 
     protected static BigDecimal reduceMagnification(long value, int magnification) {

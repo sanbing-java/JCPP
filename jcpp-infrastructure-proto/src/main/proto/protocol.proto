@@ -252,6 +252,9 @@ message RemoteStartChargingRequest {
   string gunCode = 5;
   string tradeNo = 6;
   string limitYuan = 7;
+  optional string logicalCardNo = 8;   // 逻辑卡号
+  optional string physicalCardNo = 9;  // 物理卡号
+  optional string parallelNo = 10;     // 并充序号
   optional string additionalInfo = 20;
 }
 

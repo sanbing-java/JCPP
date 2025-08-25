@@ -12,16 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardBalanceUpdateRequest;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.math.BigDecimal;
 
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.OFFLINE_CARD_BALANCE_UPDATE_REQUEST;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.OFFLINE_CARD_BALANCE_UPDATE_REQUEST;
-
 
 /**
  * 云快充1.5.0  远程账户余额更新
@@ -29,7 +28,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author bawan
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x42, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x42, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OfflineCardBalanceUpdateRequestDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override

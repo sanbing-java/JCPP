@@ -19,10 +19,10 @@ import sanbing.jcpp.proto.gen.ProtocolProto.GunRunStatus;
 import sanbing.jcpp.proto.gen.ProtocolProto.GunRunStatusProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.lvneng.LvnengUplinkCmdExe;
 import sanbing.jcpp.protocol.lvneng.LvnengUplinkMessage;
-import sanbing.jcpp.protocol.lvneng.annotation.LvnengCmd;
 import sanbing.jcpp.protocol.lvneng.enums.LvnengAlarmCodeEnum;
 import sanbing.jcpp.protocol.lvneng.enums.LvnengPileStartTypeEnum;
 import sanbing.jcpp.protocol.lvneng.enums.LvnengPileStatusEnum;
@@ -35,13 +35,14 @@ import java.time.ZoneId;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static sanbing.jcpp.protocol.lvneng.enums.LvnengDownlinkCmdEnum.REAL_TIME_DATA_ACK;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.REAL_TIME_DATA_ACK;
+import static sanbing.jcpp.protocol.lvneng.LvnengProtocolConstants.ProtocolNames.V340;
 
 /**
  * 绿能3.4 充电桩状态信息包上报
  */
 @Slf4j
-@LvnengCmd(109)
+@ProtocolCmd(value = 109, protocolNames = {V340})
 public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, LvnengUplinkMessage lvnengUplinkMessage, ProtocolContext ctx) {

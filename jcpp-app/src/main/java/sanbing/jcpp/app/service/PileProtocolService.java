@@ -74,9 +74,11 @@ public interface PileProtocolService {
     void onTransactionRecordRequest(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
-     * 启动充电
+     * 启动充电（支持卡号和并充序号）
+     * 当 parallelNo 不为空时，自动使用并充启机命令
      */
-    void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo);
+    void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo, 
+                    String logicalCardNo, String physicalCardNo, String parallelNo);
 
     /**
      * 停止充电
@@ -163,8 +165,15 @@ public interface PileProtocolService {
      * 离线卡数据同步应答
      */
     void onOfflineCardSyncResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 实时同步桩时间
+     */
     void timeSync(String pileCode, LocalDateTime time);
 
-    void onTimeSync(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+    /**
+     * 实时同步桩时间应答
+     */
+    void onTimeSyncResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
 }

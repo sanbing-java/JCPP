@@ -14,10 +14,11 @@ import sanbing.jcpp.proto.gen.ProtocolProto.PeriodProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingRequest;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
+import sanbing.jcpp.protocol.yunkuaichong.mapping.YunKuaiChongDownlinkCmdConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -25,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag.*;
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.SET_PRICING;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.SET_PRICING;
 
 /**
  * 云快充1.5.0 计费模型设置
@@ -34,7 +35,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x58, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x58, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150SetPricingModelDLCmd extends YunKuaiChongDownlinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongDwonlinkMessage yunKuaiChongDwonlinkMessage, ProtocolContext ctx) {
@@ -84,7 +85,7 @@ public class YunKuaiChongV150SetPricingModelDLCmd extends YunKuaiChongDownlinkCm
         setPricingAckMsgBody.writeBytes(bytes);
 
         // 放进缓存后再下发
-        tcpSession.getRequestCache().put(pileCode + SET_PRICING.getCmd(), pricingId);
+        tcpSession.getRequestCache().put(pileCode + YunKuaiChongDownlinkCmdConverter.getInstance().convertToCmd(SET_PRICING), pricingId);
 
         encodeAndWriteFlush(SET_PRICING,
                 setPricingAckMsgBody,

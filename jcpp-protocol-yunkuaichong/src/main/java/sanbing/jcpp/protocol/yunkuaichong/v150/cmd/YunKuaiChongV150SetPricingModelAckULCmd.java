@@ -13,13 +13,14 @@ import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingResponse;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
+import sanbing.jcpp.protocol.yunkuaichong.mapping.YunKuaiChongDownlinkCmdConverter;
 
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.SET_PRICING;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.SET_PRICING;
 
 /**
  * 云快充1.5.0 计费模型应答
@@ -27,7 +28,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEn
  * @author baigod
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x57, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x57, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150SetPricingModelAckULCmd extends YunKuaiChongUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
@@ -43,7 +44,7 @@ public class YunKuaiChongV150SetPricingModelAckULCmd extends YunKuaiChongUplinkC
         boolean isSuccess = (byteBuf.readByte() == 0x01);
 
         // 从缓存取上个请求的pricingId
-        Object pricingId = tcpSession.getRequestCache().asMap().getOrDefault(pileCode + SET_PRICING.getCmd(), null);
+        Object pricingId = tcpSession.getRequestCache().asMap().getOrDefault(pileCode + YunKuaiChongDownlinkCmdConverter.getInstance().convertToCmd(SET_PRICING), null);
 
         if (pricingId instanceof Long pricingIdL) {
             // 转发到后端

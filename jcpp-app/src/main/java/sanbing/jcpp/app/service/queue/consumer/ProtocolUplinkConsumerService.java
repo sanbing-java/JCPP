@@ -234,7 +234,7 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                         } else if (uplinkQueueMsg.hasTimeSyncResponse()) {
 
-                            pileProtocolService.onTimeSync(uplinkQueueMsg, callback);
+                            pileProtocolService.onTimeSyncResponse(uplinkQueueMsg, callback);
 
                         } else {
 

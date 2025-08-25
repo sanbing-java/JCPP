@@ -14,10 +14,10 @@ import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.BmsParamConfigReportProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
+import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.math.BigDecimal;
 
@@ -28,7 +28,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
  * 命令码：0x17 (参数配置帧上行命令)
  */
 @Slf4j
-@YunKuaiChongCmd(value = 0x17, protocolNames = {V150, V160, V170})
+@ProtocolCmd(value = 0x17, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150BmsParamConfigReportULCmd extends YunKuaiChongUplinkCmdExe {
     // 电流值偏移量常量（单位：安培）
     private static final BigDecimal CURRENT_OFFSET = new BigDecimal("-400.0");

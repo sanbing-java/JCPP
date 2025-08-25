@@ -13,9 +13,13 @@ public enum DownlinkCmdEnum {
 
     LOGIN_ACK,
 
+    HEARTBEAT_ACK,
+
     VERIFY_PRICING_ACK,
 
     QUERY_PRICING_ACK,
+
+    REAL_TIME_DATA_ACK,
 
     SET_PRICING,
 
