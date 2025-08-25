@@ -79,6 +79,11 @@ public interface PileProtocolService {
     void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo);
 
     /**
+     * 停止充电
+     */
+    void stopCharge(String pileCode, String gunCode);
+
+    /**
      * 重启充电
      */
     void restartPile(String pileCode, Integer type);

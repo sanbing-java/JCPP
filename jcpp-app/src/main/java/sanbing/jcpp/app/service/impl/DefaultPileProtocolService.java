@@ -6,8 +6,8 @@
  */
 package sanbing.jcpp.app.service.impl;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import cn.hutool.core.date.DateUtil;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -298,6 +298,27 @@ public class DefaultPileProtocolService implements PileProtocolService {
                         .setGunCode(gunCode)
                         .setLimitYuan(limitYuan.toPlainString())
                         .setTradeNo(orderNo)
+                        .build());
+
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
+    }
+
+    @Override
+    public void stopCharge(String pileCode, String gunCode) {
+
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(pileCode)
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_STOP_CHARGING.name())
+                .setRemoteStopChargingRequest(RemoteStopChargingRequest.newBuilder()
+                        .setPileCode(pileCode)
+                        .setGunCode(gunCode)
                         .build());
 
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);

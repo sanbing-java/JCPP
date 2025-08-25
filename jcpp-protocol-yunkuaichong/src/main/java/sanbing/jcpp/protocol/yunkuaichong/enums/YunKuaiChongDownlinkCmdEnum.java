@@ -44,7 +44,6 @@ public enum YunKuaiChongDownlinkCmdEnum {
 
     OFFLINE_CARD_SYNC_REQUEST(0x44),
 
-
     SYNC_TIME_REQUEST(0x56),
 
     ;

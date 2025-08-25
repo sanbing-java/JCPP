@@ -37,6 +37,14 @@ public class TestController {
         return ResponseEntity.ok("success");
     }
 
+    @GetMapping("/api/stopCharge")
+    public ResponseEntity<String> stopCharge() {
+
+        pileProtocolService.stopCharge("20231212000010", "01");
+
+        return ResponseEntity.ok("success");
+    }
+
     @GetMapping("/api/restartPile")
     public ResponseEntity<String> restartPile() {
 
