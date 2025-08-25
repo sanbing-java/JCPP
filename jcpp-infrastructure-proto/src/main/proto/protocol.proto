@@ -76,6 +76,7 @@ message UplinkQueueMessage {
   GroundLockStatusProto groundLockStatusProto = 39;
   OfflineCardBalanceUpdateResponse offlineCardBalanceUpdateResponse = 40;
   OfflineCardSyncResponse offlineCardSyncResponse = 41;
+  TimeSyncResponse timeSyncResponse = 42;
 
 }
 
@@ -101,6 +102,7 @@ message DownlinkRequestMessage {
   OtaRequest otaRequest = 29;
   OfflineCardBalanceUpdateRequest offlineCardBalanceUpdateRequest = 30;
   OfflineCardSyncRequest offlineCardSyncRequest = 31;
+  TimeSyncRequest timeSyncRequest = 32;
 }
 
 message DownlinkResponseMessage {
@@ -469,4 +471,14 @@ message OfflineCardSyncResponse {
   string pileCode = 1;                    // 充电桩编码
   bool success = 3;
   optional string errorMsg = 4;
+}
+
+message TimeSyncRequest {
+  string pileCode = 1;
+  string time = 2;
+}
+
+message TimeSyncResponse {
+  string pileCode = 1;
+  string time = 2;
 }

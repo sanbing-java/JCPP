@@ -14,6 +14,7 @@ import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @author baigod
@@ -157,4 +158,8 @@ public interface PileProtocolService {
      * 离线卡数据同步应答
      */
     void onOfflineCardSyncResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+    void timeSync(String pileCode, LocalDateTime time);
+
+    void onTimeSync(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
 }

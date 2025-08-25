@@ -232,6 +232,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                             pileProtocolService.onOfflineCardSyncResponse(uplinkQueueMsg, callback);
 
+                        } else if (uplinkQueueMsg.hasTimeSyncResponse()) {
+
+                            pileProtocolService.onTimeSync(uplinkQueueMsg, callback);
+
                         } else {
 
                             callback.onSuccess();

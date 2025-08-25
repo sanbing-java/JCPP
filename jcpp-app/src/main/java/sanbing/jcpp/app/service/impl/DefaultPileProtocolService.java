@@ -7,6 +7,7 @@
 package sanbing.jcpp.app.service.impl;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import cn.hutool.core.date.DateUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -430,7 +432,37 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 bmsBatteryType, bmsPowerCapacity, additionalInfo);
         
         // TODO 处理相关业务逻辑，比如保存握手信息到数据库
-        
+
+        callback.onSuccess();
+    }
+
+    @Override
+    public void timeSync(String pileCode, LocalDateTime time) {
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(pileCode)
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.SYNC_TIME_REQUEST.name())
+                .setTimeSyncRequest(TimeSyncRequest.newBuilder()
+                        .setPileCode(pileCode)
+                        .setTime(DateUtil.formatLocalDateTime(time))
+                        .build());
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
+    }
+
+    @Override
+    public void onTimeSync(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("对时设置应答 {}", uplinkQueueMessage);
+        TimeSyncResponse timeSyncResponse = uplinkQueueMessage.getTimeSyncResponse();
+        String pileCode = timeSyncResponse.getPileCode();
+        String time = timeSyncResponse.getTime();
+        log.info("对时设置应答: 桩编码: {}, 时间: {}", pileCode, time);
+        // TODO 处理相关业务逻辑
+
         callback.onSuccess();
     }
 
@@ -449,6 +481,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 pileCode, gunCode, lockStatus, parkStatus, lockBattery, alarmStatus);
 
         // TODO 处理相关业务逻辑，比如保存地锁状态信息到数据库
+
 
         callback.onSuccess();
     }

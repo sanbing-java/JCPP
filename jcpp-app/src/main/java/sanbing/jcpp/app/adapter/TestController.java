@@ -16,6 +16,7 @@ import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -202,6 +203,12 @@ public class TestController {
                 .addAllCardInfo(cardInfos)
                 .build());
 
+        return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/api/timeSync")
+    public ResponseEntity<String> timeSync() {
+        pileProtocolService.timeSync("20231212000010", LocalDateTime.now());
         return ResponseEntity.ok("success");
     }
 
