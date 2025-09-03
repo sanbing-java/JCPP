@@ -658,6 +658,33 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
+    public void setQrcode(SetQrcodeRequest setQrcodeRequest) {
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+        String pileCode = setQrcodeRequest.getPileCode();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(pileCode)
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.SET_QRCODE.name())
+                .setSetQrcodeRequest(setQrcodeRequest);
+
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
+    }
+
+    @Override
+    public void onSetQrcodeResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("下发充电桩字符型应答 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
+
+        callback.onSuccess();
+    }
+
+    @Override
     public void postLockStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到地锁状态信息 {}", uplinkQueueMessage);
         GroundLockStatusProto groundLockStatusProto = uplinkQueueMessage.getGroundLockStatusProto();

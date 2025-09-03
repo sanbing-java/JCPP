@@ -45,6 +45,8 @@ message UplinkQueueMessage {
   TimeSyncResponse timeSyncResponse = 42;
   BmsDemandChargerOutputProto bmsDemandChargerOutputProto = 43;
   StartChargeRequest startChargeRequest = 44;
+  SetQrcodeResponse setQrcodeResponse = 45;
+
 }
 
 // 会话关闭事件
@@ -345,4 +347,11 @@ message BmsDemandChargerOutputProto {
   string gunCode = 5;
   string tradeNo = 6;
   optional string additionalInfo = 20;
+}
+// 设置二维码响应
+message SetQrcodeResponse {
+  bool success = 1;
+  string pileCode = 4;
+  int32 type = 7;
+  int32 startAddr = 8;
 }

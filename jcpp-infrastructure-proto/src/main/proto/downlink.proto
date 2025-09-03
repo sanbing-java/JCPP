@@ -36,6 +36,7 @@ message DownlinkRequestMessage {
   OfflineCardSyncRequest offlineCardSyncRequest = 31;
   TimeSyncRequest timeSyncRequest = 32;
   StartChargeResponse startChargeResponse = 33;
+  SetQrcodeRequest setQrcodeRequest  = 34;
 }
 
 // 下行响应消息
@@ -245,4 +246,14 @@ message CardInfo {
 message TimeSyncRequest {
   string pileCode = 1;
   string time = 2;
+}
+// 设置二维码请求
+message SetQrcodeRequest {
+  string pileCode = 4;
+  QrcodeModelProto qrcodeModel = 1;
+}
+
+message QrcodeModelProto {
+  string gunName = 11;
+  string code = 12;
 }

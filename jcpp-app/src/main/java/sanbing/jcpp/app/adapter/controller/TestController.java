@@ -67,6 +67,21 @@ public class TestController extends BaseController {
         return ResponseEntity.ok("success");
     }
 
+    @GetMapping("/setQrcode")
+    public ResponseEntity<String> setQrcode() {
+        QrcodeModelProto rcodeModelProto = QrcodeModelProto.newBuilder()
+                .setGunName("1号枪二维码")
+                .setCode("www.baidu.com/rcode=1")
+                .build();
+        SetQrcodeRequest setQrcodeRequest = SetQrcodeRequest.newBuilder()
+                .setPileCode("20231212000010")
+                .setQrcodeModel(rcodeModelProto)
+                .build();
+
+        pileProtocolService.setQrcode(setQrcodeRequest);
+
+        return ResponseEntity.ok("success");
+    }
     @GetMapping("/restartPile")
     public ResponseEntity<String> restartPile() {
 
