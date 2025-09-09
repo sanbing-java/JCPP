@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    开源代码，仅供学习和交流研究使用，商用请联系三丙
+    微信：mohan_88888
+    抖音：程序员三丙
+    付费课程知识星球：https://t.zsxq.com/aKtXo
+
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sanbing.jcpp.app.dal.mapper.PileMapper">
+
+    <!-- 充电桩带状态信息的分页查询 -->
+    <select id="selectPileWithStatusPage" resultType="sanbing.jcpp.app.adapter.response.PileWithStatusResponse">
+        SELECT 
+            <!-- 充电桩基本信息 -->
+            p.id, 
+            p.created_time, 
+            p.updated_time,
+            p.pile_name, 
+            p.pile_code, 
+            p.protocol, 
+            p.station_id, 
+            p.brand, 
+            p.model, 
+            p.manufacturer, 
+            p.type, 
+            p.additional_info, 
+            p.version,
+            
+            <!-- 状态相关属性 -->
+            a_status.str_v as status,
+            a_connected.last_update_ts as connected_at,
+            a_disconnected.last_update_ts as disconnected_at,
+            a_last_active.last_update_ts as last_active_time
+            
+        FROM t_pile p 
+        
+        <!-- LEFT JOIN 获取充电桩状态属性 -->
+        LEFT JOIN t_attr a_status ON (
+            a_status.entity_id = p.id AND 
+            a_status.attr_key = #{statusKey.code}
+        )
+        
+        <!-- LEFT JOIN 获取最后连接时间属性 -->
+        LEFT JOIN t_attr a_connected ON (
+            a_connected.entity_id = p.id AND 
+            a_connected.attr_key = #{connectedAtKey.code}
+        )
+        
+        <!-- LEFT JOIN 获取最后断开时间属性 -->
+        LEFT JOIN t_attr a_disconnected ON (
+            a_disconnected.entity_id = p.id AND 
+            a_disconnected.attr_key = #{disconnectedAtKey.code}
+        )
+        
+        <!-- LEFT JOIN 获取最后活跃时间属性 -->
+        LEFT JOIN t_attr a_last_active ON (
+            a_last_active.entity_id = p.id AND 
+            a_last_active.attr_key = #{lastActiveTimeKey.code}
+        )
+        
+        <!-- 动态WHERE条件 -->
+        <where>
+            <if test="request.pileName != null and request.pileName != ''">
+                AND p.pile_name LIKE CONCAT('%', #{request.pileName}, '%')
+            </if>
+            <if test="request.pileCode != null and request.pileCode != ''">
+                AND p.pile_code LIKE CONCAT('%', #{request.pileCode}, '%')
+            </if>
+            <if test="request.protocol != null and request.protocol != ''">
+                AND p.protocol = #{request.protocol}
+            </if>
+            <if test="request.stationId != null">
+                AND p.station_id = #{request.stationId}
+            </if>
+            <if test="request.brand != null and request.brand != ''">
+                AND p.brand LIKE CONCAT('%', #{request.brand}, '%')
+            </if>
+            <if test="request.model != null and request.model != ''">
+                AND p.model LIKE CONCAT('%', #{request.model}, '%')
+            </if>
+            <if test="request.manufacturer != null and request.manufacturer != ''">
+                AND p.manufacturer LIKE CONCAT('%', #{request.manufacturer}, '%')
+            </if>
+            <if test="request.type != null">
+                AND p.type = #{request.type}
+            </if>
+            <if test="request.status != null">
+                AND a_status.str_v = #{request.status.code}
+            </if>
+        </where>
+        
+        <!-- 动态ORDER BY -->
+        ORDER BY 
+        <choose>
+            <when test="request.sortField == 'pileName'">
+                p.pile_name ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'pileCode'">
+                p.pile_code ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'protocol'">
+                p.protocol ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'brand'">
+                p.brand ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'model'">
+                p.model ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'manufacturer'">
+                p.manufacturer ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'type'">
+                p.type ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'status'">
+                a_status.str_v ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'connectedAt'">
+                a_connected.last_update_ts ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'disconnectedAt'">
+                a_disconnected.last_update_ts ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'lastActiveTime'">
+                a_last_active.last_update_ts ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'createdTime'">
+                p.created_time ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'updatedTime'">
+                p.updated_time ${request.sortOrder}
+            </when>
+            <otherwise>
+                p.created_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 根据充电桩编码查询充电桩 -->
+    <select id="selectByCode" resultType="sanbing.jcpp.app.dal.entity.Pile">
+        SELECT * FROM t_pile WHERE pile_code = #{pileCode}
+    </select>
+
+    <!-- 统计充电站下的充电桩数量 -->
+    <select id="countByStationId" resultType="long">
+        SELECT COUNT(*) FROM t_pile WHERE station_id = #{stationId}
+    </select>
+
+    <!-- 统计在线充电桩数量 -->
+    <select id="countOnlinePiles" resultType="long">
+        SELECT COUNT(*) FROM t_pile p 
+        LEFT JOIN t_attr a ON (a.entity_id = p.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{onlineStatus}
+    </select>
+
+    <!-- 统计离线充电桩数量（包括未设置状态的） -->
+    <select id="countOfflinePiles" resultType="long">
+        SELECT COUNT(*) FROM t_pile p 
+        LEFT JOIN t_attr a ON (a.entity_id = p.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v IS NULL OR a.str_v = #{offlineStatus}
+    </select>
+
+</mapper>

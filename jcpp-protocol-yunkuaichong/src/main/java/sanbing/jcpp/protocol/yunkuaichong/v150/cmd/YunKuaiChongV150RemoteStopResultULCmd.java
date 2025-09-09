@@ -12,7 +12,6 @@ import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.RemoteStopChargingResponse;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
@@ -26,7 +25,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
 /**
  * 云快充1.5.0 远程停机命令回复
  *
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 @ProtocolCmd(value = 0x35, protocolNames = {V150, V160, V170})
@@ -35,9 +34,6 @@ public class YunKuaiChongV150RemoteStopResultULCmd extends YunKuaiChongUplinkCmd
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.info("{} 云快充1.5.0远程停机命令回复", tcpSession);
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
-
-        // 从Tracer总获取当前时间
-        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
 
@@ -58,7 +54,6 @@ public class YunKuaiChongV150RemoteStopResultULCmd extends YunKuaiChongUplinkCmd
         String failReason = mapFailCode(failReasonByte);
 
         RemoteStopChargingResponse remoteStopChargingResponse = RemoteStopChargingResponse.newBuilder()
-                .setTs(ts)
                 .setPileCode(pileCode)
                 .setGunCode(gunCode)
                 .setSuccess(isSuccess)

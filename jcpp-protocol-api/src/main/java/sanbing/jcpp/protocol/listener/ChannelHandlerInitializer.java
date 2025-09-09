@@ -42,7 +42,7 @@ import static sanbing.jcpp.protocol.listener.tcp.configs.BinaryHandlerConfigurat
 import static sanbing.jcpp.protocol.listener.tcp.configs.TextHandlerConfiguration.SYSTEM_LINE_SEPARATOR;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -131,7 +131,7 @@ public abstract class ChannelHandlerInitializer<C extends Channel> extends Chann
                                 binaryHandlerConfig.getTail());
                         socketChannel.pipeline().addLast("JCPPHeadTailFrameDecoder", framer);
                     } else {
-                        throw new IllegalArgumentException("Unknown binary decoder");
+                        throw new IllegalArgumentException("未知的二进制解码器类型");
                     }
 
                     socketChannel.pipeline()

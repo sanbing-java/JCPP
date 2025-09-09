@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public class JCPPHashUtil {
     public static HashFunction forName(String name) {

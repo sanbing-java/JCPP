@@ -27,7 +27,7 @@ import static sanbing.jcpp.protocol.listener.tcp.enums.ReadAct.CONTINUE;
 /**
  * JCPP长度域拆包
  *
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 public class JCPPLengthFieldBasedFrameDecoder extends ByteToMessageDecoder {

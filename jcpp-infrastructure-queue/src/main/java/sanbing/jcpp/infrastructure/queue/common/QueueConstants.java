@@ -9,7 +9,7 @@ package sanbing.jcpp.infrastructure.queue.common;
 import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.*;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public final class QueueConstants {
 

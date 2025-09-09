@@ -11,19 +11,21 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.SessionCloseReason;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
-import sanbing.jcpp.protocol.domain.SessionCloseReason;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
 
 import java.net.SocketAddress;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+
 /**
  * 设备会话
  *
- * @author baigod
+ * @author 九筒
  */
 @EqualsAndHashCode(callSuper = true)
 @Getter
@@ -81,7 +83,7 @@ public class TcpSession extends ProtocolSession {
     }
 
     @Override
-    public void close(SessionCloseReason reason) {
+    public void close(ProtocolProto.SessionCloseReason reason) {
         super.close(reason);
 
         ctx.flush();
@@ -91,4 +93,6 @@ public class TcpSession extends ProtocolSession {
     public void writeAndFlush(ByteBuf byteBuf) {
         writeAndFlushConsumer.accept(byteBuf);
     }
+    
+
 }

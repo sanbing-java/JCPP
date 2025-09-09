@@ -21,10 +21,10 @@ import sanbing.jcpp.infrastructure.util.exception.DownlinkException;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.SessionCloseReason;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.domain.ListenerToHandlerMsg;
 import sanbing.jcpp.protocol.domain.ProtocolUplinkMsg;
-import sanbing.jcpp.protocol.domain.SessionCloseReason;
 import sanbing.jcpp.protocol.domain.SessionToHandlerMsg;
 import sanbing.jcpp.protocol.listener.ChannelHandlerParameter;
 
@@ -130,7 +130,7 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
 
         if (ctx.isRemoved()) {
 
-            tcpSession.close(SessionCloseReason.INACTIVE);
+            tcpSession.close(SessionCloseReason.SESSION_CLOSE_ON_CHANNEL_INACTIVE);
 
             log.warn("[{}]{}{} TCP会话已失效，因此删除会话", protocolName, ctx.channel(), tcpSession);
 
@@ -168,8 +168,8 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
 
     private void logDownlinkStart(Supplier<String> logTransform) {
 
-        if (log.isDebugEnabled()) {
-            log.debug("[{}]{} 开始发送下行报文:{}", protocolName, tcpSession, logTransform.get());
+        if (log.isInfoEnabled()) {
+            log.info("[{}]{} 开始发送下行报文:{}", protocolName, tcpSession, logTransform.get());
         }
     }
 
@@ -226,8 +226,9 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
 
         super.channelInactive(ctx);
 
-        log.info("[{}]{}{} 通道不活跃", protocolName, ctx.channel(), tcpSession);
+        // 处理连接断开逻辑
+        tcpSession.close(SessionCloseReason.SESSION_CLOSE_ON_CHANNEL_INACTIVE);
+
+        log.info("[{}]{}{} 通道不活跃，连接已断开", protocolName, ctx.channel(), tcpSession);
     }
-
-
 }

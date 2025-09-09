@@ -9,8 +9,6 @@ package sanbing.jcpp.app.service.queue;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
-import sanbing.jcpp.infrastructure.queue.discovery.PartitionProvider;
 import sanbing.jcpp.infrastructure.queue.discovery.event.JCPPApplicationEventListener;
 import sanbing.jcpp.infrastructure.queue.discovery.event.PartitionChangeEvent;
 import sanbing.jcpp.infrastructure.util.annotation.AfterStartUp;
@@ -24,9 +22,6 @@ import java.util.concurrent.ScheduledExecutorService;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractConsumerService extends JCPPApplicationEventListener<PartitionChangeEvent> {
-
-    protected final PartitionProvider partitionProvider;
-    protected final ApplicationEventPublisher eventPublisher;
 
     protected ExecutorService consumersExecutor;
     protected ExecutorService mgmtExecutor;

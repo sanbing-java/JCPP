@@ -9,10 +9,7 @@ package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
-import sanbing.jcpp.proto.gen.ProtocolProto.FlagPriceProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.PeriodProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.QueryPricingResponse;
+import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -31,7 +28,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
 /**
  * 计费模型请求应答
  *
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 @ProtocolCmd(value = 0x0A, protocolNames = {V150, V160, V170})
@@ -50,8 +47,20 @@ public class YunKuaiChongV150QueryPricingModelAckDLCmd extends YunKuaiChongDownl
         long pricingId = queryPricingResponse.getPricingId();
         String pileCode = queryPricingResponse.getPileCode();
         PricingModelProto pricingModel = queryPricingResponse.getPricingModel();
-        Map<Integer, FlagPriceProto> flagPriceMap = pricingModel.getFlagPriceMap();
-        List<PeriodProto> periodList = pricingModel.getPeriodList();
+        // 适配新的protobuf结构：根据计费规则获取价格信息
+        Map<Integer, FlagPriceProto> flagPriceMap = null;
+        List<PeriodProto> periodList = null;
+        
+        if (pricingModel.hasPeakValleyPricing()) {
+            // 峰谷计价：使用预定义的尖峰平谷时段
+            PeakValleyPricingProto peakValleyPricing = pricingModel.getPeakValleyPricing();
+            flagPriceMap = peakValleyPricing.getFlagPriceMap();
+            periodList = peakValleyPricing.getPeriodList();
+        } else {
+            // 未知计费模式
+            log.info("未知的计费模式，桩编号: {}, 计费ID: {}, 计费规则: {}", pileCode, pricingId, pricingModel.getRule());
+            throw new IllegalArgumentException("未知的计费模式: " + pricingModel.getRule());
+        }
 
         // 从上行报文中取出桩编号字节数组
         byte[] pileCodeBytes = encodePileCode(pileCode);

@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.PROTOCOL_SESSION_SCHEDULED;
+import static sanbing.jcpp.proto.gen.ProtocolProto.SessionCloseReason.SESSION_CLOSE_MANUALLY;
 import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.LOGIN_ACK;
 import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.SYNC_TIME_REQUEST;
-import static sanbing.jcpp.protocol.domain.SessionCloseReason.MANUALLY;
 import static sanbing.jcpp.protocol.listener.tcp.TcpSession.SCHEDULE_KEY_AUTO_SYNC_TIME;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.FAILURE_BYTE;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.SUCCESS_BYTE;
@@ -39,7 +39,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
 /**
  * 云快充1.5.0登录认证应答
  *
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 @ProtocolCmd(value = 0x02, protocolNames = {V150, V160, V170})
@@ -78,7 +78,7 @@ public class YunKuaiChongV150LoginAckDLCmd extends YunKuaiChongDownlinkCmdExe {
             loginAck(tcpSession, pileCodeBytes, requestData, false);
 
             // 断开连接
-            tcpSession.close(MANUALLY);
+            tcpSession.close(SESSION_CLOSE_MANUALLY);
         }
     }
 

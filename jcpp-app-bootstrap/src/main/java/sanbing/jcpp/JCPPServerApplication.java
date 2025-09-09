@@ -6,26 +6,34 @@
  */
 package sanbing.jcpp;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.core.Ordered;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import sanbing.jcpp.infrastructure.util.annotation.AfterStartUp;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @SpringBootApplication
 @EnableAsync
 @EnableScheduling
+@Slf4j
 public class JCPPServerApplication {
 
     private static final String SPRING_CONFIG_NAME_KEY = "--spring.config.name";
     private static final String DEFAULT_SPRING_CONFIG_PARAM = SPRING_CONFIG_NAME_KEY + "=" + "app-service";
 
+    private static long startTs;
+
     public static void main(String[] args) {
+        startTs = System.currentTimeMillis();
         new SpringApplicationBuilder(JCPPServerApplication.class).bannerMode(Banner.Mode.LOG).run(updateArguments(args));
     }
 
@@ -37,5 +45,11 @@ public class JCPPServerApplication {
             return modifiedArgs;
         }
         return args;
+    }
+
+    @AfterStartUp(order = Ordered.LOWEST_PRECEDENCE)
+    public void afterStartUp() {
+        long startupTimeMs = System.currentTimeMillis() - startTs;
+        log.info("Started JChargePointProtocol App Service in {} seconds", TimeUnit.MILLISECONDS.toSeconds(startupTimeMs));
     }
 }

@@ -6,9 +6,7 @@
  */
 package sanbing.jcpp.app.service.queue;
 
-import java.io.Serializable;
-
-public enum QueueEvent implements Serializable {
+public enum QueueEvent {
 
     PARTITION_CHANGE, CONFIG_UPDATE, DELETE
 

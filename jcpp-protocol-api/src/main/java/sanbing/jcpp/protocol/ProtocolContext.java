@@ -21,7 +21,7 @@ import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 import sanbing.jcpp.protocol.provider.ProtocolsConfigProvider;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Component
 @Getter

@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.PROTOCOL_SESSION_SCHEDULED;
+import static sanbing.jcpp.proto.gen.ProtocolProto.SessionCloseReason.SESSION_CLOSE_MANUALLY;
 import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.LOGIN_ACK;
 import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.SYNC_TIME_REQUEST;
-import static sanbing.jcpp.protocol.domain.SessionCloseReason.MANUALLY;
 import static sanbing.jcpp.protocol.listener.tcp.TcpSession.SCHEDULE_KEY_AUTO_SYNC_TIME;
 import static sanbing.jcpp.protocol.lvneng.LvnengProtocolConstants.ProtocolNames.V340;
 
@@ -74,7 +74,7 @@ public class LvnengV340LoginAckDLCmd extends LvnengDownlinkCmdExe {
             loginAck(tcpSession, requestData, new byte[]{0x00, 0x00, 0x00, 0x00});
 
             // 断开连接
-            tcpSession.close(MANUALLY);
+            tcpSession.close(SESSION_CLOSE_MANUALLY);
         }
     }
 

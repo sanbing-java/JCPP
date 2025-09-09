@@ -6,10 +6,12 @@
  */
 package sanbing.jcpp.protocol.lvneng;
 
+import sanbing.jcpp.protocol.enums.SupportedProtocols;
+
 /**
  * 绿能协议常量定义
  *
- * @author sanbing
+ * @author 九筒
  * @since 2024-12-16
  */
 public final class LvnengProtocolConstants {
@@ -23,7 +25,7 @@ public final class LvnengProtocolConstants {
      */
     public static final class ProtocolNames {
         /** 绿能协议 v3.4.0 */
-        public static final String LVNENG_V340 = "lvnengV340";
+        public static final String LVNENG_V340 = SupportedProtocols.LVNENG_V340;
 
         // 注解专用简短别名
         public static final String V340 = LVNENG_V340;

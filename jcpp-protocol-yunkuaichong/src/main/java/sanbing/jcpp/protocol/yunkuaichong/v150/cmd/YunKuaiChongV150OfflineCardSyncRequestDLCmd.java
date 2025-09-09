@@ -10,7 +10,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardSyncRequest;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -39,7 +39,7 @@ public class YunKuaiChongV150OfflineCardSyncRequestDLCmd extends YunKuaiChongDow
             return;
         }
 
-        ProtocolProto.OfflineCardSyncRequest request = message.getMsg().getOfflineCardSyncRequest();
+        OfflineCardSyncRequest request = message.getMsg().getOfflineCardSyncRequest();
 
         if (request.getTotal() > 15) {
             log.error("云快充1.5.0 离线卡数据同步 下发卡个数最大支持: 15个当前: {}个", request.getTotal());
@@ -67,7 +67,7 @@ public class YunKuaiChongV150OfflineCardSyncRequestDLCmd extends YunKuaiChongDow
      * @param request request
      * @return bufferInitialCapacity
      */
-    private int bufferInitialCapacity(ProtocolProto.OfflineCardSyncRequest request) {
+    private int bufferInitialCapacity(OfflineCardSyncRequest request) {
         return (8 + 8) * request.getCardInfoCount() + 7 + 1;
     }
 

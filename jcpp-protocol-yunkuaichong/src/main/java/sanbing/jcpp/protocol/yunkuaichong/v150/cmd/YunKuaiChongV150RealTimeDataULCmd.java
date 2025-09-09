@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.ChargingProgressProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.GunRunStatus;
 import sanbing.jcpp.proto.gen.ProtocolProto.GunRunStatusProto;
@@ -33,7 +32,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
 /**
  * 云快充1.5.0上传实时监测数据
  *
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 @ProtocolCmd(value = 0x13, protocolNames = {V150, V160, V170})
@@ -60,9 +59,6 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.info("{} 云快充1.5.0上传实时监测数据", tcpSession);
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
-
-        // 从Tracer总获取当前时间
-        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
 
@@ -138,7 +134,6 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
         // 抢状态
         GunRunStatus gunRunStatus = parseGunRunStatus(gunStatus, gunInsert, tradeNo);
         GunRunStatusProto.Builder gunRunStatusProtoBuilder = GunRunStatusProto.newBuilder()
-                .setTs(ts)
                 .setPileCode(pileCode)
                 .setGunCode(gunCode)
                 .setGunRunStatus(gunRunStatus)
@@ -156,7 +151,6 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
 
             // 充电进度
             ChargingProgressProto.Builder chargingProgressProtoBuilder = ChargingProgressProto.newBuilder()
-                    .setTs(ts)
                     .setPileCode(pileCode)
                     .setGunCode(gunCode)
                     .setTradeNo(tradeNo)
@@ -204,7 +198,7 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
     public static boolean[] parseFaults(byte[] bytes) {
         // 确保输入有效
         if (bytes.length != 2) {
-            throw new IllegalArgumentException("输入 byte 数组长度不为 2");
+            throw new IllegalArgumentException("输入字节数组长度必须为2字节");
         }
 
         // 创建一个布尔数组来存储故障状态

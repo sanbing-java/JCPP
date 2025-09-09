@@ -12,7 +12,7 @@ import java.lang.annotation.*;
  * 通用协议命令注解
  * 所有协议的命令类都应该使用此注解
  *
- * @author sanbing
+ * @author 九筒
  * @since 2024-12-16
  */
 @Target(ElementType.TYPE)

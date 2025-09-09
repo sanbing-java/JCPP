@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 /**
  * timestamp 序列化
  *
- * @author baigod
+ * @author 九筒
  */
 public class TimestampSerializer extends StdSerializer<Timestamp> {
     public static final TimestampSerializer INSTANCE = new TimestampSerializer();

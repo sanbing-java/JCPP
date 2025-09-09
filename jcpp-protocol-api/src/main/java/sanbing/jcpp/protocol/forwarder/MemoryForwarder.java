@@ -20,7 +20,7 @@ import sanbing.jcpp.protocol.cfg.MemoryCfg;
 import java.util.function.BiConsumer;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 public class MemoryForwarder extends Forwarder {

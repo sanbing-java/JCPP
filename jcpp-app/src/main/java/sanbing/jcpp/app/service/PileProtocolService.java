@@ -7,17 +7,13 @@
 package sanbing.jcpp.app.service;
 
 import sanbing.jcpp.infrastructure.queue.Callback;
-import sanbing.jcpp.proto.gen.ProtocolProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardBalanceUpdateRequest;
-import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardSyncRequest;
-import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingRequest;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public interface PileProtocolService {
     /**
@@ -29,6 +25,11 @@ public interface PileProtocolService {
      * 充电桩心跳
      */
     void heartBeat(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 处理会话关闭事件
+     */
+    void onSessionCloseEvent(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
      * 校验计费模型
@@ -58,8 +59,6 @@ public interface PileProtocolService {
     /**
      * 远程启动反馈
      *
-     * @param uplinkQueueMessage
-     * @param callback
      */
     void onRemoteStartChargingResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
@@ -77,8 +76,8 @@ public interface PileProtocolService {
      * 启动充电（支持卡号和并充序号）
      * 当 parallelNo 不为空时，自动使用并充启机命令
      */
-    void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo, 
-                    String logicalCardNo, String physicalCardNo, String parallelNo);
+    void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo,
+                     String logicalCardNo, String physicalCardNo, String parallelNo);
 
     /**
      * 停止充电
@@ -121,9 +120,9 @@ public interface PileProtocolService {
     void postBmsAbort(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
-     *  远程更新
+     * 远程更新
      */
-    void otaRequest(ProtocolProto.OtaRequest request);
+    void otaRequest(OtaRequest request);
 
     /**
      * 远程更新应答
@@ -175,5 +174,10 @@ public interface PileProtocolService {
      * 实时同步桩时间应答
      */
     void onTimeSyncResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 充电过程BMS需求与充电机输出
+     */
+    void postBmsDemandChargerOutput(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
 }

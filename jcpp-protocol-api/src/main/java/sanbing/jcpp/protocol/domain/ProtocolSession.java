@@ -11,6 +11,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.forwarder.Forwarder;
 
@@ -26,7 +27,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.function.Function;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Getter
 @Slf4j
@@ -65,15 +66,46 @@ public abstract class ProtocolSession implements Closeable {
 
     @Override
     public void close() {
-        close(SessionCloseReason.DESTRUCTION);
+        close(ProtocolProto.SessionCloseReason.SESSION_CLOSE_DESTRUCTION);
     }
 
-    public void close(SessionCloseReason reason) {
+    public void close(ProtocolProto.SessionCloseReason reason) {
         log.info("[{}] Protocol会话关闭，原因: {}", this, reason);
 
         scheduledFutures.values().forEach(scheduledFuture -> scheduledFuture.cancel(true));
         scheduledFutures.clear();
+
+        // 转发会话关闭事件到后端
+        if (forwarder != null && !pileCodeSet.isEmpty()) {
+            
+            for (String pileCode : pileCodeSet) {
+                ProtocolProto.SessionCloseEventProto sessionCloseEvent = ProtocolProto.SessionCloseEventProto.newBuilder()
+                        .setPileCode(pileCode)
+                        .setReason(reason)
+                        .setAdditionalInfo("Session closed: " + reason)
+                        .build();
+                
+                ProtocolProto.UplinkQueueMessage uplinkQueueMessage = ProtocolProto.UplinkQueueMessage.newBuilder()
+                        .setMessageIdMSB(UUID.randomUUID().getMostSignificantBits())
+                        .setMessageIdLSB(UUID.randomUUID().getLeastSignificantBits())
+                        .setSessionIdMSB(id.getMostSignificantBits())
+                        .setSessionIdLSB(id.getLeastSignificantBits())
+                        .setMessageKey(pileCode + "_session_close")
+                        .setProtocolName(protocolName)
+                        .setSessionCloseEventProto(sessionCloseEvent)
+                        .build();
+                
+                try {
+                    forwarder.sendMessage(uplinkQueueMessage);
+                    log.debug("[{}] 会话关闭事件已转发，桩编码: {}, 原因: {}", this, pileCode, reason);
+                } catch (Exception e) {
+                    log.error("[{}] 转发会话关闭事件失败，桩编码: {}", this, pileCode, e);
+                }
+            }
+        }
     }
+    
+
 
     @Override
     public String toString() {

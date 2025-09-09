@@ -137,7 +137,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
     }
 
     @Override
-    public void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg) {
+    protected void doDownlinkHandle(SessionToHandlerMsg sessionToHandlerMsg) {
         TcpSession session = (TcpSession) sessionToHandlerMsg.session();
 
         DownlinkRequestMessage protocolDownlinkMsg = sessionToHandlerMsg.downlinkMsg();

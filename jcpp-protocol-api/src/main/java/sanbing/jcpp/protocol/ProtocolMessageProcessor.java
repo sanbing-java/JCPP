@@ -17,7 +17,7 @@ import sanbing.jcpp.protocol.forwarder.Forwarder;
 import java.util.UUID;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 public abstract class ProtocolMessageProcessor {
@@ -44,25 +44,35 @@ public abstract class ProtocolMessageProcessor {
 
                 uplinkMsgStats.incrementFailed();
 
-                log.error("{} 消息处理器处理报文异常", listenerToHandlerMsg.session(), e);
+                log.error("{} 上行消息处理器处理报文异常", listenerToHandlerMsg.session(), e);
             }
         }));
     }
 
     protected abstract void uplinkHandle(ListenerToHandlerMsg listenerToHandlerMsg);
 
+    /**
+     * 下行消息处理入口
+     * 负责统一的异常处理和日志记录
+     */
     public void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg, MessagesStats downlinkMsgStats) throws DownlinkException {
         try {
 
-            downlinkHandle(sessionToHandlerMsg);
+            doDownlinkHandle(sessionToHandlerMsg);
 
         } catch (Exception e) {
 
             downlinkMsgStats.incrementFailed();
+            
+            log.warn("下行消息处理失败，session: {}, 异常信息: {}", sessionToHandlerMsg.session(), e.getMessage(), e);
 
             throw new DownlinkException(e.getMessage(), e);
         }
     }
 
-    protected abstract void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg);
+    /**
+     * 下行消息具体处理逻辑
+     * 由各协议的具体实现类重写
+     */
+    protected abstract void doDownlinkHandle(SessionToHandlerMsg sessionToHandlerMsg);
 }

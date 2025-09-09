@@ -23,7 +23,7 @@ import static sanbing.jcpp.infrastructure.queue.discovery.QueueKey.MAIN_QUEUE_NA
 public class PartitionChangeEvent extends JCPPApplicationEvent {
 
     @Serial
-    private static final long serialVersionUID = -8731788167026510559L;
+    private static final long serialVersionUID = 1L;
 
     @Getter
     private final Map<QueueKey, Set<TopicPartitionInfo>> partitionsMap;

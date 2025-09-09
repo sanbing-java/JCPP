@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Data
 public class PileSession implements Serializable {
@@ -36,6 +36,8 @@ public class PileSession implements Serializable {
     private int nodeRestPort;
 
     private int nodeGrpcPort;
+
+
 
     public PileSession(UUID pileId, String pileCode, String protocolName) {
         this.pileId = pileId;

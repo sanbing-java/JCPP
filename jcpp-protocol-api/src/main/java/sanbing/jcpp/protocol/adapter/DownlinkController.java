@@ -24,7 +24,7 @@ import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 import java.util.UUID;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @RestController
 @RequestMapping("/api")
@@ -40,7 +40,7 @@ public class DownlinkController {
 
     @PostMapping(value = "/onDownlink", consumes = "application/x-protobuf", produces = "application/x-protobuf")
     public DeferredResult<ResponseEntity<String>> onDownlink(@RequestBody DownlinkRequestMessage downlinkMsg) {
-        log.debug("收到REST下行请求 {}", downlinkMsg);
+        log.info("收到REST下行请求 {}", downlinkMsg);
 
         final DeferredResult<ResponseEntity<String>> response = new DeferredResult<>(onDownlinkTimeout,
                 ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).build());

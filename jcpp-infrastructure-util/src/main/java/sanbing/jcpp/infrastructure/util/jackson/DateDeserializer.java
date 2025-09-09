@@ -19,7 +19,7 @@ import java.util.Date;
 /**
  * 时间反序列化
  *
- * @author baigod
+ * @author 九筒
  */
 public class DateDeserializer extends JsonDeserializer<Date> {
     public static final DateDeserializer INSTANCE = new DateDeserializer();

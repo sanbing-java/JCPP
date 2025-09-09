@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.StringUtils;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.PeriodProto;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
@@ -29,7 +29,7 @@ import static sanbing.jcpp.infrastructure.util.codec.ByteUtil.crcSum;
 import static sanbing.jcpp.infrastructure.util.codec.ByteUtil.toBytes;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public class AbstractYunKuaiChongCmdExe {
 
@@ -61,8 +61,8 @@ public class AbstractYunKuaiChongCmdExe {
         return BCDUtil.toBytes(PRICING_ID_DECIMAL_FORMAT.format(pricingId % 10000));
     }
 
-    protected static byte getFlagForCurrentTime(List<ProtocolProto.PeriodProto> periodList, LocalTime currentTime) {
-        for (ProtocolProto.PeriodProto period : periodList) {
+    protected static byte getFlagForCurrentTime(List<PeriodProto> periodList, LocalTime currentTime) {
+        for (PeriodProto period : periodList) {
             LocalTime beginLt = LocalTime.parse(period.getBegin());
             LocalTime endLt = "00:00".equals(period.getEnd()) ? LocalTime.MAX : LocalTime.parse(period.getEnd());
             if ((currentTime.equals(beginLt) || currentTime.isAfter(beginLt)) && currentTime.isBefore(endLt)) {
@@ -218,7 +218,7 @@ public class AbstractYunKuaiChongCmdExe {
      */
     protected static void writeParamFillZero(ByteBuf target, String param, int maxLength) {
         if (maxLength <= 0) {
-            throw new IllegalArgumentException("maxLength must be positive");
+            throw new IllegalArgumentException("最大长度必须为正数");
         }
         
         if (param == null) {
@@ -257,7 +257,7 @@ public class AbstractYunKuaiChongCmdExe {
      */
     protected static void writeParamFillZero(ByteBuf target, int param, int maxLength) {
         if (maxLength <= 0) {
-            throw new IllegalArgumentException("maxLength must be positive");
+            throw new IllegalArgumentException("最大长度必须为正数");
         }
         
         // 确保目标ByteBuf有足够的写入空间

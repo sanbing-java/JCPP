@@ -37,7 +37,7 @@ RUN chmod a+x start.sh \
     && chmod 700 -R /home/sanbing/logs/* \
     && chown -R sanbing:sanbing /home/sanbing
 
-EXPOSE 8080 8080
+EXPOSE 8080/tcp 38001/tcp 38002/tcp 38003/tcp 38011/tcp
 
 ENV PROTOCOLS_LOG_LEVEL=INFO
 

@@ -6,10 +6,12 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong;
 
+import sanbing.jcpp.protocol.enums.SupportedProtocols;
+
 /**
  * 云快充协议常量定义
  *
- * @author sanbing
+ * @author 九筒
  * @since 2024-12-16
  */
 public final class YunKuaiChongProtocolConstants {
@@ -23,13 +25,13 @@ public final class YunKuaiChongProtocolConstants {
      */
     public static final class ProtocolNames {
         /** 云快充协议 v1.5.0 */
-        public static final String YUNKUAICHONG_V150 = "yunkuaichongV150";
+        public static final String YUNKUAICHONG_V150 = SupportedProtocols.YUNKUAICHONG_V150;
         
         /** 云快充协议 v1.6.0 */
-        public static final String YUNKUAICHONG_V160 = "yunkuaichongV160";
+        public static final String YUNKUAICHONG_V160 = SupportedProtocols.YUNKUAICHONG_V160;
         
         /** 云快充协议 v1.7.0 */
-        public static final String YUNKUAICHONG_V170 = "yunkuaichongV170";
+        public static final String YUNKUAICHONG_V170 = SupportedProtocols.YUNKUAICHONG_V170;
 
         // 注解专用简短别名
         public static final String V150 = YUNKUAICHONG_V150;

@@ -51,7 +51,7 @@ public class TcpHandlerCfg {
             case TEXT -> HANDLER_MAP.put(type, JacksonUtil.treeToValue(cfgJson, TextHandlerConfiguration.class));
             case JSON -> HANDLER_MAP.put(type, JacksonUtil.treeToValue(cfgJson, JsonHandlerConfiguration.class));
             case BINARY -> HANDLER_MAP.put(type, JacksonUtil.treeToValue(cfgJson, BinaryHandlerConfiguration.class));
-            default -> throw new IllegalArgumentException("Unknown TCP handler type: " + type);
+            default -> throw new IllegalArgumentException("未知的TCP处理器类型: " + type);
         }
     }
 }

@@ -13,7 +13,6 @@ import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.BmsHandshakeProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
@@ -29,7 +28,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
 /**
  * 云快充1.5.0 充电握手
  *
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 @ProtocolCmd(value = 0x15, protocolNames = {V150, V160, V170})
@@ -38,9 +37,6 @@ public class YunKuaiChongV150BmsHandshakeULCmd extends YunKuaiChongUplinkCmdExe 
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.debug("{} 云快充1.5.0充电握手", tcpSession);
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
-
-        // 从Tracer总获取当前时间
-        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
 
@@ -108,7 +104,6 @@ public class YunKuaiChongV150BmsHandshakeULCmd extends YunKuaiChongUplinkCmdExe 
 
         // 构建BmsHandshakeProto对象
         BmsHandshakeProto bmsHandshakeProto = BmsHandshakeProto.newBuilder()
-                .setTs(ts)
                 .setPileCode(pileCode)
                 .setGunCode(gunCode)
                 .setTradeNo(tradeNo)

@@ -9,12 +9,13 @@ package sanbing.jcpp.protocol.yunkuaichong;
 import com.google.protobuf.ByteString;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
+import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 public abstract class YunKuaiChongUplinkCmdExe extends AbstractYunKuaiChongCmdExe {
@@ -22,11 +23,15 @@ public abstract class YunKuaiChongUplinkCmdExe extends AbstractYunKuaiChongCmdEx
     public abstract void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx);
 
     protected UplinkQueueMessage.Builder uplinkMessageBuilder(String messageKey, TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage) {
+        // 从Tracer总获取当前时间
+        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
+
         return UplinkQueueMessage.newBuilder()
                 .setMessageIdMSB(yunKuaiChongUplinkMessage.getId().getMostSignificantBits())
                 .setMessageIdLSB(yunKuaiChongUplinkMessage.getId().getLeastSignificantBits())
                 .setSessionIdMSB(tcpSession.getId().getMostSignificantBits())
                 .setSessionIdLSB(tcpSession.getId().getLeastSignificantBits())
+                .setTs(ts)
                 .setRequestData(ByteString.copyFrom(JacksonUtil.writeValueAsBytes(yunKuaiChongUplinkMessage)))
                 .setMessageKey(messageKey)
                 .setProtocolName(tcpSession.getProtocolName());

@@ -7,24 +7,14 @@
 package sanbing.jcpp.app.service.cache.session;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
 import java.io.Serializable;
 
 /**
- * @author baigod
+ * @author 九筒
  */
-@Getter
-@EqualsAndHashCode
 @Builder
-public class PileSessionCacheKey implements Serializable {
-
-    private final String pileCode;
-
-    public PileSessionCacheKey(String pileCode) {
-        this.pileCode = pileCode;
-    }
+public record PileSessionCacheKey(String pileCode) implements Serializable {
 
     @Override
     public String toString() {

@@ -12,7 +12,6 @@ import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.BmsChargingInfoProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
@@ -35,8 +34,6 @@ public class YunKuaiChongV150BmsChargingInfoULCmd extends YunKuaiChongUplinkCmdE
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.debug("{} 云快充1.5.0充电过程BMS信息", tcpSession);
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
-        // 从Tracer总获取当前时间
-        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
         // 1.交易流水号
@@ -79,7 +76,6 @@ public class YunKuaiChongV150BmsChargingInfoULCmd extends YunKuaiChongUplinkCmdE
         byteBuf.skipBytes(2);
 
         BmsChargingInfoProto bmsCharingInfoProto = BmsChargingInfoProto.newBuilder()
-                .setTs(ts)
                 .setPileCode(pileCode)
                 .setTradeNo(tradeNo)
                 .setGunCode(gunCode)

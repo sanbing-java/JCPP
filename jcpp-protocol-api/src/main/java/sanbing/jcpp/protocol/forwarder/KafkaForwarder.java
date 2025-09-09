@@ -41,11 +41,11 @@ import java.util.function.BiConsumer;
 import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.*;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 public class KafkaForwarder extends Forwarder {
-    AtomicBoolean healthy = new AtomicBoolean(true);
+    final AtomicBoolean healthy = new AtomicBoolean(true);
 
     private static final String OFFSET = "offset";
     private static final String PARTITION = "partition";

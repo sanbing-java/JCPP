@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.JCPPPair;
 import sanbing.jcpp.infrastructure.util.codec.ByteUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
@@ -122,10 +122,10 @@ public class LvnengProtocolMessageProcessor extends ProtocolMessageProcessor {
     }
 
     @Override
-    protected void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg) {
+    protected void doDownlinkHandle(SessionToHandlerMsg sessionToHandlerMsg) {
         TcpSession session = (TcpSession) sessionToHandlerMsg.session();
 
-        ProtocolProto.DownlinkRequestMessage protocolDownlinkMsg = sessionToHandlerMsg.downlinkMsg();
+        DownlinkRequestMessage protocolDownlinkMsg = sessionToHandlerMsg.downlinkMsg();
 
         DownlinkCmdEnum downlinkCmd = DownlinkCmdEnum.valueOf(protocolDownlinkMsg.getDownlinkCmd());
         

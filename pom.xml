@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.4</version>
+        <version>3.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>sanbing</groupId>
@@ -26,8 +26,8 @@
     <developers>
         <developer>
             <name>程序员三丙</name>
-            <organization>github</organization>
-            <organizationUrl>https://github.com/sanbing-java</organizationUrl>
+            <organization>gitee</organization>
+            <organizationUrl>https://gitee.com/san-bing</organizationUrl>
         </developer>
     </developers>
 
@@ -35,16 +35,14 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.dir>${basedir}</main.dir>
-        <guava.version>33.3.0-jre</guava.version>
         <jacoco.version>0.8.12</jacoco.version>
-        <itCoverageAgent/>
-        <skip.unit.tests/>
-        <skip.integration.tests/>
-        <os-maven-plugin.version>1.7.0</os-maven-plugin.version>
+        <passay.version>1.6.4</passay.version>
+        <ua-parser.version>1.6.1</ua-parser.version>
+        <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
         <disruptor.version>3.4.4</disruptor.version>
         <jakarta.el.version>4.0.2</jakarta.el.version>
         <protobuf.version>4.28.2</protobuf.version>
-        <grpc.version>1.68.0</grpc.version>
+        <grpc.version>1.75.0</grpc.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <hutool-all.version>5.8.32</hutool-all.version>
@@ -55,6 +53,13 @@
         <xnio-api.version>3.8.16.Final</xnio-api.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
+        <guava.version>33.0.0-jre</guava.version>
+        <antisamy.version>1.7.5</antisamy.version>
+        <jjwt.version>0.12.3</jjwt.version>
+        <bouncycastle.version>1.78.1</bouncycastle.version>
+        <itCoverageAgent/>
+        <skip.unit.tests/>
+        <skip.integration.tests/>
     </properties>
 
     <profiles>
@@ -108,6 +113,7 @@
         <module>jcpp-testing</module>
         <module>jcpp-protocol-yunkuaichong</module>
         <module>jcpp-protocol-lvneng</module>
+        <module>jcpp-web-ui</module>
     </modules>
 
     <dependencies>
@@ -191,11 +197,6 @@
                 <version>${xnio-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>${javax.annotation-api.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
                 <version>${protobuf.version}</version>
@@ -254,6 +255,79 @@
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
                 <version>${zookeeper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.owasp.antisamy</groupId>
+                <artifactId>antisamy</artifactId>
+                <version>${antisamy.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- JWT -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.passay</groupId>
+                <artifactId>passay</artifactId>
+                <version>${passay.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcutil-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-ext-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ua-parser</groupId>
+                <artifactId>uap-java</artifactId>
+                <version>${ua-parser.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -314,7 +388,7 @@
                                         <directory>src/main/resources</directory>
                                         <includes>
                                             <include>log4j2.xml</include>
-                                            <include>application.yml</include>
+                                            <include>*-service.yml</include>
                                         </includes>
                                         <filtering>true</filtering>
                                     </resource>
@@ -387,6 +461,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>1.15.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -520,7 +599,7 @@
                                         <include>**/*</include>
                                     </includes>
                                 </fileset>
-                                <!-- 清理所有子模块的logs目录(通配符方式) -->
+                                <!-- 只清理日志目录 -->
                                 <fileset>
                                     <directory>${main.dir}</directory>
                                     <includes>
@@ -528,7 +607,6 @@
                                         <include>**/logs/</include>
                                     </includes>
                                     <excludes>
-                                        <exclude>target/**</exclude>
                                         <exclude>.git/**</exclude>
                                     </excludes>
                                     <followSymlinks>false</followSymlinks>
@@ -550,6 +628,9 @@
                     <excludes>
                         <exclude>**/.env</exclude>
                         <exclude>**/*.env</exclude>
+                        <exclude>**/env.development</exclude>
+                        <exclude>**/env.production</exclude>
+                        <exclude>**/env.*</exclude>
                         <exclude>**/*.sh</exclude>
                         <exclude>**/.gradle/**</exclude>
                         <exclude>**/*.md</exclude>
@@ -559,20 +640,51 @@
                         <exclude>src/test/resources/**</exclude>
                         <exclude>src/sh/**</exclude>
                         <exclude>**/*.log</exclude>
-                        <exclude>src/main/resources/**</exclude>
+                        <exclude>src/main/resources/*.yml</exclude>
                         <exclude>**/*.raw</exclude>
                         <exclude>**/*.patch</exclude>
                         <exclude>.run/**</exclude>
+                        <exclude>node_modules/**</exclude>
+                        <exclude>build/**</exclude>
+                        <exclude>**/.browserslistrc</exclude>
+                        <exclude>**/yarn.lock</exclude>
+                        <exclude>**/.yarnrc</exclude>
+                        <exclude>**/.prettierrc</exclude>
+                        <exclude>**/.prettierignore</exclude>
+                        <exclude>**/dist/**</exclude>
+                        <exclude>**/target/**</exclude>
+                        <exclude>**/.eslintrc.*</exclude>
+                        <exclude>**/vite.config.*</exclude>
+                        <exclude>**/tsconfig.*</exclude>
+                        <exclude>**/package.json</exclude>
+                        <exclude>**/package-lock.json</exclude>
+                        <exclude>**/auto-imports.d.ts</exclude>
+                        <exclude>**/components.d.ts</exclude>
+                        <exclude>**/*.map</exclude>
+                        <exclude>**/.gitignore</exclude>
+                        <exclude>**/favicon.ico</exclude>
+                        <exclude>**/CHANGELOG.md</exclude>
+                        <exclude>**/README.md</exclude>
                     </excludes>
                     <mapping>
                         <proto>JAVADOC_STYLE</proto>
                         <cql>DOUBLEDASHES_STYLE</cql>
+                        <sql>SLASHSTAR_STYLE</sql>
                         <scss>JAVADOC_STYLE</scss>
-                        <jsx>SLASHSTAR_STYLE</jsx>
                         <tsx>SLASHSTAR_STYLE</tsx>
                         <conf>SCRIPT_STYLE</conf>
                         <gradle>JAVADOC_STYLE</gradle>
                         <Dockerfile>SCRIPT_STYLE</Dockerfile>
+                        <!-- 前端文件类型映射 -->
+                        <vue>XML_STYLE</vue>
+                        <js>SLASHSTAR_STYLE</js>
+                        <ts>SLASHSTAR_STYLE</ts>
+                        <jsx>SLASHSTAR_STYLE</jsx>
+                        <css>SLASHSTAR_STYLE</css>
+                        <less>SLASHSTAR_STYLE</less>
+                        <sass>SLASHSTAR_STYLE</sass>
+                        <json>SLASHSTAR_STYLE</json>
+                        <html>XML_STYLE</html>
                     </mapping>
                 </configuration>
                 <executions>
@@ -586,4 +698,33 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>aliyun-maven</id>
+            <name>Aliyun Maven Repository</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>aliyun-plugin</id>
+            <name>Aliyun Plugin Repository</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
 </project>

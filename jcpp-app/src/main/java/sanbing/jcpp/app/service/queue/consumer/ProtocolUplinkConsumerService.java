@@ -14,7 +14,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import sanbing.jcpp.app.service.PileProtocolService;
@@ -46,12 +45,12 @@ import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.*;
 
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Service
 @AppComponent
 @Slf4j
-public class ProtocolUplinkConsumerService extends AbstractConsumerService implements ApplicationListener<PartitionChangeEvent> {
+public class ProtocolUplinkConsumerService extends AbstractConsumerService {
 
     @Value("${queue.app.poll-interval}")
     private int pollInterval;
@@ -61,6 +60,8 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
     private boolean consumerPerPartition;
     @Value("${queue.app.stats.enabled}")
     private boolean statsEnabled;
+    @Value("${queue.app.stats.timer-top-n}")
+    private int timerTopN;
 
     private final PileProtocolService pileProtocolService;
 
@@ -68,22 +69,26 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
     private AppQueueConsumerManager<ProtoQueueMsg<UplinkQueueMessage>, AppQueueConfig> appConsumer;
 
-    private final AppConsumerStats stats;
+    private final StatsFactory statsFactory;
+    
+    private AppConsumerStats stats;
 
     public ProtocolUplinkConsumerService(PartitionProvider partitionProvider,
                                          ApplicationEventPublisher eventPublisher,
                                          PileProtocolService pileProtocolService,
                                          AppQueueFactory appQueueFactory,
                                          StatsFactory statsFactory) {
-        super(partitionProvider, eventPublisher);
+        super();
         this.pileProtocolService = pileProtocolService;
         this.appQueueFactory = appQueueFactory;
-        this.stats = new AppConsumerStats(statsFactory);
+        this.statsFactory = statsFactory;
     }
 
     @PostConstruct
     public void init() {
         super.init("jcpp-app");
+        
+        this.stats = new AppConsumerStats(statsFactory, timerTopN);
 
         log.info("Initializing Protocol Uplink Messages Queue Subscriptions.");
 
@@ -143,9 +148,9 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                     Callback callback = new PackCallback<>(id, ctx);
 
-                    try {
-                        UplinkQueueMessage uplinkQueueMsg = msg.getValue();
+                    UplinkQueueMessage uplinkQueueMsg = msg.getValue();
 
+                    try {
                         if (statsEnabled) {
                             stats.log(uplinkQueueMsg);
                         }
@@ -159,6 +164,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
                         } else if (uplinkQueueMsg.hasHeartBeatRequest()) {
 
                             pileProtocolService.heartBeat(uplinkQueueMsg, callback);
+
+                        } else if (uplinkQueueMsg.hasSessionCloseEventProto()) {
+
+                            pileProtocolService.onSessionCloseEvent(uplinkQueueMsg, callback);
 
                         } else if (uplinkQueueMsg.hasVerifyPricingRequest()) {
 
@@ -236,7 +245,11 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                             pileProtocolService.onTimeSyncResponse(uplinkQueueMsg, callback);
 
-                        } else {
+                        } else if (uplinkQueueMsg.hasBmsDemandChargerOutputProto()) {
+
+                            pileProtocolService.postBmsDemandChargerOutput(uplinkQueueMsg, callback);
+
+                        }else {
 
                             callback.onSuccess();
                         }
@@ -246,6 +259,13 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
                         log.warn("[{}] Failed to process message: {}", id, msg, e);
 
                         callback.onFailure(e);
+
+                    } finally {
+
+                        if (statsEnabled) {
+
+                            stats.msgTimer(uplinkQueueMsg);
+                        }
                     }
                 }))
         );

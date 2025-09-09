@@ -13,8 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.ChargingProgressProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.GunRunStatus;
 import sanbing.jcpp.proto.gen.ProtocolProto.GunRunStatusProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
@@ -50,8 +49,6 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
         ByteBuf byteBuf = Unpooled.wrappedBuffer(lvnengUplinkMessage.getMsgBody());
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
-        // 从Tracer总获取当前时间
-        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
 
         //1预留
         byteBuf.skipBytes(2);
@@ -84,8 +81,8 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
         byte soc = byteBuf.readByte();
         additionalInfo.put("soc", soc);
 
-        /** 9 告警码,0-无告警 非0参靠枚举类
-         * @see LvnengAlarmCodeEnum
+        /* 9 告警码,0-无告警 非0参靠枚举类
+          @see LvnengAlarmCodeEnum
          */
         long alarmCode = byteBuf.readUnsignedInt();
         String alarmCodeDesc = alarmCode == 0L ? "" : LvnengAlarmCodeEnum.getByCode(alarmCode);
@@ -231,7 +228,6 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
         // 抢状态
         GunRunStatus gunRunStatus = parseGunRunStatus(pileStatus);
         GunRunStatusProto gunRunStatusProto = GunRunStatusProto.newBuilder()
-                .setTs(ts)
                 .setPileCode(pileCode)
                 .setGunCode(gunCode + "")
                 .setGunRunStatus(gunRunStatus)
@@ -249,8 +245,7 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
         if (StringUtils.isNotBlank(tradeNo)) {
 
             // 充电进度
-            ProtocolProto.ChargingProgressProto.Builder chargingProgressProtoBuilder = ProtocolProto.ChargingProgressProto.newBuilder()
-                    .setTs(ts)
+            ChargingProgressProto.Builder chargingProgressProtoBuilder = ChargingProgressProto.newBuilder()
                     .setPileCode(pileCode)
                     .setGunCode(gunCode + "")
                     .setTradeNo(tradeNo)

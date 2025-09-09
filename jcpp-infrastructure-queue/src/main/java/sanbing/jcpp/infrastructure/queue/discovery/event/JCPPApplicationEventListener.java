@@ -22,7 +22,7 @@ public abstract class JCPPApplicationEventListener<T extends JCPPApplicationEven
 
     @Override
     public void onApplicationEvent(T event) {
-        if (!filterApplicationEvent(event)) {
+        if (!filterApplicationEvent()) {
             log.trace("Skipping event due to filter: {}", event);
             return;
         }
@@ -49,7 +49,7 @@ public abstract class JCPPApplicationEventListener<T extends JCPPApplicationEven
 
     protected abstract void onJCPPApplicationEvent(T event);
 
-    protected boolean filterApplicationEvent(T event) {
+    protected boolean filterApplicationEvent() {
         return true;
     }
 

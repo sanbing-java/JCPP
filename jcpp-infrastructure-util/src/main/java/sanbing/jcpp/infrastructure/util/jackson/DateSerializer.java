@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * 时间序列化
  *
- * @author baigod
+ * @author 九筒
  */
 public class DateSerializer extends StdSerializer<Date> {
     public static final DateSerializer INSTANCE = new DateSerializer();

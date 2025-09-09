@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    开源代码，仅供学习和交流研究使用，商用请联系三丙
+    微信：mohan_88888
+    抖音：程序员三丙
+    付费课程知识星球：https://t.zsxq.com/aKtXo
+
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sanbing.jcpp.app.dal.mapper.AttributeMapper">
+
+    <!-- 查询实体的所有属性 -->
+    <select id="findByEntity" resultType="sanbing.jcpp.app.dal.entity.Attribute">
+        SELECT * FROM t_attr WHERE entity_id = #{entityId}
+    </select>
+
+    <!-- 查询实体的特定属性 -->
+    <select id="findByEntityAndKey" resultType="sanbing.jcpp.app.dal.entity.Attribute">
+        SELECT * FROM t_attr WHERE entity_id = #{entityId} AND attr_key = #{attrKey}
+    </select>
+
+    <!-- 查询实体在指定属性类型下的所有属性 (兼容原JPA方法) -->
+    <select id="findAllByEntityIdAndAttributeType" resultType="sanbing.jcpp.app.dal.entity.Attribute">
+        SELECT * FROM t_attr WHERE entity_id = #{entityId}
+    </select>
+
+    <!-- 根据实体ID和属性键列表查询属性 -->
+    <select id="findAllByIdAndAttrKey" resultType="sanbing.jcpp.app.dal.entity.Attribute">
+        SELECT * FROM t_attr 
+        WHERE entity_id = #{entityId} 
+        AND attr_key IN
+        <foreach collection="attrKeys" item="key" open="(" separator="," close=")">
+            #{key}
+        </foreach>
+    </select>
+
+    <!-- 删除指定实体的指定属性 -->
+    <delete id="deleteByEntityIdAndKey">
+        DELETE FROM t_attr WHERE entity_id = #{entityId} AND attr_key = #{attrKey}
+    </delete>
+
+</mapper>

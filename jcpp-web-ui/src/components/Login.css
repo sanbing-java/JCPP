@@ -1,0 +1,55 @@
+/*
+ * 开源代码，仅供学习和交流研究使用，商用请联系三丙
+ * 微信：mohan_88888
+ * 抖音：程序员三丙
+ * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ */
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-content {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-card {
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.login-header p {
+  color: #6b7280;
+  margin: 0;
+  font-size: 14px;
+}
+
+.login-footer {
+  text-align: center;
+  color: #6b7280;
+  font-size: 12px;
+  margin-top: 16px;
+}
+
+.login-footer p {
+  margin: 0;
+}
+

@@ -27,7 +27,7 @@ import static sanbing.jcpp.infrastructure.util.JCPPHashUtil.forName;
 import static sanbing.jcpp.infrastructure.util.JCPPHashUtil.hash;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Component
 @Slf4j

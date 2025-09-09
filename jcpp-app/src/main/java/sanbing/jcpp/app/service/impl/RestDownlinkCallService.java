@@ -23,7 +23,7 @@ import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.*;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Service
 @Slf4j
@@ -59,6 +59,6 @@ public class RestDownlinkCallService extends DownlinkCallService {
 
         String url = String.format("http://%s:%d/api/onDownlink", nodeIp, port);
         ResponseEntity<?> response = downlinkRestTemplate.postForEntity(url, entity, ResponseEntity.class);
-        log.debug("下行消息发送成功 {}", response);
+        log.debug("下行消息发送完成 {}", response);
     }
 }

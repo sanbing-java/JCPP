@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * 类型转换
  *
- * @author baigod
+ * @author 九筒
  */
 public class DataTypeModule extends SimpleModule {
     public static final DataTypeModule INSTANCE = new DataTypeModule();

@@ -7,26 +7,17 @@
 package sanbing.jcpp.app.service.cache.pile;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import sanbing.jcpp.infrastructure.cache.VersionedCacheKey;
 
 import java.io.Serial;
 import java.util.Optional;
 import java.util.UUID;
 
-@Getter
-@EqualsAndHashCode
-@RequiredArgsConstructor
 @Builder
-public class PileCacheKey implements VersionedCacheKey {
+public record PileCacheKey(UUID pileId, String pileCode) implements VersionedCacheKey {
 
     @Serial
-    private static final long serialVersionUID = 6366389552842340207L;
-
-    private final UUID pileId;
-    private final String pileCode;
+    private static final long serialVersionUID = 1L;
 
     public PileCacheKey(UUID pileId) {
         this(pileId, null);
@@ -43,7 +34,7 @@ public class PileCacheKey implements VersionedCacheKey {
 
     @Override
     public boolean isVersioned() {
-        return pileId != null;
+        return pileId == null;
     }
 
 }

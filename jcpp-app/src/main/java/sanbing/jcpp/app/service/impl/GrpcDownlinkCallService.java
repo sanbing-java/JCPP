@@ -19,7 +19,7 @@ import sanbing.jcpp.proto.gen.ProtocolProto.RequestMsg;
 import static sanbing.jcpp.infrastructure.proto.ProtoConverter.toTracerProto;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Service
 @Slf4j

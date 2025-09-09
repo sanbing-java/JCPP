@@ -15,6 +15,7 @@ import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,6 @@ import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
 import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 
-import javax.annotation.PreDestroy;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -37,7 +37,7 @@ import static sanbing.jcpp.infrastructure.proto.ProtoConverter.toTracerProto;
 import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.JCPP_COMMON_THREAD_POOL;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Service
 @Slf4j
@@ -120,7 +120,7 @@ public class DownlinkGrpcService extends ProtocolInterfaceImplBase {
                 TracerContextUtil.newTracer(tracerProto.getId(), tracerProto.getOrigin(), tracerProto.getTs());
                 MDCUtils.recordTracer();
 
-                log.debug("通信层收到Grpc下行请求 {}", requestMsg);
+                log.info("通信层收到Grpc下行请求 {}", requestMsg);
 
                 if (requestMsg.hasConnectRequestMsg()) {
                     replyLock.lock();

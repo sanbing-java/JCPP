@@ -55,7 +55,9 @@ message UplinkQueueMessage {
   int64 sessionIdLSB = 4;
   string messageKey = 5;
   string protocolName = 6;
+  int64 ts = 7;
   bytes requestData = 10;
+  SessionCloseEventProto sessionCloseEventProto = 20;
   LoginRequest loginRequest = 21;
   HeartBeatRequest heartBeatRequest = 22;
   VerifyPricingRequest verifyPricingRequest = 23;
@@ -77,7 +79,7 @@ message UplinkQueueMessage {
   OfflineCardBalanceUpdateResponse offlineCardBalanceUpdateResponse = 40;
   OfflineCardSyncResponse offlineCardSyncResponse = 41;
   TimeSyncResponse timeSyncResponse = 42;
-
+  BmsDemandChargerOutputProto bmsDemandChargerOutputProto = 43;
 }
 
 message DownlinkRequestMessage {
@@ -108,6 +110,19 @@ message DownlinkRequestMessage {
 message DownlinkResponseMessage {
   bool success = 1;
   optional string error = 2;
+}
+
+message SessionCloseEventProto {
+  string pileCode = 2;                // 充电桩编码
+  SessionCloseReason reason = 3;      // 会话关闭原因
+  optional string additionalInfo = 20; // 附加信息
+}
+
+enum SessionCloseReason {
+  SESSION_CLOSE_UNKNOWN = 0;          // 未知原因
+  SESSION_CLOSE_DESTRUCTION = 1;      // 自然销毁（空闲超时）
+  SESSION_CLOSE_ON_CHANNEL_INACTIVE = 2;  // 通道不活跃
+  SESSION_CLOSE_MANUALLY = 3;         // 手动关闭
 }
 
 message LoginRequest {
@@ -159,13 +174,17 @@ message QueryPricingResponse {
   PricingModelProto pricingModel = 1;
 }
 
+// 计费模型配置 - 支持三种计费方式
 message PricingModelProto {
-  PricingModelType type = 3;
-  PricingModelRule rule = 4;
-  string standardElec = 5;
-  string standardServ = 6;
-  map<int32, FlagPriceProto> flagPrice = 8;
-  repeated PeriodProto period = 9;
+  PricingModelType type = 3;  // 计费类型：充电/放电
+  PricingModelRule rule = 4;  // 计费规则：标准/峰谷/时段
+
+  // 计费配置：根据rule字段确定使用哪种配置
+  oneof pricing_config {
+    StandardPricingProto standardPricing = 5;        // 标准计费：固定价格
+    PeakValleyPricingProto peakValleyPricing = 6;    // 峰谷计价：按尖峰平谷分时段
+    TimePeriodPricingProto timePeriodPricing = 7;    // 时段计价：自定义时段价格
+  }
 }
 
 message PeriodProto {
@@ -181,14 +200,42 @@ message FlagPriceProto {
   string serv = 3;
 }
 
+// 标准计费配置 - 全天统一价格
+message StandardPricingProto {
+  string elecPrice = 1;    // 电费价格（元/度）
+  string servPrice = 2;    // 服务费价格（元/度）
+}
+
+// 峰谷计价配置 - 按电网峰谷政策分时计费
+message PeakValleyPricingProto {
+  map<int32, FlagPriceProto> flagPrice = 1;  // 各时段价格映射表
+  repeated PeriodProto period = 2;           // 时段划分配置
+}
+
+// 时段计价配置 - 运营商自定义时段计费
+message TimePeriodPricingProto {
+  repeated TimePeriodItemProto periods = 1;  // 自定义时段列表
+}
+
+// 时段计价单个时段定义
+message TimePeriodItemProto {
+  int32 periodNo = 1;      // 时段编号（从1开始）
+  string startTime = 2;    // 开始时间（HH:mm:ss格式）
+  string endTime = 3;      // 结束时间（HH:mm:ss格式）
+  string elecPrice = 4;    // 该时段电费（元/度）
+  string servPrice = 5;    // 该时段服务费（元/度）
+  optional string description = 6; // 时段名称（如"早高峰"）
+}
+
 enum PricingModelType {
   CHARGE = 0; // 充电费率模型
   DISCHARGE = 1; // 放电费率模型
 }
 
 enum PricingModelRule {
-  STANDARD = 0;
-  SPLIT_TIME = 1;
+  STANDARD = 0;               // 标准计费：全天统一价格
+  PEAK_VALLEY_PRICING = 1;    // 峰谷计费：按电网峰谷政策
+  TIME_PERIOD_PRICING = 2;    // 时段计费：运营商自定义
 }
 
 enum PricingModelFlag {
@@ -213,7 +260,6 @@ enum GunRunStatus {
 }
 
 message GunRunStatusProto {
-  int64 ts = 1;
   string pileCode = 4;
   string gunCode = 5;
   GunRunStatus GunRunStatus = 41;
@@ -222,7 +268,6 @@ message GunRunStatusProto {
 }
 
 message ChargingProgressProto {
-  int64 ts = 1;
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
@@ -265,7 +310,6 @@ message RestartPileRequest {
 }
 
 message RemoteStartChargingResponse {
-  int64 ts = 1;
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
@@ -274,7 +318,6 @@ message RemoteStartChargingResponse {
   optional string additionalInfo = 20;
 }
 message RestartPileResponse {
-  int64 ts = 1;
   string pileCode = 4;
   bool success = 7;
 }
@@ -285,7 +328,6 @@ message RemoteStopChargingRequest {
 }
 
 message RemoteStopChargingResponse {
-  int64 ts = 1;
   string pileCode = 4;
   string gunCode = 5;
   bool success = 7;
@@ -344,7 +386,6 @@ message TransactionRecordRequest {
 }
 
 message BmsChargingErrorProto {
-  int64 ts = 1;
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
@@ -358,7 +399,6 @@ message TransactionRecordResponse {
 }
 
 message BmsParamConfigReportProto {
-  int64 ts = 1;                   // 时间戳
   string pileCode = 2;             // 桩编码
   string gunCode = 3;              // 枪编码
   string tradeNo = 4;              // 交易号
@@ -376,7 +416,6 @@ message BmsParamConfigReportProto {
 }
 
 message BmsChargingInfoProto {
-  int64 ts = 1;                   // 时间戳
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
@@ -404,7 +443,6 @@ message OtaResponse {
 } 
 
 message BmsAbortProto {
-  int64 ts = 1;                   // 时间戳
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
@@ -412,7 +450,6 @@ message BmsAbortProto {
 }
 
 message BmsHandshakeProto {
-  int64 ts = 1;                          // 时间戳
   string pileCode = 2;                   // 桩编码
   string gunCode = 3;                    // 枪编码
   string tradeNo = 4;                    // 交易流水号
@@ -433,7 +470,6 @@ message BmsHandshakeProto {
 }
 
 message GroundLockStatusProto {
-  int64 ts = 1;                          // 时间戳
   string pileCode = 2;                   // 桩编号
   string gunCode = 3;                    // 枪号
   int32 lockStatus = 4;                  // 车位锁状态
@@ -485,3 +521,11 @@ message TimeSyncResponse {
   string pileCode = 1;
   string time = 2;
 }
+
+message BmsDemandChargerOutputProto {
+  string pileCode = 4;
+  string gunCode = 5;
+  string tradeNo = 6;
+  optional string additionalInfo = 20;
+}
+

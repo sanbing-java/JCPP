@@ -16,7 +16,7 @@ import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public abstract class Listener {
 
@@ -26,10 +26,10 @@ public abstract class Listener {
     @Getter
     private final ProtocolMessageProcessor protocolMessageProcessor;
 
-    protected AtomicInteger connectionsGauge = new AtomicInteger();
-    protected MessagesStats uplinkMsgStats;
-    protected MessagesStats downlinkMsgStats;
-    protected Timer downlinkTimer;
+    protected final AtomicInteger connectionsGauge = new AtomicInteger();
+    protected final MessagesStats uplinkMsgStats;
+    protected final MessagesStats downlinkMsgStats;
+    protected final Timer downlinkTimer;
 
     protected final ChannelHandlerParameter parameter;
 

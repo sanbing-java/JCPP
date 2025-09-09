@@ -9,7 +9,7 @@ package sanbing.jcpp.app.dal.config.ibatis.enums;
 import com.baomidou.mybatisplus.annotation.IEnum;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public enum PileTypeEnum implements IEnum<String> {
     AC,         // 交流充电桩

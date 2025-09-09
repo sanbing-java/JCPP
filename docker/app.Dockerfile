@@ -9,7 +9,7 @@
 FROM registry.cn-hangzhou.aliyuncs.com/sanbing/jcpp-base:1.0 AS base
 WORKDIR /app
 COPY . .
-RUN mvn -U -B -T 0.8C clean install -DskipTests
+RUN mvn -U -B -T 4 clean package -DskipTests
 
 #分层
 FROM registry.cn-hangzhou.aliyuncs.com/sanbing/openjdk:21-bullseye AS builder
@@ -37,7 +37,7 @@ RUN chmod a+x start.sh \
     && chmod 700 -R /home/sanbing/logs/* \
     && chown -R sanbing:sanbing /home/sanbing
 
-EXPOSE 8080 8080
+EXPOSE 8080/tcp 38001/tcp 38002/tcp 38003/tcp 38011/tcp
 
 ENV APP_LOG_LEVEL=INFO
 ENV PROTOCOLS_LOG_LEVEL=INFO

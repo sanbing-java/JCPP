@@ -27,7 +27,7 @@ import static sanbing.jcpp.infrastructure.util.JCPPHashUtil.forName;
 import static sanbing.jcpp.infrastructure.util.JCPPHashUtil.hash;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Component
 @Slf4j
@@ -74,7 +74,7 @@ public class HashPartitionProvider implements PartitionProvider {
     private TopicPartitionInfo resolve(QueueKey queueKey, int hash) {
         Integer partitionSize = partitionSizesMap.get(queueKey);
         if (partitionSize == null) {
-            throw new IllegalStateException("Partitions info for queue " + queueKey + " is missing");
+            throw new IllegalStateException("队列 " + queueKey + " 的分区信息缺失");
         }
 
         int partition = Math.abs(hash % partitionSize);

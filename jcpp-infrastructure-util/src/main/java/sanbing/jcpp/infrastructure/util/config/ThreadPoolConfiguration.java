@@ -17,7 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Configuration
 public class ThreadPoolConfiguration {

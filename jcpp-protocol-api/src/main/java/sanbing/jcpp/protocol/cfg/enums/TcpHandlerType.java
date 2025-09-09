@@ -7,7 +7,7 @@
 package sanbing.jcpp.protocol.cfg.enums;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public enum TcpHandlerType {
     TEXT,

@@ -10,6 +10,10 @@ public final class CacheConstants {
 
     public static final String PILE_CACHE = "piles";
 
+    public static final String GUN_CACHE = "guns";
+
     public static final String PILE_SESSION_CACHE = "pileSessions";
+
+    public static final String ATTRIBUTES_CACHE = "attributes";
 
 }

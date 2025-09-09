@@ -14,7 +14,7 @@ import sanbing.jcpp.infrastructure.cache.CacheConstants;
 import sanbing.jcpp.infrastructure.cache.CaffeineTransactionalCache;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @ConditionalOnProperty(prefix = "cache", value = "type", havingValue = "caffeine", matchIfMissing = true)
 @Service("PileSessionCache")

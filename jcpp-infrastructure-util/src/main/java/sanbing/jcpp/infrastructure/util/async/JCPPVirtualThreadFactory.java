@@ -9,6 +9,7 @@ package sanbing.jcpp.infrastructure.util.async;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
+@SuppressWarnings("ALL")
 public class JCPPVirtualThreadFactory implements ThreadFactory {
     private final String namePrefix;
     private final AtomicLong threadNumber = new AtomicLong(1);

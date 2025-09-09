@@ -30,18 +30,18 @@ import java.util.function.BiConsumer;
 import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.*;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 public abstract class Forwarder {
     protected static final String ERROR = "error";
 
-    AtomicBoolean healthy = new AtomicBoolean(true);
+    final AtomicBoolean healthy = new AtomicBoolean(true);
 
     @Getter
     private final String protocolName;
 
-    protected MessagesStats forwarderMessagesStats;
+    protected final MessagesStats forwarderMessagesStats;
 
 
     protected final PartitionProvider partitionProvider;

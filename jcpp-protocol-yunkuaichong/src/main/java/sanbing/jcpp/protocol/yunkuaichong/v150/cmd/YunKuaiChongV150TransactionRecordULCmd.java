@@ -31,7 +31,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
 /**
  * 云快充1.5.0 交易记录
  *
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 @ProtocolCmd(value = 0x3B, protocolNames = {V150, V160})
@@ -200,7 +200,7 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
     public static long readLongLE5Byte(byte[] bytes) {
         // 确保字节数组的长度至少为 5
         if (bytes.length < 5) {
-            throw new IllegalArgumentException("Byte array must contain at least 5 bytes.");
+            throw new IllegalArgumentException("字节数组长度必须至少为5字节");
         }
 
         // 使用小端字节序读取 5 字节数字

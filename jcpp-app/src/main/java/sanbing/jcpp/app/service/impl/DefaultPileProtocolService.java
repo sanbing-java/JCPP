@@ -8,21 +8,23 @@ package sanbing.jcpp.app.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.util.concurrent.ListenableFuture;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import sanbing.jcpp.app.dal.config.ibatis.enums.GunRunStatusEnum;
+import sanbing.jcpp.app.dal.config.ibatis.enums.PileStatusEnum;
+import sanbing.jcpp.app.dal.entity.Gun;
 import sanbing.jcpp.app.dal.entity.Pile;
-import sanbing.jcpp.app.data.PileSession;
-import sanbing.jcpp.app.repository.PileRepository;
-import sanbing.jcpp.app.service.DownlinkCallService;
-import sanbing.jcpp.app.service.PileProtocolService;
-import sanbing.jcpp.app.service.cache.session.PileSessionCacheKey;
-import sanbing.jcpp.infrastructure.cache.TransactionalCache;
+import sanbing.jcpp.app.dal.repository.PileRepository;
+import sanbing.jcpp.app.data.kv.*;
+import sanbing.jcpp.app.service.*;
 import sanbing.jcpp.infrastructure.proto.ProtoConverter;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel.FlagPrice;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel.Period;
 import sanbing.jcpp.infrastructure.queue.Callback;
+import sanbing.jcpp.infrastructure.util.async.JCPPAsynchron;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
@@ -33,11 +35,11 @@ import java.time.LocalTime;
 import java.util.*;
 
 import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag.*;
-import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelRule.SPLIT_TIME;
+import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelRule.PEAK_VALLEY_PRICING;
 import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelType.CHARGE;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Service
 @Slf4j
@@ -47,59 +49,125 @@ public class DefaultPileProtocolService implements PileProtocolService {
     PileRepository pileRepository;
 
     @Resource
-    TransactionalCache<PileSessionCacheKey, PileSession> pileSessionCache;
+    DownlinkCallService downlinkCallService;
 
     @Resource
-    DownlinkCallService downlinkCallService;
+    GunService gunService;
+
+    @Resource
+    PileService pileService;
+
+    @Resource
+    AttributeService attributeService;
+
+    @Resource
+    PileSessionService pileSessionService;
 
     @Override
     public void pileLogin(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.debug("接收到桩登录事件 {}", uplinkQueueMessage);
 
         LoginRequest loginRequest = uplinkQueueMessage.getLoginRequest();
-
-        Pile pile = pileRepository.findPileByCode(loginRequest.getPileCode());
-
         String pileCode = loginRequest.getPileCode();
 
-        log.debug("查询到充电桩信息 {}", pile);
+        Pile pile = pileRepository.findPileByCode(pileCode);
+        log.debug("查询到充电桩信息: pileCode={}, exists={}", pileCode, pile != null);
 
         // 构造下行回复
-        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, loginRequest.getPileCode());
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(
+            uplinkQueueMessage, pileCode);
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.LOGIN_ACK.name());
 
-
         if (pile != null) {
+            // 处理登录成功的情况
+            handleSuccessfulLogin(uplinkQueueMessage, loginRequest, pile, downlinkMessageBuilder, pileCode);
+        } else {
+            // 处理登录失败的情况（充电桩不存在）
+            handleFailedLogin(uplinkQueueMessage, loginRequest, downlinkMessageBuilder, pileCode);
+        }
 
-            PileSession pileSession = createSession(uplinkQueueMessage, pile,
+        callback.onSuccess();
+    }
+
+    /**
+     * 处理登录成功的情况
+     */
+    private void handleSuccessfulLogin(UplinkQueueMessage uplinkQueueMessage,
+                                     LoginRequest loginRequest,
+                                     Pile pile,
+                                     DownlinkRequestMessage.Builder downlinkMessageBuilder,
+                                     String pileCode) {
+        try {
+            // 1. 保存pileSession
+            pileSessionService.createOrUpdateSession(
+                    uplinkQueueMessage, pile,
                     loginRequest.getRemoteAddress(),
                     loginRequest.getNodeId(),
                     loginRequest.getNodeHostAddress(),
                     loginRequest.getNodeRestPort(),
                     loginRequest.getNodeGrpcPort());
 
-            // 保存到缓存
-            pileSessionCache.put(new PileSessionCacheKey(pile.getPileCode()), pileSession);
+            // 2. 处理登录状态管理（异步）
+            ListenableFuture<AttributesSaveResult> future = pileService.handlePileLogin(pile.getId());
 
-            downlinkMessageBuilder.setLoginResponse(LoginResponse.newBuilder()
-                    .setSuccess(true)
-                    .setPileCode(loginRequest.getPileCode())
-                    .build());
+            // 3. 异步处理完成后发送应答
+            JCPPAsynchron.withCallback(future,
+                result -> {
+                    sendLoginSuccessResponse(downlinkMessageBuilder, loginRequest, pileCode);
+                    log.info("充电桩登录成功，状态更新完成: pileCode={}", pileCode);
+                },
+                throwable -> {
+                    log.error("充电桩登录状态更新失败: pileCode={}", pileCode, throwable);
+                    sendLoginFailureResponse(downlinkMessageBuilder, uplinkQueueMessage, loginRequest, pileCode);
+                }
+            );
 
-            downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, pileCode);
-        } else {
-
-            downlinkMessageBuilder.setLoginResponse(LoginResponse.newBuilder()
-                    .setSuccess(false)
-                    .setPileCode(loginRequest.getPileCode())
-                    .build());
-
-
-            downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, uplinkQueueMessage, loginRequest);
+        } catch (Exception e) {
+            log.error("处理充电桩登录时发生异常: pileCode={}", pileCode, e);
+            sendLoginFailureResponse(downlinkMessageBuilder, uplinkQueueMessage, loginRequest, pileCode);
         }
+    }
 
+    /**
+     * 处理登录失败的情况
+     */
+    private void handleFailedLogin(UplinkQueueMessage uplinkQueueMessage,
+                                 LoginRequest loginRequest,
+                                 DownlinkRequestMessage.Builder downlinkMessageBuilder,
+                                 String pileCode) {
+        log.warn("充电桩登录失败，充电桩不存在: pileCode={}", pileCode);
+        sendLoginFailureResponse(downlinkMessageBuilder, uplinkQueueMessage, loginRequest, pileCode);
+    }
 
-        callback.onSuccess();
+    /**
+     * 发送登录成功应答
+     */
+    private void sendLoginSuccessResponse(DownlinkRequestMessage.Builder downlinkMessageBuilder,
+                                        LoginRequest loginRequest,
+                                        String pileCode) {
+        downlinkMessageBuilder.setLoginResponse(LoginResponse.newBuilder()
+                .setSuccess(true)
+                .setPileCode(loginRequest.getPileCode())
+                .build());
+
+        log.info("业务[充电桩登录成功应答] 发送下行消息到充电桩: {}", pileCode);
+        downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, pileCode);
+    }
+
+    /**
+     * 发送登录失败应答
+     */
+    private void sendLoginFailureResponse(DownlinkRequestMessage.Builder downlinkMessageBuilder,
+                                        UplinkQueueMessage uplinkQueueMessage,
+                                        LoginRequest loginRequest,
+                                        String pileCode) {
+        downlinkMessageBuilder.setLoginResponse(LoginResponse.newBuilder()
+                .setSuccess(false)
+                .setPileCode(loginRequest.getPileCode())
+                .build());
+
+        log.info("业务[充电桩登录失败应答] 发送下行消息到充电桩: {}", pileCode);
+        downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, uplinkQueueMessage, loginRequest);
     }
 
     @Override
@@ -111,34 +179,54 @@ public class DefaultPileProtocolService implements PileProtocolService {
         Pile pile = pileRepository.findPileByCode(heartBeatRequest.getPileCode());
 
         if (pile != null) {
-            // 重新保存到缓存
-            createSession(uplinkQueueMessage, pile,
-                    heartBeatRequest.getRemoteAddress(),
-                    heartBeatRequest.getNodeId(),
-                    heartBeatRequest.getNodeHostAddress(),
-                    heartBeatRequest.getNodeRestPort(),
-                    heartBeatRequest.getNodeGrpcPort());
+            // 1. 处理心跳状态管理（异步）
+            ListenableFuture<AttributesSaveResult> future = pileService.handlePileHeartbeat(pile.getId());
+
+            // 2. 异步处理完成后保存pileSession
+            JCPPAsynchron.withCallback(future,
+                result -> {
+                    // 保存pileSession
+                    pileSessionService.createOrUpdateSession(
+                            uplinkQueueMessage, pile,
+                            heartBeatRequest.getRemoteAddress(),
+                            heartBeatRequest.getNodeId(),
+                            heartBeatRequest.getNodeHostAddress(),
+                            heartBeatRequest.getNodeRestPort(),
+                            heartBeatRequest.getNodeGrpcPort());
+
+                    log.debug("充电桩心跳处理完成，状态更新成功: pileCode={}", heartBeatRequest.getPileCode());
+                },
+                throwable -> {
+                    log.error("充电桩心跳状态更新失败: pileCode={}", heartBeatRequest.getPileCode(), throwable);
+                }
+            );
         }
 
         callback.onSuccess();
     }
 
-    private PileSession createSession(UplinkQueueMessage uplinkQueueMessage,
-                                      Pile pile,
-                                      String remoteAddress,
-                                      String nodeId,
-                                      String nodeIp,
-                                      int restPort,
-                                      int grpcPort) {
-        PileSession pileSession = new PileSession(pile.getId(), pile.getPileCode(), uplinkQueueMessage.getProtocolName());
-        pileSession.setProtocolSessionId(new UUID(uplinkQueueMessage.getSessionIdMSB(), uplinkQueueMessage.getSessionIdLSB()));
-        pileSession.setRemoteAddress(remoteAddress);
-        pileSession.setNodeId(nodeId);
-        pileSession.setNodeIp(nodeIp);
-        pileSession.setNodeRestPort(restPort);
-        pileSession.setNodeGrpcPort(grpcPort);
+    @Override
+    public void onSessionCloseEvent(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到会话关闭事件 {}", uplinkQueueMessage);
 
-        return pileSession;
+        SessionCloseEventProto sessionCloseEvent = uplinkQueueMessage.getSessionCloseEventProto();
+        String pileCode = sessionCloseEvent.getPileCode();
+
+        try {
+            // 通过 PileService 处理会话关闭状态管理
+            pileService.handlePileSessionClose(pileCode);
+
+            // 使用PileSessionService清除会话缓存
+            pileSessionService.removeSession(pileCode);
+
+            log.info("会话关闭事件处理完成: 桩编码={}, 关闭原因={}, 状态已更新为OFFLINE",
+                    pileCode, sessionCloseEvent.getReason());
+
+        } catch (Exception e) {
+            log.error("处理会话关闭事件失败: 桩编码={}", pileCode, e);
+        }
+
+        callback.onSuccess();
     }
 
     @Override
@@ -159,6 +247,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setPricingId(pricingId)
                 .build());
 
+        log.info("业务[计费模型验证应答] 发送下行消息到充电桩: {}, 计费ID: {}", pileCode, pricingId);
         downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, pileCode);
 
         callback.onSuccess();
@@ -190,7 +279,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         model.setSequenceNumber(1);
         model.setPileCode(pileCode);
         model.setType(CHARGE);
-        model.setRule(SPLIT_TIME);
+        model.setRule(PEAK_VALLEY_PRICING);
         model.setStandardElec(new BigDecimal("0.75"));
         model.setStandardServ(new BigDecimal("0.45"));
         model.setFlagPriceList(flagPriceMap);
@@ -205,6 +294,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setPricingModel(ProtoConverter.toPricingModel(model))
                 .build());
 
+        log.info("业务[计费模型查询应答] 发送下行消息到充电桩: {}", pileCode);
         downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, pileCode);
 
         callback.onSuccess();
@@ -212,9 +302,32 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
     @Override
     public void postGunRunStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
-        log.info("接收到充电桩上报的电桩状态 {}", uplinkQueueMessage);
+        log.info("接收到充电桩上报的充电枪状态 {}", uplinkQueueMessage);
 
-        // TODO 处理相关业务逻辑
+        try {
+            GunRunStatusProto gunRunStatusProto = uplinkQueueMessage.getGunRunStatusProto();
+            String pileCode = gunRunStatusProto.getPileCode();
+            String gunCode = gunRunStatusProto.getGunCode();
+            long ts = uplinkQueueMessage.getTs();
+            GunRunStatus protoStatus = gunRunStatusProto.getGunRunStatus();
+
+            // 委托给 GunService 处理充电枪状态逻辑
+            boolean needUpdatePileStatus = gunService.handleGunRunStatus(pileCode, gunCode, protoStatus, ts);
+
+            // 如果需要，根据充电枪状态更新充电桩状态
+            if (needUpdatePileStatus) {
+                // 转换Proto状态为枚举状态来更新桩状态
+                GunRunStatusEnum dbStatus = convertProtoStatusToDbStatus(protoStatus);
+                if (dbStatus != null) {
+                    updatePileStatusBasedOnGunStatus(pileCode, dbStatus);
+                }
+            }
+
+        } catch (Exception e) {
+            log.error("处理充电枪状态上报失败", e);
+            callback.onFailure(e);
+            return;
+        }
 
         callback.onSuccess();
     }
@@ -275,6 +388,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setAdditionalInfo(additionalInfo.toString())
                 .build());
 
+        log.info("业务[交易记录上报应答] 发送下行消息到充电桩: {}", pileCode);
         downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, pileCode);
 
         callback.onSuccess();
@@ -318,6 +432,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setDownlinkCmd(downlinkCmd.name())
                 .setRemoteStartChargingRequest(requestBuilder.build());
 
+        log.info("业务[远程启动充电] 发送下行消息到充电桩: {}, 充电枪: {}, 订单号: {}", pileCode, gunCode, orderNo);
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
@@ -339,6 +454,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                         .setGunCode(gunCode)
                         .build());
 
+        log.info("业务[远程停止充电] 发送下行消息到充电桩: {}, 充电枪: {}", pileCode, gunCode);
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
@@ -361,6 +477,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                         .setType(type)
                         .build());
 
+        log.info("业务[重启充电桩] 发送下行消息到充电桩: {}, 重启类型: {}", pileCode, type);
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
@@ -378,6 +495,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setDownlinkCmd(DownlinkCmdEnum.SET_PRICING.name())
                 .setSetPricingRequest(setPricingRequest);
 
+        log.info("业务[设置计费模型] 发送下行消息到充电桩: {}", pileCode);
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
@@ -437,6 +555,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setRequestIdLSB(requestId.getLeastSignificantBits())
                 .setDownlinkCmd(DownlinkCmdEnum.OTA_REQUEST.name())
                 .setOtaRequest(request);
+        log.info("业务[OTA升级请求] 发送下行消息到充电桩: {}, 文件路径: {}", request.getPileCode(), request.getFilePath());
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
 
     }
@@ -490,6 +609,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                         .setPileCode(pileCode)
                         .setTime(DateUtil.formatLocalDateTime(time))
                         .build());
+        log.info("业务[时间同步] 发送下行消息到充电桩: {}, 同步时间: {}", pileCode, DateUtil.formatLocalDateTime(time));
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
@@ -519,8 +639,26 @@ public class DefaultPileProtocolService implements PileProtocolService {
         log.info("地锁状态信息: 桩编码: {}, 枪号: {}, 车位锁状态: {}, 车位状态: {}, 地锁电量: {}%, 报警状态: {}",
                 pileCode, gunCode, lockStatus, parkStatus, lockBattery, alarmStatus);
 
-        // TODO 处理相关业务逻辑，比如保存地锁状态信息到数据库
+        try {
+            // 获取时间戳
+            long ts = uplinkQueueMessage.getTs();
 
+            // 获取充电枪信息
+            Gun gun = gunService.findByPileCodeAndGunCode(pileCode, gunCode);
+            if (gun != null) {
+                // 保存地锁状态到属性表
+                saveLockStatusToAttributes(gun.getId(), lockStatus, parkStatus, lockBattery, alarmStatus, ts);
+
+                log.info("地锁和车位状态已保存: 桩编码={}, 枪编码={}, 地锁状态={}, 车位状态={}",
+                        pileCode, gunCode, lockStatus, parkStatus);
+            } else {
+                log.warn("未找到充电枪，无法保存地锁状态: 桩编码={}, 枪编码={}", pileCode, gunCode);
+            }
+        } catch (Exception e) {
+            log.error("保存地锁状态失败: 桩编码={}, 枪编码={}", pileCode, gunCode, e);
+            callback.onFailure(e);
+            return;
+        }
 
         callback.onSuccess();
     }
@@ -548,6 +686,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setRequestIdLSB(requestId.getLeastSignificantBits())
                 .setDownlinkCmd(DownlinkCmdEnum.OFFLINE_CARD_BALANCE_UPDATE_REQUEST.name())
                 .setOfflineCardBalanceUpdateRequest(request);
+        log.info("业务[离线卡余额更新] 发送下行消息到充电桩: {}, 卡号: {}", request.getPileCode(), request.getCardNo());
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
     }
 
@@ -564,6 +703,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setRequestIdLSB(requestId.getLeastSignificantBits())
                 .setDownlinkCmd(DownlinkCmdEnum.OFFLINE_CARD_SYNC_REQUEST.name())
                 .setOfflineCardSyncRequest(request);
+        log.info("业务[离线卡同步] 发送下行消息到充电桩: {}", request.getPileCode());
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
     }
 
@@ -600,7 +740,106 @@ public class DefaultPileProtocolService implements PileProtocolService {
         return builder;
     }
 
+    @Override
+    public void postBmsDemandChargerOutput(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电过程BMS需求与充电机输出信息:{}", uplinkQueueMessage);
+        BmsDemandChargerOutputProto bmsDemandChargerOutputProto = uplinkQueueMessage.getBmsDemandChargerOutputProto();
+        String pileCode = bmsDemandChargerOutputProto.getPileCode();
+        String gunCode = bmsDemandChargerOutputProto.getGunCode();
+        String tradeNo = bmsDemandChargerOutputProto.getTradeNo();
+        String additionalInfo = bmsDemandChargerOutputProto.getAdditionalInfo();
+        log.info("充电过程BMS需求与充电机输出信息: 桩编码: {}, 枪号: {}, 交易流水号: {}, 附加信息: {}",
+               pileCode, gunCode, tradeNo, additionalInfo);
+        // TODO 处理相关业务逻辑
+        callback.onSuccess();
+    }
+    /**
+     * 将Proto状态转换为数据库枚举状态
+     */
+    private GunRunStatusEnum convertProtoStatusToDbStatus(GunRunStatus protoStatus) {
+        switch (protoStatus) {
+            case IDLE:
+                return GunRunStatusEnum.IDLE;
+            case INSERTED:
+                return GunRunStatusEnum.INSERTED;
+            case CHARGING:
+                return GunRunStatusEnum.CHARGING;
+            case CHARGE_COMPLETE:
+                return GunRunStatusEnum.CHARGE_COMPLETE;
+            case DISCHARGE_READY:
+                return GunRunStatusEnum.DISCHARGE_READY;
+            case DISCHARGING:
+                return GunRunStatusEnum.DISCHARGING;
+            case DISCHARGE_COMPLETE:
+                return GunRunStatusEnum.DISCHARGE_COMPLETE;
+            case RESERVED:
+                return GunRunStatusEnum.RESERVED;
+            case FAULT:
+                return GunRunStatusEnum.FAULT;
+            case UNKNOWN:
+            default:
+                return null; // 未知状态不更新
+        }
+    }
 
+    /**
+     * 充电枪状态上报处理
+     * <p>
+     * 重构说明：
+     * - 充电桩状态简化为ONLINE/OFFLINE，不再受枪状态影响
+     * - 充电枪的工作状态独立维护，不影响充电桩的在线状态
+     * - 只要设备能正常通信，充电桩就保持ONLINE状态
+     * <p>
+     * 处理逻辑：
+     * 1. 枪状态变化不影响桩的在线状态
+     * 2. 仅在设备能上报枪状态时，确保桩为ONLINE状态
+     * 3. 枪的故障状态仅记录在枪级别，不影响桩状态
+     */
+    private void updatePileStatusBasedOnGunStatus(String pileCode, GunRunStatusEnum gunStatus) {
+        // 枪状态上报说明设备在线，确保充电桩状态为ONLINE
+        Pile pile = pileRepository.findPileByCode(pileCode);
+        if (pile != null) {
+            String currentStatusStr = pileService.findPileStatus(pile.getId());
 
+            // 如果当前不是ONLINE状态，更新为ONLINE
+            if (!"ONLINE".equals(currentStatusStr)) {
+                pileService.updatePileStatusByCode(pileCode, PileStatusEnum.ONLINE);
+                log.info("枪状态上报，确保充电桩在线: 桩编码={}, 枪状态={}, 更新桩状态=ONLINE",
+                        pileCode, gunStatus);
+            }
+        }
+
+        // 注意：枪的具体状态通过GunService单独管理，与桩状态解耦
+        log.debug("充电枪状态上报: 桩编码={}, 枪状态={}", pileCode, gunStatus);
+    }
+
+    /**
+     * 保存地锁状态到属性表
+     */
+    private void saveLockStatusToAttributes(UUID gunId, int lockStatus, int parkStatus, int lockBattery, int alarmStatus, long ts) {
+        try {
+
+            // 保存地锁状态
+            AttributeKvEntry lockStatusAttr = new BaseAttributeKvEntry(
+                new LongDataEntry(AttrKeyEnum.LOCK_STATUS.getCode(), (long) lockStatus),
+                ts
+            );
+            attributeService.save(gunId, lockStatusAttr);
+
+            // 保存车位状态
+            AttributeKvEntry parkStatusAttr = new BaseAttributeKvEntry(
+                new LongDataEntry(AttrKeyEnum.PARK_STATUS.getCode(), (long) parkStatus),
+                ts
+            );
+            attributeService.save(gunId, parkStatusAttr);
+
+            // 地锁电量和报警状态暂不保存，只记录日志
+            log.debug("地锁电量: {}%, 报警状态: {}", lockBattery, alarmStatus);
+
+        } catch (Exception e) {
+            log.error("保存地锁状态到属性表失败: gunId={}", gunId, e);
+            throw e;
+        }
+    }
 
 }

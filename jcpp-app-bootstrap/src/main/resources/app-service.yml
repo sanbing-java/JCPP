@@ -1,4 +1,4 @@
-﻿server:
+server:
   address: "${HTTP_BIND_ADDRESS:0.0.0.0}"
   port: "${HTTP_BIND_PORT:8080}"
   undertow:
@@ -16,6 +16,10 @@
     options:
       server:
         record-request-start-time: true
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
 
 spring:
   application:
@@ -29,6 +33,50 @@ spring:
       leak-detection-threshold: "${SPRING_DATASOURCE_HIKARI_LEAK_DETECTION_THRESHOLD:0}"
       maximum-pool-size: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:64}"
       register-mbeans: "${SPRING_DATASOURCE_HIKARI_REGISTER_MBEANS:false}"
+  servlet:
+    multipart:
+      max-file-size: "${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE:50MB}"
+      max-request-size: "${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:50MB}"
+  main:
+    allow-circular-references: "true"
+  mvc:
+    pathmatch.matching-strategy: "ANT_PATH_MATCHER"
+    async.request-timeout: "${SPRING_MVC_ASYNC_REQUEST_TIMEOUT:30000}"
+    cors:
+      mappings:
+        "[/api/**]":
+          allowed-origin-patterns: "*"
+          allowed-methods: "*"
+          allowed-headers: "*"
+          max-age: "1800"
+          allow-credentials: "true"
+  web:
+    resources:
+      chain:
+        compressed: "true"
+        strategy:
+          content:
+            enabled: "true"
+
+security:
+  jwt:
+    tokenExpirationTime: "${JWT_TOKEN_EXPIRATION_TIME:9000}"
+    refreshTokenExpTime: "${JWT_REFRESH_TOKEN_EXPIRATION_TIME:604800}"
+    tokenIssuer: "${JWT_TOKEN_ISSUER:sanbing.io}"
+    tokenSigningKey: "${JWT_TOKEN_SIGNING_KEY:NUI3T1FCSVI0MFNweFAxRjEyUUJ1QkVPc3V0T1hEdUJON0hiZ2NydzdzN0RBSVZwTE9rMFFWeDVTRnZ6djMxSw==}"
+  # 安全设置配置
+  settings:
+    # 密码策略
+    passwordPolicy:
+      minimumLength: "${SECURITY_PASSWORD_POLICY_MINIMUM_LENGTH:6}"
+      maximumLength: "${SECURITY_PASSWORD_POLICY_MAXIMUM_LENGTH:72}"
+      minimumUppercaseLetters: "${SECURITY_PASSWORD_POLICY_MINIMUM_UPPERCASE_LETTERS:0}"
+      minimumLowercaseLetters: "${SECURITY_PASSWORD_POLICY_MINIMUM_LOWERCASE_LETTERS:0}"
+      minimumDigits: "${SECURITY_PASSWORD_POLICY_MINIMUM_DIGITS:0}"
+      minimumSpecialCharacters: "${SECURITY_PASSWORD_POLICY_MINIMUM_SPECIAL_CHARACTERS:0}"
+      allowWhitespaces: "${SECURITY_PASSWORD_POLICY_ALLOW_WHITESPACES:true}"
+    # 最大登录失败次数
+    maxFailedLoginAttempts: "${SECURITY_MAX_FAILED_LOGIN_ATTEMPTS:5}"
 
 mybatis-plus:
   type-handlers-package: sanbing.jcpp.app.dal.config.ibatis.typehandlers
@@ -111,17 +159,25 @@ queue:
     stats:
       enabled: "${QUEUE_APP_STATS_ENABLED:true}"
       print-interval-ms: "${QUEUE_APP_STATS_PRINT_INTERVAL_MS:60000}"
+      timer-top-n: "${QUEUE_APP_STATS_TIMER_TOP_N:5}"
 
 # 应用程序缓存配置
 cache:
   type: "${CACHE_TYPE:caffeine}" # caffeine or redis
+  maximumPoolSize: "${CACHE_MAXIMUM_POOL_SIZE:16}"
   specs:
     piles:
       timeToLiveInMinutes: "${CACHE_SPECS_PILES_TTL:1440}"
       maxSize: "${CACHE_SPECS_PILES_MAX_SIZE:100000}"
+    guns:
+      timeToLiveInMinutes: "${CACHE_SPECS_GUNS_TTL:1440}"
+      maxSize: "${CACHE_SPECS_GUNS_MAX_SIZE:1000000}"
     pileSessions:
-      timeToLiveInMinutes: "${CACHE_SPECS_PILE_SESSIONS_TTL:1440}"
+      timeToLiveInMinutes: "${service.protocol.sessions.default-inactivity-timeout-in-sec}"
       maxSize: "${CACHE_SPECS_PILE_SESSIONS_MAX_SIZE:100000}"
+    attributes:
+      timeToLiveInMinutes: "${CACHE_SPECS_ATTRIBUTES_TTL:1440}"
+      maxSize: "${CACHE_SPECS_ATTRIBUTES_MAX_SIZE:100000}"
 
 redis:
   connection:
@@ -133,7 +189,6 @@ redis:
     clientName: "${REDIS_CLIENT_NAME:standalone}"
     commandTimeout: "${REDIS_CLIENT_COMMAND_TIMEOUT:30000}"
     shutdownTimeout: "${REDIS_CLIENT_SHUTDOWN_TIMEOUT:1000}"
-    readTimeout: "${REDIS_CLIENT_READ_TIMEOUT:60000}"
     usePoolConfig: "${REDIS_CLIENT_USE_POOL_CONFIG:true}"
   cluster:
     nodes: "${REDIS_NODES:redis-node-0:6379,redis-node-1:6379,redis-node-2:6379,redis-node-3:6379,redis-node-4:6379,redis-node-5:6379}"
@@ -159,6 +214,29 @@ redis:
     numberTestsPerEvictionRun: "${REDIS_POOL_CONFIG_NUMBER_TESTS_PER_EVICTION_RUN:3}"
     blockWhenExhausted: "${REDIS_POOL_CONFIG_BLOCK_WHEN_EXHAUSTED:true}"
   evictTtlInMs: "${REDIS_EVICT_TTL_MS:60000}"
+
+# 数据库安装配置
+install:
+  # 安装模式：init-初始化数据库，upgrade-升级，disabled-不做任何操作
+  mode: "${INSTALL_MODE:disabled}"
+
+# SQL相关配置
+sql:
+  attributes:
+    # 批处理大小
+    batch_size: "${SQL_ATTRIBUTES_BATCH_SIZE:1000}"
+    # 批处理最大延迟（毫秒）
+    batch_max_delay: "${SQL_ATTRIBUTES_BATCH_MAX_DELAY:100}"
+    # 统计打印间隔（毫秒）
+    stats_print_interval_ms: "${SQL_ATTRIBUTES_STATS_PRINT_INTERVAL_MS:1000}"
+    # 批处理线程数
+    batch_threads: "${SQL_ATTRIBUTES_BATCH_THREADS:4}"
+    # 值是否进行XSS验证
+    value_no_xss_validation: "${SQL_ATTRIBUTES_VALUE_NO_XSS_VALIDATION:false}"
+  # 批处理排序
+  batch_sort: "${SQL_BATCH_SORT:true}"
+  # 是否移除空字符
+  remove_null_chars: "${SQL_REMOVE_NULL_CHARS:true}"
 
 service:
   # 服务类型：纯协议解析前置 - protocol，纯应用后端 - app，单体服务(包含protocol和app) - monolith

@@ -13,12 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.TimePeriodDetail;
+import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.proto.gen.ProtocolProto.TimePeriodDetail.PeriodItem;
-import sanbing.jcpp.proto.gen.ProtocolProto.TransactionDetail;
-import sanbing.jcpp.proto.gen.ProtocolProto.TransactionRecordRequest;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -189,7 +185,7 @@ public class LvnengV340TransactionRecordULCmd extends LvnengUplinkCmdExe {
                 .build();
         //订单明细
         TransactionDetail transactionDetail = TransactionDetail.newBuilder()
-                .setType(ProtocolProto.DetailType.TIME_PERIOD)
+                .setType(DetailType.TIME_PERIOD)
                 .setTimePeriod(timePeriodDetail)
                 .build();
 

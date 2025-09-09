@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Instant 序列化
  *
- * @author baigod
+ * @author 九筒
  */
 public class InstantSerializer extends com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer {
     public static final InstantSerializer INSTANCE = new InstantSerializer();

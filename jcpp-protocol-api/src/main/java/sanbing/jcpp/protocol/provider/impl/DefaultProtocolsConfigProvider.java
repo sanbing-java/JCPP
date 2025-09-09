@@ -17,9 +17,9 @@ import sanbing.jcpp.protocol.provider.ProtocolsConfigProvider;
 
 import java.util.Map;
 
+@Slf4j
 @Setter
 @Service
-@Slf4j
 @ConfigurationProperties("service")
 public class DefaultProtocolsConfigProvider implements ProtocolsConfigProvider {
 

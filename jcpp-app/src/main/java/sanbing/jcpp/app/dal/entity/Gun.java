@@ -14,10 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sanbing.jcpp.app.dal.config.ibatis.enums.GunOptStatusEnum;
-import sanbing.jcpp.app.dal.config.ibatis.enums.GunRunStatusEnum;
-import sanbing.jcpp.app.dal.config.ibatis.enums.OwnerTypeEnum;
 import sanbing.jcpp.infrastructure.cache.HasVersion;
+import sanbing.jcpp.infrastructure.util.validation.NoXss;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,7 +23,7 @@ import java.util.UUID;
 
 
 @Data
-@TableName("jcpp_gun")
+@TableName("t_gun")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,27 +34,22 @@ public class Gun implements Serializable, HasVersion {
 
     private LocalDateTime createdTime;
 
+    private LocalDateTime updatedTime;
+
     private JsonNode additionalInfo;
 
+    @NoXss
     private String gunNo;
 
+    @NoXss
     private String gunName;
 
+    @NoXss
     private String gunCode;
 
     private UUID stationId;
 
     private UUID pileId;
-
-    private UUID ownerId;
-
-    private OwnerTypeEnum ownerType;
-
-    private GunRunStatusEnum runStatus;
-
-    private LocalDateTime runStatusUpdatedTime;
-
-    private GunOptStatusEnum optStatus;
 
     private Integer version;
 

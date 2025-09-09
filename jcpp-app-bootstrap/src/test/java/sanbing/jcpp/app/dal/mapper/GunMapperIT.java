@@ -10,9 +10,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import sanbing.jcpp.AbstractTestBase;
-import sanbing.jcpp.app.dal.config.ibatis.enums.GunOptStatusEnum;
-import sanbing.jcpp.app.dal.config.ibatis.enums.GunRunStatusEnum;
-import sanbing.jcpp.app.dal.config.ibatis.enums.OwnerTypeEnum;
 import sanbing.jcpp.app.dal.entity.Gun;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 
@@ -22,10 +19,10 @@ import java.util.UUID;
 
 import static sanbing.jcpp.app.dal.mapper.PileMapperIT.NORMAL_PILE_ID;
 import static sanbing.jcpp.app.dal.mapper.StationMapperIT.NORMAL_STATION_ID;
-import static sanbing.jcpp.app.dal.mapper.UserMapperIT.NORMAL_USER_ID;
+
 
 /**
- * @author baigod
+ * @author 九筒
  */
 class GunMapperIT extends AbstractTestBase {
     static final UUID[] NORMAL_GUN_ID = new UUID[]{
@@ -61,11 +58,6 @@ class GunMapperIT extends AbstractTestBase {
                     .gunCode("202312120000" + new DecimalFormat("00").format(i + 1) + "-02")
                     .stationId(NORMAL_STATION_ID)
                     .pileId(pileId)
-                    .ownerId(NORMAL_USER_ID)
-                    .ownerType(OwnerTypeEnum.C)
-                    .runStatus(GunRunStatusEnum.IDLE)
-                    .runStatusUpdatedTime(LocalDateTime.now())
-                    .optStatus(GunOptStatusEnum.AVAILABLE)
                     .build();
 
             gunMapper.insertOrUpdate(gun);

@@ -18,11 +18,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.TimeZone;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public class JacksonUtil {
 
@@ -51,8 +53,8 @@ public class JacksonUtil {
         try {
             return fromValue != null ? OBJECT_MAPPER.convertValue(fromValue, toValueType) : null;
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("The given object value: "
-                    + fromValue + " cannot be converted to " + toValueType, e);
+            throw new IllegalArgumentException("给定的对象值: "
+                    + fromValue + " 无法转换为 " + toValueType, e);
         }
     }
 
@@ -60,8 +62,8 @@ public class JacksonUtil {
         try {
             return fromValue != null ? OBJECT_MAPPER.convertValue(fromValue, toValueTypeRef) : null;
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("The given object value: "
-                    + fromValue + " cannot be converted to " + toValueTypeRef, e);
+            throw new IllegalArgumentException("给定的对象值: "
+                    + fromValue + " 无法转换为 " + toValueTypeRef, e);
         }
     }
 
@@ -69,8 +71,8 @@ public class JacksonUtil {
         try {
             return string != null ? OBJECT_MAPPER.readValue(string, clazz) : null;
         } catch (IOException e) {
-            throw new IllegalArgumentException("The given string value: "
-                    + string + " cannot be transformed to Json object", e);
+            throw new IllegalArgumentException("给定的字符串值: "
+                    + string + " 无法转换为Json对象", e);
         }
     }
 
@@ -78,8 +80,8 @@ public class JacksonUtil {
         try {
             return string != null ? OBJECT_MAPPER.readValue(string, valueTypeRef) : null;
         } catch (IOException e) {
-            throw new IllegalArgumentException("The given string value: "
-                    + string + " cannot be transformed to Json object", e);
+            throw new IllegalArgumentException("给定的字符串值: "
+                    + string + " 无法转换为Json对象", e);
         }
     }
 
@@ -87,8 +89,15 @@ public class JacksonUtil {
         try {
             return bytes != null ? OBJECT_MAPPER.readValue(bytes, clazz) : null;
         } catch (IOException e) {
-            throw new IllegalArgumentException("The given string value: "
-                    + Arrays.toString(bytes) + " cannot be transformed to Json object", e);
+            throw new IllegalArgumentException("给定的字节数组: "
+                    + Arrays.toString(bytes) + " 无法转换为Json对象", e);
+        }
+    }
+    public static <T> T fromReader(Reader reader, Class<T> clazz) {
+        try {
+            return reader != null ? OBJECT_MAPPER.readValue(reader, clazz) : null;
+        } catch (IOException e) {
+            throw new IllegalArgumentException("给定的Reader无法转换为Json对象", e);
         }
     }
 
@@ -96,8 +105,8 @@ public class JacksonUtil {
         try {
             return OBJECT_MAPPER.readTree(bytes);
         } catch (IOException e) {
-            throw new IllegalArgumentException("The given byte[] value: "
-                    + Arrays.toString(bytes) + " cannot be transformed to Json object", e);
+            throw new IllegalArgumentException("给定的字节数组: "
+                    + Arrays.toString(bytes) + " 无法转换为Json对象", e);
         }
     }
 
@@ -105,8 +114,7 @@ public class JacksonUtil {
         try {
             return value != null ? OBJECT_MAPPER.writeValueAsString(value) : null;
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("The given Json object value: "
-                    + value + " cannot be transformed to a String", e);
+            throw new IllegalArgumentException("给定的对象值无法转换为字符串: " + value, e);
         }
     }
 
@@ -118,26 +126,67 @@ public class JacksonUtil {
         }
     }
 
+    public static JsonNode toJsonNode(Object value) {
+        try {
+            return OBJECT_MAPPER.valueToTree(value);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("给定的对象值无法转换为JSON节点: " + value, e);
+        }
+    }
+
+    public static <T> T toPojo(String content, Class<T> type) {
+        try {
+            return OBJECT_MAPPER.readValue(content, type);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("给定的字符串值无法转换为指定类型: " + content, e);
+        }
+    }
+
+    public static <T> T toPojo(String content, TypeReference<T> type) {
+        try {
+            return OBJECT_MAPPER.readValue(content, type);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("给定的字符串值无法转换为指定类型: " + content, e);
+        }
+    }
+
+    public static JsonNode toJson(String content) {
+        try {
+            return OBJECT_MAPPER.readTree(content);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("给定的字符串值无法转换为JSON: " + content, e);
+        }
+    }
+
+    public static JsonNode toJson(byte[] content) {
+        try {
+            return OBJECT_MAPPER.readTree(content);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("给定的字节数组无法转换为JSON: " + Arrays.toString(content), e);
+        }
+    }
+
+    public static <T> T fromJson(JsonNode json, Class<T> type) {
+        try {
+            return OBJECT_MAPPER.treeToValue(json, type);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("给定的JSON对象无法转换为指定类型: " + json, e);
+        }
+    }
+
+    public static <T> T fromJson(String json, Class<T> type) {
+        try {
+            return fromJson(toJson(json), type);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("JSON转换失败", e);
+        }
+    }
+
     public static <T> T treeToValue(JsonNode node, Class<T> clazz) {
         try {
             return OBJECT_MAPPER.treeToValue(node, clazz);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Can't convert value: " + node.toString(), e);
-        }
-    }
-
-    public static JsonNode toJsonNode(String value) {
-        return toJsonNode(value, OBJECT_MAPPER);
-    }
-
-    public static JsonNode toJsonNode(String value, ObjectMapper mapper) {
-        if (value == null || value.isEmpty()) {
-            return null;
-        }
-        try {
-            return mapper.readTree(value);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("无法转换值: " + node.toString(), e);
         }
     }
 
@@ -171,8 +220,16 @@ public class JacksonUtil {
         try {
             return OBJECT_MAPPER.writeValueAsBytes(value);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("The given Json object value: "
-                    + value + " cannot be transformed to a String", e);
+            throw new IllegalArgumentException("给定的对象值无法转换为字节数组: " + value, e);
+        }
+    }
+
+    public static <T> void writeValue(Writer writer, T value) {
+        try {
+            OBJECT_MAPPER.writeValue(writer, value);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("The given writer value: "
+                    + writer + "cannot be wrote", e);
         }
     }
 

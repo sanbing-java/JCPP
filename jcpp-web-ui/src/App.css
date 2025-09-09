@@ -1,0 +1,181 @@
+/*
+ * 开源代码，仅供学习和交流研究使用，商用请联系三丙
+ * 微信：mohan_88888
+ * 抖音：程序员三丙
+ * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ */
+
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 
+    'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 14px;
+  line-height: 1.5715;
+  color: #000000d9;
+  background-color: #f0f2f5;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* 覆盖antd样式 */
+.ant-layout {
+  background: #f0f2f5;
+}
+
+.ant-layout-content {
+  background: #f0f2f5;
+}
+
+/* 表格样式优化 */
+.ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 600;
+}
+
+/* 卡片样式优化 */
+.ant-card {
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+/* 按钮样式优化 */
+.ant-btn {
+  border-radius: 6px;
+}
+
+/* Modal样式优化 */
+.ant-modal {
+  border-radius: 8px;
+}
+
+
+/* 用户信息显示样式 */
+.user-info-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-info-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(24, 144, 255, 0.1) 0%, rgba(114, 46, 209, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.user-info-wrapper:hover::before {
+  opacity: 1;
+}
+
+.user-info-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(24, 144, 255, 0.15);
+  border-color: rgba(24, 144, 255, 0.3);
+}
+
+.user-avatar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  color: #6c757d;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.user-info-wrapper:hover .dropdown-arrow {
+  color: #495057;
+  transform: rotate(180deg);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .ant-form-inline .ant-form-item {
+    margin-bottom: 16px;
+  }
+  
+  .ant-table {
+    font-size: 12px;
+  }
+  
+  .user-info-wrapper {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+  
+  .user-details {
+    display: none;
+  }
+  
+  .user-avatar {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-info-wrapper {
+    padding: 4px 8px;
+    border-radius: 16px;
+  }
+  
+  .user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  
+  .dropdown-arrow {
+    font-size: 8px;
+  }
+}

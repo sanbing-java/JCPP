@@ -10,18 +10,16 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import sanbing.jcpp.AbstractTestBase;
-import sanbing.jcpp.app.dal.config.ibatis.enums.OwnerTypeEnum;
-import sanbing.jcpp.app.dal.config.ibatis.enums.StationStatusEnum;
 import sanbing.jcpp.app.dal.entity.Station;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static sanbing.jcpp.app.dal.mapper.UserMapperIT.NORMAL_USER_ID;
+
 
 /**
- * @author baigod
+ * @author 九筒
  */
 class StationMapperIT extends AbstractTestBase {
     static final UUID NORMAL_STATION_ID = UUID.fromString("07d80c81-fe99-4a1f-a6aa-dc4d798b5626");
@@ -39,15 +37,12 @@ class StationMapperIT extends AbstractTestBase {
                 .additionalInfo(JacksonUtil.newObjectNode())
                 .stationName("三丙家专属充电站")
                 .stationCode("S20241001001")
-                .ownerId(NORMAL_USER_ID)
                 .longitude(120.107936F)
                 .latitude(30.267014F)
-                .ownerType(OwnerTypeEnum.C)
                 .province("浙江省")
                 .city("杭州市")
                 .county("西湖区")
                 .address("西溪路552-1号")
-                .status(StationStatusEnum.OPERATIONAL)
                 .build();
 
         stationMapper.insertOrUpdate(station);

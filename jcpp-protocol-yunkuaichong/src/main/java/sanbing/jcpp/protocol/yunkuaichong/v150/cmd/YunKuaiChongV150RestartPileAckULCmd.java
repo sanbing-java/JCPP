@@ -10,7 +10,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.RestartPileResponse;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
@@ -33,9 +32,6 @@ public class YunKuaiChongV150RestartPileAckULCmd extends YunKuaiChongUplinkCmdEx
         log.info("{} 云快充1.5.0远程重启动充电命令回复", tcpSession);
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
-        // 从Tracer总获取当前时间
-        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
-
         // 1.桩编号
         byte[] pileCodeBytes = new byte[7];
         byteBuf.readBytes(pileCodeBytes);
@@ -45,7 +41,6 @@ public class YunKuaiChongV150RestartPileAckULCmd extends YunKuaiChongUplinkCmdEx
         boolean isSuccess = (byteBuf.readByte() == 0x01);
 
         RestartPileResponse restartPileResponse = RestartPileResponse.newBuilder()
-                .setTs(ts)
                 .setPileCode(pileCode)
                 .setSuccess(isSuccess)
                 .build();

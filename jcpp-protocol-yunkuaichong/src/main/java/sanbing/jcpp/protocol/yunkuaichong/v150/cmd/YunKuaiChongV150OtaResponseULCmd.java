@@ -10,7 +10,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.OtaResponse;
+import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -56,8 +57,8 @@ public class YunKuaiChongV150OtaResponseULCmd extends YunKuaiChongUplinkCmdExe {
         // 升级状态 // 0x00成功  0x01编号错误 0x01程序与桩型号不符 0x01下载更新文件超时
         byte upgradeStatus = byteBuf.readByte();
 
-        ProtocolProto.UplinkQueueMessage queueMessage = uplinkMessageBuilder(pileCode, tcpSession, message)
-                .setOtaResponse(ProtocolProto.OtaResponse.newBuilder()
+        UplinkQueueMessage queueMessage = uplinkMessageBuilder(pileCode, tcpSession, message)
+                .setOtaResponse(OtaResponse.newBuilder()
                         .setPileCode(pileCode)
                         .setSuccess(upgradeStatus == 0x00)
                         .setErrorMsg(UPGRADE_STATUS.getOrDefault(upgradeStatus,UNKNOWN_MSG))

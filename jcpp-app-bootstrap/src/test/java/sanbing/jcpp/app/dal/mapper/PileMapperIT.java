@@ -11,8 +11,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import sanbing.jcpp.AbstractTestBase;
-import sanbing.jcpp.app.dal.config.ibatis.enums.OwnerTypeEnum;
-import sanbing.jcpp.app.dal.config.ibatis.enums.PileStatusEnum;
 import sanbing.jcpp.app.dal.config.ibatis.enums.PileTypeEnum;
 import sanbing.jcpp.app.dal.entity.Pile;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
@@ -25,10 +23,10 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static sanbing.jcpp.app.dal.mapper.StationMapperIT.NORMAL_STATION_ID;
-import static sanbing.jcpp.app.dal.mapper.UserMapperIT.NORMAL_USER_ID;
+
 
 /**
- * @author baigod
+ * @author 九筒
  */
 class PileMapperIT extends AbstractTestBase {
     static final UUID[] NORMAL_PILE_ID = new UUID[]{
@@ -61,12 +59,9 @@ class PileMapperIT extends AbstractTestBase {
                     .pileCode("202312120000" + new DecimalFormat("00").format(i + 1))
                     .protocol("yunkuaichongV150")
                     .stationId(NORMAL_STATION_ID)
-                    .ownerId(NORMAL_USER_ID)
-                    .ownerType(OwnerTypeEnum.C)
                     .brand("星星")
                     .model("10A")
                     .manufacturer("星星")
-                    .status(PileStatusEnum.IDLE)
                     .type(PileTypeEnum.AC)
                     .build();
 
@@ -90,12 +85,9 @@ class PileMapperIT extends AbstractTestBase {
                         .pileCode("20241015" + new DecimalFormat("000000").format(number.get()))
                         .protocol("yunkuaichongV150")
                         .stationId(NORMAL_STATION_ID)
-                        .ownerId(NORMAL_USER_ID)
-                        .ownerType(OwnerTypeEnum.C)
                         .brand("星星")
                         .model("10A")
                         .manufacturer("星星")
-                        .status(PileStatusEnum.IDLE)
                         .type(PileTypeEnum.AC)
                         .build();
                 piles.add(pile);

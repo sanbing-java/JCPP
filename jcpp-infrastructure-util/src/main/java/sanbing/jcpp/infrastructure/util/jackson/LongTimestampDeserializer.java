@@ -16,7 +16,7 @@ import java.time.ZoneId;
 
 /**
  * 13位时间戳反序列化器
- * @author baigod
+ * @author 九筒
  */
 public class LongTimestampDeserializer extends JsonDeserializer<Long> {
 

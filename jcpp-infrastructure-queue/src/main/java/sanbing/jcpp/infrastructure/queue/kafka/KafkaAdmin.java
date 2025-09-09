@@ -60,12 +60,12 @@ public class KafkaAdmin implements QueueAdmin {
                 }
                 case null, default -> {
                     log.warn("[{}] Failed to create topic", topic, ee);
-                    throw new RuntimeException(ee);
+                    throw new RuntimeException("Kafka管理操作失败", ee);
                 }
             }
         } catch (Exception e) {
             log.warn("[{}] Failed to create topic", topic, e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Kafka操作失败", e);
         }
     }
 

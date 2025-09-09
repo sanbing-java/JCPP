@@ -24,7 +24,7 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
 
 /**
  * 云快充1.5.0充电桩计费模型请求
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 @ProtocolCmd(value = 0x09, protocolNames = {V150, V160, V170})

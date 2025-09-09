@@ -18,11 +18,11 @@ import java.util.function.Predicate;
 
 /**
  * 通用命令路由器
- * 
+ * <p>
  * 提供基于协议名+命令字的路由功能，支持多版本协议
  *
  * @param <T> 命令执行器类型
- * @author sanbing
+ * @author 九筒
  * @since 2025-08-25
  */
 @Slf4j
@@ -79,7 +79,7 @@ public class ProtocolCommandRouter<T> {
         } catch (InstantiationException | IllegalAccessException | 
                  InvocationTargetException | NoSuchMethodException e) {
             log.error("无法实例化命令执行器 {}: {}", executorClass.getName(), e.getMessage());
-            throw new RuntimeException("Failed to instantiate command executor: " + executorClass.getName(), e);
+            throw new RuntimeException("实例化命令执行器失败: " + executorClass.getName(), e);
         }
     }
 

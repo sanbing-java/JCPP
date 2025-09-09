@@ -10,7 +10,7 @@ package sanbing.jcpp.infrastructure.queue.discovery;
 import sanbing.jcpp.proto.gen.ClusterProto;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public interface ServiceInfoProvider {
     String getServiceId();

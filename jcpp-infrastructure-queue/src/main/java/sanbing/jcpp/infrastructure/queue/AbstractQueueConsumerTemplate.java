@@ -107,7 +107,7 @@ public abstract class AbstractQueueConsumerTemplate<R, T extends QueueMsg> imple
                 }
             } catch (IOException e) {
                 log.error("Failed decode record: [{}]", record);
-                throw new RuntimeException("Failed to decode record: ", e);
+                throw new RuntimeException("解码记录失败: ", e);
             }
         });
         return result;

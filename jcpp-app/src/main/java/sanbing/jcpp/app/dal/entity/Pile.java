@@ -14,17 +14,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sanbing.jcpp.app.dal.config.ibatis.enums.OwnerTypeEnum;
-import sanbing.jcpp.app.dal.config.ibatis.enums.PileStatusEnum;
 import sanbing.jcpp.app.dal.config.ibatis.enums.PileTypeEnum;
 import sanbing.jcpp.infrastructure.cache.HasVersion;
+import sanbing.jcpp.infrastructure.util.validation.NoXss;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@TableName(value = "jcpp_pile", autoResultMap = true)
+@TableName(value = "t_pile", autoResultMap = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,27 +34,29 @@ public class Pile implements Serializable, HasVersion {
 
     private LocalDateTime createdTime;
 
+    private LocalDateTime updatedTime;
+
     private JsonNode additionalInfo;
 
+    @NoXss
     private String pileName;
 
+    @NoXss
     private String pileCode;
 
+    @NoXss
     private String protocol;
 
     private UUID stationId;
 
-    private UUID ownerId;
-
-    private OwnerTypeEnum ownerType;
-
+    @NoXss
     private String brand;
 
+    @NoXss
     private String model;
 
+    @NoXss
     private String manufacturer;
-
-    private PileStatusEnum status;
 
     private PileTypeEnum type;
 

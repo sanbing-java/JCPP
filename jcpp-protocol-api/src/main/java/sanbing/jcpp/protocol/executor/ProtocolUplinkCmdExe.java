@@ -13,7 +13,7 @@ import sanbing.jcpp.protocol.domain.ProtocolSession;
  * 通用协议上行命令执行器接口
  *
  * @param <T> 上行消息类型
- * @author sanbing
+ * @author 九筒
  * @since 2024-12-16
  */
 public interface ProtocolUplinkCmdExe<T> {

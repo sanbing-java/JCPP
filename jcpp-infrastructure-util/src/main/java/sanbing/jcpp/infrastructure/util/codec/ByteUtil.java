@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public class ByteUtil {
 
@@ -83,11 +83,11 @@ public class ByteUtil {
 
     /**
      * 计算字节数组的累加和，如果累加结果超过1字节，则只取低8位
-     * 
+     * <p>
      * 示例：
      * byte[] data = {0x01, 0x02, 0x03};
      * byte sum = calculateSum(data); // sum = 0x06
-     * 
+     * <p>
      * byte[] data2 = {(byte)0xFF, (byte)0xFF};
      * byte sum2 = calculateSum(data2); // sum2 = (byte)0xFE (254 + 255 = 509, 取低8位为254)
      *
@@ -110,7 +110,7 @@ public class ByteUtil {
 
     /**
      * 验证数据的累加和是否与期望值相等
-     * 
+     * <p>
      * 示例：
      * byte[] data = {0x01, 0x02, 0x03};
      * boolean valid = verifySum(data, (byte)0x06); // valid = true

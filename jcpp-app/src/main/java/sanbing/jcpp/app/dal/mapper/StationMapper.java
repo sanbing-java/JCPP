@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import sanbing.jcpp.app.dal.entity.Station;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public interface StationMapper extends BaseMapper<Station> {
 }

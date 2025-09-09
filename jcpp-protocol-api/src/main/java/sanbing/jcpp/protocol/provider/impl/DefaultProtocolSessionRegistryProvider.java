@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sanbing.jcpp.infrastructure.util.async.JCPPThreadFactory;
 import sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration;
+import sanbing.jcpp.proto.gen.ProtocolProto.SessionCloseReason;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
-import sanbing.jcpp.protocol.domain.SessionCloseReason;
 import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Service
 @Slf4j
@@ -51,7 +51,7 @@ public class DefaultProtocolSessionRegistryProvider implements ProtocolSessionRe
     public void init() {
         scheduledExecutorService.scheduleAtFixedRate(() -> sessionCache.asMap().forEach((id, session) -> {
             if (session.getLastActivityTime().isBefore(LocalDateTime.now().minusSeconds(defaultInactivityTimeoutInSec))) {
-                session.close(SessionCloseReason.INACTIVE);
+                session.close(SessionCloseReason.SESSION_CLOSE_DESTRUCTION);
                 unregister(session.getId());
             }
         }), defaultStateCheckIntervalInSec, defaultStateCheckIntervalInSec, TimeUnit.SECONDS);

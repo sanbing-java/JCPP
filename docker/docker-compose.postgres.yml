@@ -7,7 +7,7 @@
 
 
 volumes:
-  postgresql_data: {}
+  jcpp_pg_data: {}
 
 networks:
   sanbing-network:
@@ -33,5 +33,4 @@ services:
       - 'POSTGRESQL_DEFAULT_TRANSACTION_ISOLATION=read committed'
       - 'TZ=Asia/Shanghai'
     volumes:
-      - postgresql_data:/bitnami/postgresql
-      - ./schema/schema-postgres.sql:/docker-entrypoint-initdb.d/init.sql
+      - jcpp_pg_data:/bitnami/postgresql

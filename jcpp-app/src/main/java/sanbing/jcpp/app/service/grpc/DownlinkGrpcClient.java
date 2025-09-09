@@ -16,6 +16,8 @@ import io.grpc.netty.shaded.io.netty.channel.nio.NioEventLoopGroup;
 import io.grpc.netty.shaded.io.netty.channel.socket.nio.NioSocketChannel;
 import io.grpc.stub.StreamObserver;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,8 +30,6 @@ import sanbing.jcpp.proto.gen.ProtocolInterfaceGrpc;
 import sanbing.jcpp.proto.gen.ProtocolInterfaceGrpc.ProtocolInterfaceStub;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import static sanbing.jcpp.infrastructure.proto.ProtoConverter.toTracerProto;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Component
 @Slf4j
@@ -109,7 +109,7 @@ public class DownlinkGrpcClient {
                 msgHandleExecutorMap.computeIfAbsent(key, hostAndPort ->
                                 Executors.newFixedThreadPool(1, JCPPThreadFactory.forName("downlink-handle-threads-" + hostAndPort)))
                         .execute(new TracerRunnable(() -> {
-                            while (Boolean.TRUE.equals(initializedMap.computeIfAbsent(key, k -> Boolean.FALSE))) {
+                            while (initializedMap.computeIfAbsent(key, k -> Boolean.FALSE)) {
                                 try {
                                     handleMsgs(key, queue);
                                 } catch (Exception e) {

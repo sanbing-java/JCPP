@@ -6,16 +6,20 @@
  */
 package sanbing.jcpp.protocol;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.core.Ordered;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import sanbing.jcpp.infrastructure.util.annotation.AfterStartUp;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @SpringBootApplication(scanBasePackages = {"sanbing.jcpp.protocol",
         "sanbing.jcpp.infrastructure.stats",
@@ -23,12 +27,16 @@ import java.util.Arrays;
         "sanbing.jcpp.infrastructure.util"})
 @EnableAsync
 @EnableScheduling
+@Slf4j
 public class JCPPProtocolServiceApplication {
 
     private static final String SPRING_CONFIG_NAME_KEY = "--spring.config.name";
     private static final String DEFAULT_SPRING_CONFIG_PARAM = SPRING_CONFIG_NAME_KEY + "=" + "protocol-service";
 
+    private static long startTs;
+
     public static void main(String[] args) {
+        startTs = System.currentTimeMillis();
         new SpringApplicationBuilder(JCPPProtocolServiceApplication.class).bannerMode(Banner.Mode.LOG).run(updateArguments(args));
     }
 
@@ -41,4 +49,11 @@ public class JCPPProtocolServiceApplication {
         }
         return args;
     }
+
+    @AfterStartUp(order = Ordered.LOWEST_PRECEDENCE)
+    public void afterStartUp() {
+        long startupTimeMs = System.currentTimeMillis() - startTs;
+        log.info("Started JChargePointProtocol Protocol Service in {} seconds", TimeUnit.MILLISECONDS.toSeconds(startupTimeMs));
+    }
+
 }

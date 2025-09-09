@@ -12,7 +12,8 @@ import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.TimeSyncResponse;
+import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -44,11 +45,11 @@ public class YunKuaiChongV150TimeSyncResultULCmd extends YunKuaiChongUplinkCmdEx
         byteBuf.readBytes(timeBytes);
         LocalDateTime dateTime = CP56Time2aUtil.decode(timeBytes);
         String time = DateUtil.formatLocalDateTime(dateTime);
-        ProtocolProto.TimeSyncResponse timeSyncResponse = ProtocolProto.TimeSyncResponse.newBuilder()
+        TimeSyncResponse timeSyncResponse = TimeSyncResponse.newBuilder()
                 .setPileCode(pileCode)
                 .setTime(time)
                 .build();
-        ProtocolProto.UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(pileCode, tcpSession, yunKuaiChongUplinkMessage)
+        UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(pileCode, tcpSession, yunKuaiChongUplinkMessage)
                 .setTimeSyncResponse(timeSyncResponse)
                 .build();
         tcpSession.getForwarder().sendMessage(uplinkQueueMessage);

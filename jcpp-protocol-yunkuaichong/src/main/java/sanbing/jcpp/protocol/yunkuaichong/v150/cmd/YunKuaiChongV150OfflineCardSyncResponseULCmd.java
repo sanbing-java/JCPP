@@ -11,7 +11,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.ProtocolProto.OfflineCardSyncResponse;
+import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -65,8 +66,8 @@ public class YunKuaiChongV150OfflineCardSyncResponseULCmd extends YunKuaiChongUp
             failureReason = byteBuf.readByte();
         }
 
-        ProtocolProto.UplinkQueueMessage queueMessage = uplinkMessageBuilder(pileCode, tcpSession, message)
-                .setOfflineCardSyncResponse(ProtocolProto.OfflineCardSyncResponse.newBuilder()
+        UplinkQueueMessage queueMessage = uplinkMessageBuilder(pileCode, tcpSession, message)
+                .setOfflineCardSyncResponse(OfflineCardSyncResponse.newBuilder()
                         .setPileCode(pileCode)
                         .setSuccess(saveResult == 0x01)
                         .setErrorMsg(errorMsg(saveResult, failureReason))

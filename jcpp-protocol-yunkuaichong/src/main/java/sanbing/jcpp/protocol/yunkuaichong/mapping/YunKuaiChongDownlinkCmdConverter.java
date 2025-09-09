@@ -14,13 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 云快充协议下行命令转换器（单例）
- * 
+ * <p>
  * 建立通用下行命令与云快充协议特定命令字的显式转换关系
  * 使用Map存储转换关系，提供O(1)性能
- * 
+ * <p>
  * 采用单例模式，避免重复实例化
  *
- * @author sanbing
+ * @author 九筒
  * @since 2024-12-16
  */
 public class YunKuaiChongDownlinkCmdConverter implements DownlinkCmdConverter {

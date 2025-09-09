@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.property.PropertyUtils;
-import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.RemoteStartChargingRequest;
 import sanbing.jcpp.protocol.AbstractProtocolTestBase;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
@@ -61,12 +61,7 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
 
         BinaryHandlerConfiguration binaryHandlerConfig = JacksonUtil.treeToValue(cfgJson, BinaryHandlerConfiguration.class);
 
-        ByteOrder byteOrder = LITTLE_ENDIAN_BYTE_ORDER.equalsIgnoreCase(binaryHandlerConfig.getByteOrder())
-                ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
-
-        JCPPLengthFieldBasedFrameDecoder framer = new JCPPLengthFieldBasedFrameDecoder(binaryHandlerConfig.getHead(), byteOrder,
-                binaryHandlerConfig.getLengthFieldOffset(), binaryHandlerConfig.getLengthFieldLength(),
-                binaryHandlerConfig.getLengthAdjustment(), binaryHandlerConfig.getInitialBytesToStrip());
+        JCPPLengthFieldBasedFrameDecoder framer = getJcppLengthFieldBasedFrameDecoder(binaryHandlerConfig);
 
         group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
@@ -90,6 +85,15 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
         // 连接到服务器
         ChannelFuture f = b.connect("127.0.0.1", yunkuaichongV150TcpPort).sync();
         channel = f.channel();
+    }
+
+    private static JCPPLengthFieldBasedFrameDecoder getJcppLengthFieldBasedFrameDecoder(BinaryHandlerConfiguration binaryHandlerConfig) {
+        ByteOrder byteOrder = LITTLE_ENDIAN_BYTE_ORDER.equalsIgnoreCase(binaryHandlerConfig.getByteOrder())
+                ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
+
+        return new JCPPLengthFieldBasedFrameDecoder(binaryHandlerConfig.getHead(), byteOrder,
+                binaryHandlerConfig.getLengthFieldOffset(), binaryHandlerConfig.getLengthFieldLength(),
+                binaryHandlerConfig.getLengthAdjustment(), binaryHandlerConfig.getInitialBytesToStrip());
     }
 
     @AfterEach
@@ -130,7 +134,7 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
                 .setRequestIdMSB(requestId.getMostSignificantBits())
                 .setRequestIdLSB(requestId.getLeastSignificantBits())
                 .setDownlinkCmd(DownlinkCmdEnum.REMOTE_START_CHARGING.name())
-                .setRemoteStartChargingRequest(ProtocolProto.RemoteStartChargingRequest.newBuilder()
+                .setRemoteStartChargingRequest(RemoteStartChargingRequest.newBuilder()
                         .setPileCode(pileCode)
                         .setGunCode("01")
                         .setLimitYuan("100")

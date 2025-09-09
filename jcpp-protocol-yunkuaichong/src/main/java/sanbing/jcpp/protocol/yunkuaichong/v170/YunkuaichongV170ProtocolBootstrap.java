@@ -15,7 +15,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolMessageProcessor;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.YUNKUAICHONG_V170;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 
 @ProtocolComponent(YUNKUAICHONG_V170)

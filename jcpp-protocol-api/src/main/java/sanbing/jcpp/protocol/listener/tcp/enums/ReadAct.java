@@ -9,7 +9,7 @@ package sanbing.jcpp.protocol.listener.tcp.enums;
 /**
  * 读取动作,辅助枚举
  *
- * @author baigod
+ * @author 九筒
  */
 public enum ReadAct {
     BREAK,

@@ -190,7 +190,7 @@ public class BCDUtil {
      */
     public static LocalDateTime bcdToDate(byte[] bcdBytes) {
         if (bcdBytes == null || bcdBytes.length != BCD_DATE_LENGTH) {
-            throw new IllegalArgumentException("BCD date bytes must be 8 bytes long");
+            throw new IllegalArgumentException("BCD日期字节必须为8字节长度");
         }
 
         // 检查是否全为0

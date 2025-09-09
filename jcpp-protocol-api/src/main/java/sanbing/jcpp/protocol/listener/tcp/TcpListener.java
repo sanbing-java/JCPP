@@ -27,7 +27,7 @@ import sanbing.jcpp.protocol.listener.ChannelHandlerInitializer;
 import sanbing.jcpp.protocol.listener.Listener;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 public class TcpListener extends Listener {

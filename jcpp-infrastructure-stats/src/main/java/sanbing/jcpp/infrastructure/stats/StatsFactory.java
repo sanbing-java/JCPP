@@ -16,7 +16,6 @@ public interface StatsFactory {
      * @param key 指标名
      * @param statsName statsName的标签值
      * @param otherTags 其他Tag键值对，参数个数需要是偶数
-     * @return
      */
     StatsCounter createStatsCounter(String key, String statsName, String... otherTags);
 
@@ -25,7 +24,6 @@ public interface StatsFactory {
      *
      * @param key 指标名
      * @param tags 自定义Tag键值对，参数个数需要是偶数
-     * @return
      */
     DefaultCounter createDefaultCounter(String key, String... tags);
 
@@ -34,7 +32,6 @@ public interface StatsFactory {
      *
      * @param key 指标名
      * @param tags 自定义Tag键值对，参数个数需要是偶数
-     * @return
      */
     MessagesStats createMessagesStats(String key, String... tags);
 
@@ -43,7 +40,6 @@ public interface StatsFactory {
      *
      * @param key 指标名
      * @param tags 自定义Tag键值对，参数个数需要是偶数
-     * @return
      */
     Timer createTimer(String key, String... tags);
 
@@ -53,8 +49,6 @@ public interface StatsFactory {
      * @param key 指标名
      * @param number 初始值
      * @param tags 自定义Tag键值对，参数个数需要是偶数
-     * @return
-     * @param <T>
      */
     <T extends Number> T createGauge(String key, T number, String... tags);
 

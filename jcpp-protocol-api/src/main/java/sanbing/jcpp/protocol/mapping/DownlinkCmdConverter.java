@@ -10,10 +10,10 @@ import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 
 /**
  * 下行命令转换器接口
- * 
+ * <p>
  * 每个协议模块都应该实现此接口，提供从通用下行命令到协议特定命令的转换
  *
- * @author sanbing
+ * @author 九筒
  * @since 2024-12-16
  */
 public interface DownlinkCmdConverter {

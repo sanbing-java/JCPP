@@ -10,7 +10,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.BmsParamConfigReportProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
@@ -46,9 +45,6 @@ public class YunKuaiChongV150BmsParamConfigReportULCmd extends YunKuaiChongUplin
         log.info("{} 云快充1.5.0充电桩参数配置帧请求", tcpSession);
         // 将消息体包装为ByteBuf以便读取
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
-        // 从Tracer总获取当前时间
-        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
-
         /* 按协议顺序解析消息体 */
 
         // 1. 交易流水号：16字节BCD编码字符串
@@ -95,7 +91,6 @@ public class YunKuaiChongV150BmsParamConfigReportULCmd extends YunKuaiChongUplin
 
         // 转发到后端
         BmsParamConfigReportProto bmsParamConfigReportProto = BmsParamConfigReportProto.newBuilder()
-                .setTs(ts)
                 .setPileCode(pileCode)
                 .setTradeNo(tradeNo)
                 .setGunCode(gunCode)

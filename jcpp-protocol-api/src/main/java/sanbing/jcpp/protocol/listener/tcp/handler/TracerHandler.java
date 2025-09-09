@@ -12,7 +12,7 @@ import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public class TracerHandler extends ChannelInboundHandlerAdapter {
     @Override

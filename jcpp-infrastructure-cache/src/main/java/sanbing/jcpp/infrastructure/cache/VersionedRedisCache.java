@@ -70,7 +70,7 @@ public abstract class VersionedRedisCache<K extends VersionedCacheKey, V extends
 
     @Override
     protected byte[] doGet(K key, RedisConnection connection) {
-        if (!key.isVersioned()) {
+        if (key.isVersioned()) {
             return super.doGet(key, connection);
         }
         byte[] rawKey = getRawKey(key);
@@ -79,7 +79,7 @@ public abstract class VersionedRedisCache<K extends VersionedCacheKey, V extends
 
     @Override
     public void put(K key, V value) {
-        if (!key.isVersioned()) {
+        if (key.isVersioned()) {
             super.put(key, value);
             return;
         }
@@ -92,7 +92,7 @@ public abstract class VersionedRedisCache<K extends VersionedCacheKey, V extends
 
     @Override
     public void put(K key, V value, RedisConnection connection) {
-        if (!key.isVersioned()) {
+        if (key.isVersioned()) {
             super.put(key, value, connection); // because scripting commands are not supported in transaction mode
             return;
         }

@@ -10,7 +10,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.GroundLockStatusProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
@@ -40,8 +39,6 @@ public class YunKuaiChongV150LockStatusULCmd extends YunKuaiChongUplinkCmdExe {
         log.info("{} 云快充1.5.0地锁状态/报警信息帧请求", tcpSession);
         // 将消息体包装为ByteBuf以便读取
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
-        // 从Tracer总获取当前时间
-        long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
 
         /* 按协议顺序解析消息体 */
 
@@ -73,7 +70,6 @@ public class YunKuaiChongV150LockStatusULCmd extends YunKuaiChongUplinkCmdExe {
 
         // 构建转发消息
         GroundLockStatusProto groundLockStatusProto = GroundLockStatusProto.newBuilder()
-                .setTs(ts)
                 .setPileCode(pileCode)
                 .setGunCode(gunCode)
                 .setLockStatus(lockStatus)

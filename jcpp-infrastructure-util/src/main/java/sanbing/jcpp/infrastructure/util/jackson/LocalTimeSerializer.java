@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * 时间类型序列化工具
  *
- * @author baigod
+ * @author 九筒
  */
 public class LocalTimeSerializer extends JsonSerializer<LocalTime> {
     public static final LocalTimeSerializer INSTANCE = new LocalTimeSerializer();

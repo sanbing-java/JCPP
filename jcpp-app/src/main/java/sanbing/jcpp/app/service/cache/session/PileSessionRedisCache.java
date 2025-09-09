@@ -15,7 +15,7 @@ import sanbing.jcpp.infrastructure.cache.*;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @ConditionalOnProperty(prefix = "cache", value = "type", havingValue = "redis")
 @Service("PileSessionCache")

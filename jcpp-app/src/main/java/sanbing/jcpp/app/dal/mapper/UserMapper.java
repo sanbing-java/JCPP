@@ -7,10 +7,24 @@
 package sanbing.jcpp.app.dal.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import sanbing.jcpp.app.dal.entity.User;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public interface UserMapper extends BaseMapper<User> {
+    
+    /**
+     * 根据用户名查找用户（默认不区分大小写）
+     */
+    @Select("SELECT * FROM t_user WHERE LOWER(user_name) = LOWER(#{userName})")
+    User findByUserName(@Param("userName") String userName);
+    
+    /**
+     * 检查用户名是否已存在（默认不区分大小写）
+     */
+    @Select("SELECT COUNT(*) FROM t_user WHERE LOWER(user_name) = LOWER(#{userName})")
+    int countByUserName(@Param("userName") String userName);
 }

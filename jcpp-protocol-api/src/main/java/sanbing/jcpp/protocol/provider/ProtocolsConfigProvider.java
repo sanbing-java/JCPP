@@ -9,7 +9,7 @@ package sanbing.jcpp.protocol.provider;
 import sanbing.jcpp.protocol.cfg.ProtocolCfg;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public interface ProtocolsConfigProvider {
 

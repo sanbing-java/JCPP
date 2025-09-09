@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * timestamp 反序列化
- * @author baigod
+ * @author 九筒
  */
 public class TimestampDeserializer extends JsonDeserializer<Timestamp> {
 

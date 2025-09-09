@@ -17,7 +17,7 @@ import java.sql.Date;
 /**
  * sqlDate序列化
  *
- * @author baigod
+ * @author 九筒
  */
 public class SqlDateSerializer extends StdSerializer<Date> {
     public static final SqlDateSerializer INSTANCE = new SqlDateSerializer();

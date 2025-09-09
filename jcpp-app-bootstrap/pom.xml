@@ -35,6 +35,12 @@
         </dependency>
         <dependency>
             <groupId>sanbing</groupId>
+            <artifactId>jcpp-web-ui</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>sanbing</groupId>
             <artifactId>jcpp-protocol-yunkuaichong</artifactId>
         </dependency>
         <dependency>
@@ -54,24 +60,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                    <layout>ZIP</layout>
-                    <mainClass>sanbing.jcpp.JCPPServerApplication</mainClass>
-                    <excludeDevtools>true</excludeDevtools>
-                    <layers>
-                        <enabled>true</enabled>
-                        <configuration>${project.basedir}/src/layers.xml</configuration>
-                    </layers>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                            <goal>build-info</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

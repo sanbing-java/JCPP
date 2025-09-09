@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+    开源代码，仅供学习和交流研究使用，商用请联系三丙
+    微信：mohan_88888
+    抖音：程序员三丙
+    付费课程知识星球：https://t.zsxq.com/aKtXo
+
+-->
+<anti-samy-rules>
+
+    <directives>
+        <directive name="omitXmlDeclaration" value="true"/>
+        <directive name="omitDoctypeDeclaration" value="false"/>
+        <directive name="maxInputSize" value="100000"/>
+        <directive name="embedStyleSheets" value="false"/>
+        <directive name="useXHTML" value="true"/>
+        <directive name="formatOutput" value="true"/>
+    </directives>
+
+    <common-regexps>
+
+        <!--
+            From W3C:
+            This attribute assigns a class name or set of class names to an
+            element. Any number of elements may be assigned the same class
+            name or names. Multiple class names must be separated by white
+            space characters.
+        -->
+        <regexp name="htmlTitle" value="[a-zA-Z0-9\s\-_',:\[\]!\./\\\(\)&amp;]*"/>
+
+        <!--  force non-empty with a '+' at the end instead of '*'
+        -->
+        <regexp name="onsiteURL" value="([\p{L}\p{N}\p{Zs}/\.\?=&amp;\-~])+"/>
+
+        <!--  ([\w\\/\.\?=&amp;;\#-~]+|\#(\w)+)
+        -->
+
+        <!--  ([\p{L}/ 0-9&amp;\#-.?=])*
+        -->
+        <regexp name="offsiteURL"
+                value="(\s)*((ht|f)tp(s?)://|mailto:)[A-Za-z0-9]+[~a-zA-Z0-9-_\.@\#\$%&amp;;:,\?=/\+!\(\)]*(\s)*"/>
+    </common-regexps>
+
+    <common-attributes>
+
+        <attribute name="lang"
+                   description="'lang'属性用于告诉浏览器元素的属性值和内容使用的语言">
+
+            <regexp-list>
+                <regexp value="[a-zA-Z]{2,20}"/>
+            </regexp-list>
+        </attribute>
+
+        <attribute name="title"
+                   description="'title'属性提供当用户将鼠标悬停在元素上时显示的工具提示文本">
+
+            <regexp-list>
+                <regexp name="htmlTitle"/>
+            </regexp-list>
+        </attribute>
+
+        <attribute name="href" onInvalid="filterTag">
+
+            <regexp-list>
+                <regexp name="onsiteURL"/>
+                <regexp name="offsiteURL"/>
+            </regexp-list>
+        </attribute>
+
+        <attribute name="align"
+                   description="HTML元素的'align'属性是一个方向词，如'left'、'right'或'center'">
+
+            <literal-list>
+                <literal value="center"/>
+                <literal value="left"/>
+                <literal value="right"/>
+                <literal value="justify"/>
+                <literal value="char"/>
+            </literal-list>
+        </attribute>
+        <attribute name="style"
+                   description="'style'属性使用严格的语法为用户提供更改标签内容的多个属性的能力"/>
+    </common-attributes>
+
+    <global-tag-attributes>
+        <attribute name="title"/>
+        <attribute name="lang"/>
+        <attribute name="style"/>
+    </global-tag-attributes>
+
+    <tags-to-encode>
+        <tag>g</tag>
+        <tag>grin</tag>
+    </tags-to-encode>
+
+    <tag-rules>
+
+        <tag name="script" action="remove"/>
+        <tag name="noscript" action="remove"/>
+        <tag name="iframe" action="remove"/>
+        <tag name="frameset" action="remove"/>
+        <tag name="frame" action="remove"/>
+        <tag name="noframes" action="remove"/>
+        <tag name="head" action="remove"/>
+        <tag name="title" action="remove"/>
+        <tag name="base" action="remove"/>
+        <tag name="style" action="remove"/>
+        <tag name="link" action="remove"/>
+        <tag name="input" action="remove"/>
+        <tag name="textarea" action="remove"/>
+
+        <tag name="br" action="remove"/>
+
+        <tag name="p" action="remove"/>
+        <tag name="div" action="remove"/>
+        <tag name="span" action="remove"/>
+        <tag name="i" action="remove"/>
+        <tag name="b" action="remove"/>
+        <tag name="strong" action="remove"/>
+        <tag name="s" action="remove"/>
+        <tag name="strike" action="remove"/>
+        <tag name="u" action="remove"/>
+        <tag name="em" action="remove"/>
+        <tag name="blockquote" action="remove"/>
+        <tag name="tt" action="remove"/>
+
+        <tag name="a" action="remove"/>
+
+        <tag name="ul" action="remove"/>
+        <tag name="ol" action="remove"/>
+        <tag name="li" action="remove"/>
+        <tag name="dl" action="remove"/>
+        <tag name="dt" action="remove"/>
+        <tag name="dd" action="remove"/>
+    </tag-rules>
+
+    <css-rules>
+        <property name="text-decoration" default="none"
+                  description="文本装饰样式">
+
+            <category-list>
+                <category value="visual"/>
+            </category-list>
+
+            <literal-list>
+                <literal value="underline"/>
+                <literal value="overline"/>
+                <literal value="line-through"/>
+            </literal-list>
+        </property>
+    </css-rules>
+</anti-samy-rules>

@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @ActiveProfiles("test")
 @SpringBootTest(classes = JCPPServerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

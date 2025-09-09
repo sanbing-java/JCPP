@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    开源代码，仅供学习和交流研究使用，商用请联系三丙
+    微信：mohan_88888
+    抖音：程序员三丙
+    付费课程知识星球：https://t.zsxq.com/aKtXo
+
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sanbing.jcpp.app.dal.mapper.GunMapper">
+
+    <!-- 充电枪带状态信息的分页查询 -->
+    <select id="selectGunWithStatusPage" resultType="sanbing.jcpp.app.adapter.response.GunWithStatusResponse">
+        SELECT 
+            <!-- 充电枪基本信息 -->
+            g.id, 
+            g.created_time, 
+            g.updated_time,
+            g.gun_name, 
+            g.gun_no, 
+            g.gun_code, 
+            g.station_id, 
+            g.pile_id, 
+            g.additional_info, 
+            g.version,
+            
+            <!-- 充电站信息 -->
+            s.station_name,
+            
+            <!-- 充电桩信息 -->
+            p.pile_name,
+            p.pile_code,
+            
+            <!-- 状态相关属性 -->
+            a_run_status.str_v as run_status
+            
+        FROM t_gun g 
+        
+        <!-- LEFT JOIN 获取充电站信息 -->
+        LEFT JOIN t_station s ON g.station_id = s.id
+        
+        <!-- LEFT JOIN 获取充电桩信息 -->
+        LEFT JOIN t_pile p ON g.pile_id = p.id
+        
+        <!-- LEFT JOIN 获取充电枪运行状态属性 -->
+        LEFT JOIN t_attr a_run_status ON (
+            a_run_status.entity_id = g.id AND 
+            a_run_status.attr_key = 'gunRunStatus'
+        )
+        
+        <!-- 动态WHERE条件 -->
+        <where>
+            <if test="request.gunName != null and request.gunName != ''">
+                AND g.gun_name LIKE CONCAT('%', #{request.gunName}, '%')
+            </if>
+            <if test="request.gunCode != null and request.gunCode != ''">
+                AND g.gun_code LIKE CONCAT('%', #{request.gunCode}, '%')
+            </if>
+            <if test="request.stationId != null">
+                AND g.station_id = #{request.stationId}
+            </if>
+            <if test="request.pileId != null">
+                AND g.pile_id = #{request.pileId}
+            </if>
+            <if test="request.gunNo != null and request.gunNo != ''">
+                AND g.gun_no = #{request.gunNo}
+            </if>
+            <if test="request.runStatus != null">
+                AND a_run_status.str_v = #{request.runStatus.code}
+            </if>
+        </where>
+        
+        <!-- 动态ORDER BY -->
+        ORDER BY 
+        <choose>
+            <when test="request.sortField == 'gunName'">
+                g.gun_name ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'gunCode'">
+                g.gun_code ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'gunNo'">
+                g.gun_no ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'runStatus'">
+                a_run_status.str_v ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'createdTime'">
+                g.created_time ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'updatedTime'">
+                g.updated_time ${request.sortOrder}
+            </when>
+            <otherwise>
+                g.created_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 根据充电桩编码和充电枪编码查询充电枪 -->
+    <select id="selectByPileCodeAndGunCode" resultType="sanbing.jcpp.app.dal.entity.Gun">
+        SELECT g.* FROM t_gun g 
+        INNER JOIN t_pile p ON g.pile_id = p.id 
+        WHERE p.pile_code = #{pileCode} AND g.gun_code = #{gunCode}
+    </select>
+
+    <!-- 统计充电桩下的充电枪数量 -->
+    <select id="countByPileId" resultType="long">
+        SELECT COUNT(*) FROM t_gun WHERE pile_id = #{pileId}
+    </select>
+
+    <!-- 统计空闲状态的充电枪数量 (IDLE) -->
+    <select id="countIdleGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+    <!-- 统计已插枪未充电状态的充电枪数量 (INSERTED) -->
+    <select id="countInsertedGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+    <!-- 统计充电中状态的充电枪数量 (CHARGING) -->
+    <select id="countChargingGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+    <!-- 统计充电完成状态的充电枪数量 (CHARGE_COMPLETE) -->
+    <select id="countChargeCompleteGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+    <!-- 统计放电准备状态的充电枪数量 (DISCHARGE_READY) -->
+    <select id="countDischargeReadyGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+    <!-- 统计放电中状态的充电枪数量 (DISCHARGING) -->
+    <select id="countDischargingGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+    <!-- 统计放电完成状态的充电枪数量 (DISCHARGE_COMPLETE) -->
+    <select id="countDischargeCompleteGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+    <!-- 统计预约状态的充电枪数量 (RESERVED) -->
+    <select id="countReservedGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+    <!-- 统计故障状态的充电枪数量 (FAULT) -->
+    <select id="countFaultGuns" resultType="long">
+        SELECT COUNT(*) FROM t_gun g 
+        LEFT JOIN t_attr a ON (a.entity_id = g.id AND a.attr_key = #{statusKey}) 
+        WHERE a.str_v = #{status}
+    </select>
+
+</mapper>

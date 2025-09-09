@@ -25,7 +25,7 @@ import sanbing.jcpp.protocol.listener.tcp.TcpListener;
 import static org.springframework.boot.actuate.health.Status.UP;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 @Slf4j
 public abstract class ProtocolBootstrap implements HealthIndicator {
@@ -65,7 +65,7 @@ public abstract class ProtocolBootstrap implements HealthIndicator {
                     protocolContext.getPartitionProvider(),
                     protocolContext.getServiceInfoProvider());
         } else {
-            throw new IllegalArgumentException("Unknown Forwarder type: " + forwarderCfg.getType());
+            throw new IllegalArgumentException("未知的转发器类型: " + forwarderCfg.getType());
         }
 
         TcpCfg tcpCfg = protocolCfg.getListener().getTcp();

@@ -9,7 +9,7 @@ package sanbing.jcpp.protocol.domain;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 
 /**
- * @author baigod
+ * @author 九筒
  */
 public record SessionToHandlerMsg(DownlinkRequestMessage downlinkMsg, ProtocolSession session) {
 }
