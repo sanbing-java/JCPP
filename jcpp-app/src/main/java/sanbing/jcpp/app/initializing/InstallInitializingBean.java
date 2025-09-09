@@ -197,7 +197,6 @@ public class InstallInitializingBean implements InitializingBean {
                 User adminUser = User.builder()
                         .id(adminUserId)
                         .createdTime(LocalDateTime.now())
-                        .updatedTime(LocalDateTime.now())
                         .additionalInfo(additionalInfo)
                         .status(UserStatusEnum.ENABLE)
                         .userName("sanbing")
@@ -249,7 +248,6 @@ public class InstallInitializingBean implements InitializingBean {
                 Station station = Station.builder()
                         .id(stationId)
                         .createdTime(LocalDateTime.now())
-                        .updatedTime(LocalDateTime.now())
                         .additionalInfo(additionalInfo)
                         .stationName(data[1])
                         .stationCode(data[2])
@@ -322,7 +320,6 @@ public class InstallInitializingBean implements InitializingBean {
         Pile pile = Pile.builder()
                 .id(pileId)
                 .createdTime(LocalDateTime.now())
-                .updatedTime(LocalDateTime.now())
                 .additionalInfo(additionalInfo)
                 .pileName(String.format("%s-%d号充电桩", station.getStationName(), pileIndex))
                 .pileCode(pileCode)
@@ -363,7 +360,6 @@ public class InstallInitializingBean implements InitializingBean {
             Gun gun = Gun.builder()
                     .id(gunId)
                     .createdTime(LocalDateTime.now())
-                    .updatedTime(LocalDateTime.now())
                     .additionalInfo(additionalInfo)
                     .gunNo(String.format("%02d", gunIndex))
                     .gunName(String.format("%s-%d号枪", pile.getPileName(), gunIndex))
@@ -398,23 +394,23 @@ public class InstallInitializingBean implements InitializingBean {
             currentTime
         );
         attributeService.save(pileId, statusAttr);
-        
+
         if (isOnline) {
             // 在线桩设置连接时间
             AttributeKvEntry connectedAtAttr = new BaseAttributeKvEntry(
-                new LongDataEntry(AttrKeyEnum.CONNECTED_AT.getCode(), currentTime - (3600000L * (pileIndex % 12))), 
+                new LongDataEntry(AttrKeyEnum.CONNECTED_AT.getCode(), currentTime - (3600000L * (pileIndex % 12))),
                 currentTime
             );
             attributeService.save(pileId, connectedAtAttr);
         } else {
             // 离线桩设置断开时间
             AttributeKvEntry disconnectedAtAttr = new BaseAttributeKvEntry(
-                new LongDataEntry(AttrKeyEnum.DISCONNECTED_AT.getCode(), currentTime - (1800000L * (pileIndex % 6))), 
+                new LongDataEntry(AttrKeyEnum.DISCONNECTED_AT.getCode(), currentTime - (1800000L * (pileIndex % 6))),
                 currentTime
             );
             attributeService.save(pileId, disconnectedAtAttr);
         }
-        
+
         log.info("为充电桩 {} 设置演示状态属性: {}", pileId, status);
     }
     

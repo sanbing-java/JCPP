@@ -32,9 +32,6 @@ CREATE TABLE IF NOT EXISTS t_user
 CREATE UNIQUE INDEX IF NOT EXISTS uni_user_name
     on t_user (user_name);
 
--- 为t_user表的字段添加注释
-COMMENT ON COLUMN t_user.authority IS '用户权限: SYS_ADMIN, TENANT_ADMIN, CUSTOMER_USER, REFRESH_TOKEN, PRE_VERIFICATION_TOKEN';
-
 -- 为authority字段创建索引，便于按权限查询用户
 CREATE INDEX IF NOT EXISTS idx_user_authority
     on t_user (authority);
@@ -89,7 +86,7 @@ CREATE TABLE IF NOT EXISTS t_gun
     id                      uuid                                not null
         primary key,
     created_time            timestamp default CURRENT_TIMESTAMP not null,
-    updated_time            timestamp default CURRENT_TIMESTAMP not null,
+    updated_time    timestamp,
     additional_info         varchar(255),
     gun_no                  varchar(255)                        not null,
     gun_name                varchar(255)                        not null,
