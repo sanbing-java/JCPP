@@ -26,6 +26,14 @@
 
 ------------------------------
 
+#### 管理后台
+
+http://localhost:8080/page/dashboard
+
+<img src=https://foruda.gitee.com/images/1757422647134361966/118367e4_10604541.png />
+
+------------------------------
+
 ##### 文档请到联系作者加入社群
 <img src=https://foruda.gitee.com/images/1734916800586582054/b8d787bc_10604541.jpeg />
 
