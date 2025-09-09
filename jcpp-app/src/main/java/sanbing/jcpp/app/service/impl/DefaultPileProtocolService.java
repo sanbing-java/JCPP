@@ -749,10 +749,11 @@ public class DefaultPileProtocolService implements PileProtocolService {
         String tradeNo = bmsDemandChargerOutputProto.getTradeNo();
         String additionalInfo = bmsDemandChargerOutputProto.getAdditionalInfo();
         log.info("充电过程BMS需求与充电机输出信息: 桩编码: {}, 枪号: {}, 交易流水号: {}, 附加信息: {}",
-               pileCode, gunCode, tradeNo, additionalInfo);
+                pileCode, gunCode, tradeNo, additionalInfo);
         // TODO 处理相关业务逻辑
         callback.onSuccess();
     }
+
     /**
      * 将Proto状态转换为数据库枚举状态
      */

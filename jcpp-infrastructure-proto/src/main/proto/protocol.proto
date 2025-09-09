@@ -528,4 +528,3 @@ message BmsDemandChargerOutputProto {
   string tradeNo = 6;
   optional string additionalInfo = 20;
 }
-
