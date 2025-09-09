@@ -8,6 +8,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {
     Button,
     Card,
+    Cascader,
     Checkbox,
     Col,
     Dropdown,
@@ -29,7 +30,7 @@ import {getErrorMessage} from '../services/api';
 import * as gunService from '../services/gunService';
 import * as stationService from '../services/stationService';
 import {pileService} from '../services/pileService';
-import type {Gun, GunCreateRequest, PileOption, StationOption} from '../types';
+import type {Gun, GunCreateRequest, GunUpdateRequest, PileOption, StationOption} from '../types';
 
 const { confirm } = Modal;
 
@@ -40,6 +41,7 @@ const GunManagement: React.FC = () => {
   const [form] = Form.useForm();
   const [stationOptions, setStationOptions] = useState<StationOption[]>([]);
   const [pileOptions, setPileOptions] = useState<PileOption[]>([]);
+  const [cascaderOptions, setCascaderOptions] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -236,9 +238,6 @@ const GunManagement: React.FC = () => {
           <Button type="link" size="small" onClick={() => handleEdit(record)}>
             编辑
           </Button>
-          <Button type="link" size="small" onClick={() => handleView(record)}>
-            查看
-          </Button>
           <Popconfirm
             title="确认删除充电枪"
             description={
@@ -429,6 +428,16 @@ const GunManagement: React.FC = () => {
     }
   };
 
+  // 加载级联选择器数据
+  const loadCascaderOptions = async () => {
+    try {
+      const response = await stationService.getStationPileCascaderOptions();
+      setCascaderOptions(Array.isArray(response) ? response : []);
+    } catch (error: any) {
+      console.error('加载级联选择器数据失败:', error);
+    }
+  };
+
   // 监听搜索参数变化
   useEffect(() => {
     loadData();
@@ -439,6 +448,7 @@ const GunManagement: React.FC = () => {
   useEffect(() => {
     loadStationOptions();
     loadPileOptions();
+    loadCascaderOptions();
   }, []);
 
   // 处理表格变化
@@ -496,25 +506,23 @@ const GunManagement: React.FC = () => {
     setModalVisible(true);
     form.setFieldsValue({
       ...record,
-      gunNo: record.gunNo.toString()
+      gunNo: record.gunNo,
+      stationPile: [record.stationId, record.pileId] // 设置级联选择器的值
     });
   };
 
-  // 处理查看
-  const handleView = (record: Gun) => {
-    showMessage.info('查看功能待实现');
-  };
 
   // 生成充电枪编码
   const handleGenerateGunCode = () => {
-    const pileId = form.getFieldValue('pileId');
+    const stationPile = form.getFieldValue('stationPile');
     const gunNo = form.getFieldValue('gunNo');
     
-    if (!pileId || !gunNo) {
-      showMessage.warning('请先选择充电桩和填写枪号');
+    if (!stationPile || stationPile.length !== 2 || !gunNo) {
+      showMessage.warning('请先选择充电站和充电桩，并填写枪号');
       return;
     }
     
+    const pileId = stationPile[1];
     const selectedPile = pileOptions.find(p => p.id === pileId);
     if (selectedPile) {
       const code = generateGunCode(selectedPile.pileCode, gunNo);
@@ -529,16 +537,38 @@ const GunManagement: React.FC = () => {
       setModalLoading(true);
 
       if (isEdit && currentRecord) {
-        // 编辑功能待实现
-        showMessage.info('编辑功能待实现');
+        // 编辑充电枪
+        // 从级联选择器值中获取充电站ID和充电桩ID
+        const cascaderValue = values.stationPile;
+        if (!cascaderValue || cascaderValue.length !== 2) {
+          showMessage.error('请选择充电站和充电桩');
+          return;
+        }
+        
+        const updateData: GunUpdateRequest = {
+          gunName: values.gunName,
+          gunNo: values.gunNo,
+          gunCode: values.gunCode,
+          stationId: cascaderValue[0], // 充电站ID
+          pileId: cascaderValue[1]    // 充电桩ID
+        };
+        await gunService.updateGun(currentRecord.id, updateData);
+        showMessage.success('充电枪更新成功');
       } else {
         // 新建充电枪
+        // 从级联选择器值中获取充电站ID和充电桩ID
+        const cascaderValue = values.stationPile;
+        if (!cascaderValue || cascaderValue.length !== 2) {
+          showMessage.error('请选择充电站和充电桩');
+          return;
+        }
+        
         const createData: GunCreateRequest = {
           gunName: values.gunName,
           gunNo: values.gunNo,
           gunCode: values.gunCode,
-          stationId: values.stationId,
-          pileId: values.pileId
+          stationId: cascaderValue[0], // 充电站ID
+          pileId: cascaderValue[1]    // 充电桩ID
         };
         await gunService.createGun(createData);
         showMessage.success('充电枪创建成功');
@@ -870,52 +900,25 @@ const GunManagement: React.FC = () => {
             <Input placeholder="请输入充电枪名称" />
           </Form.Item>
 
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                label="所属充电站"
-                name="stationId"
-                rules={[{ required: true, message: '请选择充电站' }]}
-              >
-                <Select
-                  placeholder="请选择充电站"
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
-                  }
-                >
-                  {stationOptions.map(station => (
-                    <Select.Option key={station.id} value={station.id}>
-                      {station.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="所属充电桩"
-                name="pileId"
-                rules={[{ required: true, message: '请选择充电桩' }]}
-              >
-                <Select
-                  placeholder="请选择充电桩"
-                  showSearch
-                  allowClear
-                  filterOption={(input, option) =>
-                    (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
-                  }
-                >
-                  {pileOptions.map(pile => (
-                    <Select.Option key={pile.id} value={pile.id}>
-                      {pile.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
+          <Form.Item
+            label="所属充电站/充电桩"
+            name="stationPile"
+            rules={[{ required: true, message: '请选择充电站和充电桩' }]}
+          >
+            <Cascader
+              options={cascaderOptions}
+              placeholder="请选择充电站和充电桩"
+              showSearch={{
+                filter: (inputValue, path) =>
+                  path.some(option => 
+                    option.label.toLowerCase().includes(inputValue.toLowerCase())
+                  )
+              }}
+              disabled={false}
+              changeOnSelect={false}
+              expandTrigger="hover"
+            />
+          </Form.Item>
 
           <Row gutter={16}>
             <Col span={12}>
@@ -935,13 +938,13 @@ const GunManagement: React.FC = () => {
               >
                 <Input
                   placeholder="请输入充电枪编码"
-                  disabled={isEdit}
+                  disabled={false}
                   suffix={
                     <Button
                       type="link"
                       size="small"
                       onClick={handleGenerateGunCode}
-                      disabled={isEdit}
+                      disabled={false}
                       style={{ 
                         height: '24px',
                         lineHeight: '24px',

@@ -40,3 +40,10 @@ export const getStationOptions = async (): Promise<StationOption[]> => {
   const response = await api.get('/api/stations/options');
   return response.data.data;
 };
+
+// 获取充电站-充电桩级联选择器数据
+export const getStationPileCascaderOptions = async (keyword?: string): Promise<any[]> => {
+  const params = keyword ? { keyword } : {};
+  const response = await api.get('/api/stations/pile-cascader', { params });
+  return response.data.data;
+};

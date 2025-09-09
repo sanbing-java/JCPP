@@ -16,6 +16,7 @@ import sanbing.jcpp.app.adapter.request.StationUpdateRequest;
 import sanbing.jcpp.app.adapter.response.ApiResponse;
 import sanbing.jcpp.app.adapter.response.PageResponse;
 import sanbing.jcpp.app.adapter.response.StationOption;
+import sanbing.jcpp.app.adapter.response.StationPileCascaderOption;
 import sanbing.jcpp.app.dal.entity.Station;
 import sanbing.jcpp.app.exception.JCPPException;
 import sanbing.jcpp.app.service.StationService;
@@ -102,6 +103,16 @@ public class StationController extends BaseController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         List<StationOption> options = stationService.searchStationOptions(keyword, page, size);
+        return ResponseEntity.ok(ApiResponse.success("查询成功", options));
+    }
+    
+    /**
+     * 获取充电站-充电桩级联选择器数据（用于级联选择组件）
+     */
+    @GetMapping("/pile-cascader")
+    public ResponseEntity<ApiResponse<List<StationPileCascaderOption>>> getStationPileCascaderOptions(
+            @RequestParam(required = false) String keyword) {
+        List<StationPileCascaderOption> options = stationService.getStationPileCascaderOptions(keyword);
         return ResponseEntity.ok(ApiResponse.success("查询成功", options));
     }
 }

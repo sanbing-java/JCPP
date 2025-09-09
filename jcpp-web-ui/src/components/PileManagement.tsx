@@ -299,9 +299,6 @@ const PileManagement: React.FC = () => {
           <Button type="link" size="small" onClick={() => handleEdit(record)} style={{ padding: '0 4px' }}>
             编辑
           </Button>
-          <Button type="link" size="small" onClick={() => handleView(record)} style={{ padding: '0 4px' }}>
-            查看
-          </Button>
           <Popconfirm
             title="确认删除充电桩"
             description={
@@ -597,11 +594,6 @@ const PileManagement: React.FC = () => {
     setModalVisible(true);
   };
 
-  // 查看充电桩详情
-  const handleView = (record: Pile) => {
-    console.log('查看充电桩详情:', record);
-    showMessage.info('查看功能暂未实现，请查看控制台日志');
-  };
 
   // 生成充电桩编码
   const handleGeneratePileCode = () => {

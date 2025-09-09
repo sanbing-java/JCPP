@@ -18,5 +18,18 @@ public class GunUpdateRequest {
     @NoXss
     private String gunName;
     
+    @NotBlank(message = "枪号不能为空")
+    private String gunNo;
+    
+    @NotBlank(message = "充电枪编码不能为空")
+    @NoXss
+    private String gunCode;
+    
+    @NotBlank(message = "所属充电站不能为空")
+    private String stationId;
+    
+    @NotBlank(message = "所属充电桩不能为空")
+    private String pileId;
+    
     private GunRunStatusEnum runStatus;
 }

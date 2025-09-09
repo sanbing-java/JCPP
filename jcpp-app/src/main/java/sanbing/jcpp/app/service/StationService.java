@@ -11,6 +11,7 @@ import sanbing.jcpp.app.adapter.request.StationQueryRequest;
 import sanbing.jcpp.app.adapter.request.StationUpdateRequest;
 import sanbing.jcpp.app.adapter.response.PageResponse;
 import sanbing.jcpp.app.adapter.response.StationOption;
+import sanbing.jcpp.app.adapter.response.StationPileCascaderOption;
 import sanbing.jcpp.app.dal.entity.Station;
 import sanbing.jcpp.app.exception.JCPPException;
 
@@ -58,4 +59,9 @@ public interface StationService {
      * 搜索充电站选项列表（支持关键字搜索和分页）
      */
     List<StationOption> searchStationOptions(String keyword, int page, int size);
+    
+    /**
+     * 获取充电站-充电桩级联选择器数据（用于级联选择组件）
+     */
+    List<StationPileCascaderOption> getStationPileCascaderOptions(String keyword);
 }

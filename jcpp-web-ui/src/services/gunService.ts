@@ -5,7 +5,7 @@
  * 付费课程知识星球：https://t.zsxq.com/aKtXo
  */
 import {api} from './api';
-import type {Gun, GunCreateRequest, PageResponse, QueryParams} from '../types';
+import type {Gun, GunCreateRequest, GunUpdateRequest, PageResponse, QueryParams} from '../types';
 
 export const getGuns = async (params: QueryParams): Promise<PageResponse<Gun>> => {
   const response = await api.get('/api/guns', { params });
@@ -17,7 +17,7 @@ export const createGun = async (data: GunCreateRequest): Promise<Gun> => {
   return response.data.data;
 };
 
-export const updateGun = async (id: string, data: Partial<Gun>): Promise<Gun> => {
+export const updateGun = async (id: string, data: GunUpdateRequest): Promise<Gun> => {
   const response = await api.put(`/api/guns/${id}`, data);
   return response.data.data;
 };

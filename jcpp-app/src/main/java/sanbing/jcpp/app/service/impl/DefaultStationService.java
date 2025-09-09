@@ -17,6 +17,8 @@ import sanbing.jcpp.app.adapter.request.StationQueryRequest;
 import sanbing.jcpp.app.adapter.request.StationUpdateRequest;
 import sanbing.jcpp.app.adapter.response.PageResponse;
 import sanbing.jcpp.app.adapter.response.StationOption;
+import sanbing.jcpp.app.adapter.response.StationPileCascaderOption;
+import sanbing.jcpp.app.dal.entity.Pile;
 import sanbing.jcpp.app.dal.entity.Station;
 import sanbing.jcpp.app.dal.mapper.PileMapper;
 import sanbing.jcpp.app.dal.mapper.StationMapper;
@@ -27,6 +29,7 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -188,6 +191,57 @@ public class DefaultStationService implements StationService {
                     station.getStationName(),
                     station.getStationCode()
                 ))
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<StationPileCascaderOption> getStationPileCascaderOptions(String keyword) {
+        // 查询充电站
+        QueryWrapper<Station> stationWrapper = new QueryWrapper<>();
+        stationWrapper.select("id", "station_name", "station_code");
+        
+        // 如果有关键字，按站名或编码模糊搜索
+        if (StringUtils.hasText(keyword)) {
+            stationWrapper.and(w -> w.like("station_name", keyword)
+                                   .or()
+                                   .like("station_code", keyword));
+        }
+        
+        stationWrapper.orderByAsc("station_name");
+        List<Station> stations = stationMapper.selectList(stationWrapper);
+        
+        if (stations.isEmpty()) {
+            return List.of();
+        }
+        
+        // 查询所有充电桩
+        QueryWrapper<Pile> pileWrapper = new QueryWrapper<>();
+        pileWrapper.select("id", "pile_name", "pile_code", "station_id")
+                   .in("station_id", stations.stream().map(Station::getId).collect(Collectors.toList()))
+                   .orderByAsc("pile_name");
+        
+        List<Pile> piles = pileMapper.selectList(pileWrapper);
+        
+        // 按充电站ID分组充电桩
+        Map<UUID, List<Pile>> pilesByStation = piles.stream()
+                .collect(Collectors.groupingBy(Pile::getStationId));
+        
+        // 构建级联选择器数据
+        return stations.stream()
+                .map(station -> {
+                    List<Pile> stationPiles = pilesByStation.getOrDefault(station.getId(), List.of());
+                    
+                    List<StationPileCascaderOption> pileOptions = stationPiles.stream()
+                            .map(pile -> StationPileCascaderOption.createPileOption(
+                                    station.getId(), station.getStationName(), station.getStationCode(),
+                                    pile.getId(), pile.getPileName(), pile.getPileCode()
+                            ))
+                            .collect(Collectors.toList());
+                    
+                    return StationPileCascaderOption.createStationOption(
+                            station.getId(), station.getStationName(), station.getStationCode(), pileOptions
+                    );
+                })
                 .collect(Collectors.toList());
     }
 }

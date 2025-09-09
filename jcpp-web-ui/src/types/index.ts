@@ -120,7 +120,7 @@ export interface Gun {
   id: string;
   gunName: string;
   gunCode: string;
-  gunNo: number;
+  gunNo: string;
   stationId: string;
   stationName?: string;  // 所属充电站名称
   pileId: string;
@@ -144,6 +144,7 @@ export interface GunCreateRequest {
 export interface GunUpdateRequest {
   gunName: string;
   gunNo: string;
+  gunCode: string;
   stationId: string;
   pileId: string;
 }

@@ -86,10 +86,10 @@ public class DefaultGunService implements GunService {
                 .createdTime(existingGun.getCreatedTime())
                 .updatedTime(LocalDateTime.now()) // 更新时设置更新时间
                 .gunName(request.getGunName())
-                .gunNo(existingGun.getGunNo()) // 编号不允许修改
-                .gunCode(existingGun.getGunCode()) // 编码不允许修改
-                .stationId(existingGun.getStationId()) // 所属充电站不允许修改
-                .pileId(existingGun.getPileId()) // 所属充电桩不允许修改
+                .gunNo(request.getGunNo()) // 允许修改枪号
+                .gunCode(request.getGunCode()) // 允许修改编码
+                .stationId(UUID.fromString(request.getStationId())) // 允许修改所属充电站
+                .pileId(UUID.fromString(request.getPileId())) // 允许修改所属充电桩
                 .additionalInfo(existingGun.getAdditionalInfo())
                 .version(existingGun.getVersion())
                 .build();
