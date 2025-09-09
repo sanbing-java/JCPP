@@ -8,6 +8,7 @@ package sanbing.jcpp.app.adapter.request;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import sanbing.jcpp.app.dal.config.ibatis.enums.GunRunStatusEnum;
 
 import java.util.UUID;
 
@@ -24,4 +25,6 @@ public class GunQueryRequest extends PageRequest {
     private UUID stationId;
     
     private UUID pileId;
+
+    private GunRunStatusEnum runStatus;
 }
