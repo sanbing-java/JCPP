@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtTokenFactory {
 
-    public static int KEY_LENGTH = Jwts.SIG.HS512.getKeyBitLength();
-
     private static final String SCOPES = "scopes";
     private static final String USER_ID = "userId";
     private static final String USER_NAME = "userName";
@@ -48,9 +46,6 @@ public class JwtTokenFactory {
     private volatile JwtParser jwtParser;
     private volatile SecretKey secretKey;
 
-    /**
-     * Factory method for issuing new JWT Tokens.
-     */
     public AccessJwtToken createAccessJwtToken(SecurityUser securityUser) {
         if (securityUser.getAuthority() == null) {
             throw new IllegalArgumentException("User doesn't have any privileges");
@@ -106,7 +101,7 @@ public class JwtTokenFactory {
         if (scopes == null || scopes.isEmpty()) {
             throw new IllegalArgumentException("Refresh Token doesn't have any scopes");
         }
-        if (!scopes.get(0).equals(AuthorityEnum.REFRESH_TOKEN.name())) {
+        if (!scopes.getFirst().equals(AuthorityEnum.REFRESH_TOKEN.name())) {
             throw new IllegalArgumentException("Invalid Refresh Token scope");
         }
         UserPrincipal principal = new UserPrincipal(subject);
