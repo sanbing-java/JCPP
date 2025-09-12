@@ -9,7 +9,7 @@ package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
+import sanbing.jcpp.proto.gen.DownlinkProto.*;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -22,7 +22,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
-import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag.*;
+import static sanbing.jcpp.proto.gen.DownlinkProto.PricingModelFlag.*;
 import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.SET_PRICING;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 

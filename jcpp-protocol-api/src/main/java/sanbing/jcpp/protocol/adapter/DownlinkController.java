@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
 import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 

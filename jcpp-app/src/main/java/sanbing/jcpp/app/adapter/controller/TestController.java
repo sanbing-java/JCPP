@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sanbing.jcpp.app.service.PileProtocolService;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
+import sanbing.jcpp.proto.gen.DownlinkProto.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

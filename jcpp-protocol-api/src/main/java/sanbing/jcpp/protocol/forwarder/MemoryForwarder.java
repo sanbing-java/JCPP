@@ -13,7 +13,7 @@ import sanbing.jcpp.infrastructure.queue.discovery.PartitionProvider;
 import sanbing.jcpp.infrastructure.queue.discovery.ServiceInfoProvider;
 import sanbing.jcpp.infrastructure.queue.provider.AppQueueFactory;
 import sanbing.jcpp.infrastructure.stats.StatsFactory;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.cfg.ForwarderCfg;
 import sanbing.jcpp.protocol.cfg.MemoryCfg;
 

@@ -29,7 +29,7 @@ import sanbing.jcpp.app.data.kv.StringDataEntry;
 import sanbing.jcpp.app.service.AttributeService;
 import sanbing.jcpp.app.service.GunService;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.GunRunStatus;
+import sanbing.jcpp.proto.gen.UplinkProto.GunRunStatus;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

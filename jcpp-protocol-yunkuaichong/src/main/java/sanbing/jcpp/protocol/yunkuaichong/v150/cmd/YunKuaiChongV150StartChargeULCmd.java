@@ -15,15 +15,14 @@ import org.springframework.util.DigestUtils;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
+import sanbing.jcpp.proto.gen.UplinkProto;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongStartTypeEnum;
 import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongPasswordRequiredEnum;
-
+import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongStartTypeEnum;
 
 import java.nio.charset.StandardCharsets;
 
@@ -83,7 +82,7 @@ public class YunKuaiChongV150StartChargeULCmd extends YunKuaiChongUplinkCmdExe {
         String carVinCode = reverseVinCode(new String(carVinCodeBytes, StandardCharsets.US_ASCII));
 
         // 转发到后端
-        ProtocolProto.StartChargeRequest startChargingRequest = ProtocolProto.StartChargeRequest.newBuilder()
+        UplinkProto.StartChargeRequest startChargingRequest = UplinkProto.StartChargeRequest.newBuilder()
                 .setTs(ts)
                 .setPileCode(pileCode)
                 .setGunCode(gunCode)
@@ -95,7 +94,7 @@ public class YunKuaiChongV150StartChargeULCmd extends YunKuaiChongUplinkCmdExe {
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();
 
-        ProtocolProto.UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(startChargingRequest.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)
+        UplinkProto.UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(startChargingRequest.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)
                 .setStartChargeRequest(startChargingRequest)
                 .build();
 

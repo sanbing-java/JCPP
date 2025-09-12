@@ -9,45 +9,9 @@ syntax = "proto3";
 package infrastructureProto;
 
 option java_package = "sanbing.jcpp.proto.gen";
-option java_outer_classname = "ProtocolProto";
+option java_outer_classname = "UplinkProto";
 
-service ProtocolInterface {
-  rpc onDownlink(stream RequestMsg) returns (stream ResponseMsg) {}
-}
-
-message RequestMsg {
-  int64 ts = 1;
-  TracerProto tracer = 2;
-  ConnectRequestMsg connectRequestMsg = 10;
-  DownlinkRequestMessage downlinkRequestMessage = 11;
-}
-
-message ResponseMsg {
-  TracerProto tracer = 2;
-  ConnectResponseMsg connectResponseMsg = 12;
-  DownlinkResponseMessage downlinkResponseMsg = 13;
-}
-
-message ConnectResponseMsg {
-  ConnectResponseCode responseCode = 1;
-  string errorMsg = 2;
-}
-
-message ConnectRequestMsg {
-  string nodeId = 1;
-}
-
-enum ConnectResponseCode {
-  ACCEPTED = 0;
-  REFUSE = 1;
-}
-
-message TracerProto {
-  string id = 1;
-  string origin = 2;
-  int64 ts = 3;
-}
-
+// 上行队列消息（从充电桩到服务器）
 message UplinkQueueMessage {
   int64 messageIdMSB = 1;
   int64 messageIdLSB = 2;
@@ -83,43 +47,14 @@ message UplinkQueueMessage {
   StartChargeRequest startChargeRequest = 44;
 }
 
-message DownlinkRequestMessage {
-  int64 messageIdMSB = 1;
-  int64 messageIdLSB = 2;
-  int64 sessionIdMSB = 3;
-  int64 sessionIdLSB = 4;
-  string protocolName = 6;
-  string pileCode = 7;
-  optional int64 requestIdMSB = 8;
-  optional int64 requestIdLSB = 9;
-  optional bytes requestData = 10;
-  string downlinkCmd = 20;
-  LoginResponse loginResponse = 21;
-  VerifyPricingResponse verifyPricingResponse = 22;
-  QueryPricingResponse queryPricingResponse = 23;
-  SetPricingRequest setPricingRequest = 24;
-  RemoteStartChargingRequest remoteStartChargingRequest = 25;
-  RemoteStopChargingRequest remoteStopChargingRequest = 26;
-  TransactionRecordResponse transactionRecordResponse = 27;
-  RestartPileRequest restartPileRequest = 28;
-  OtaRequest otaRequest = 29;
-  OfflineCardBalanceUpdateRequest offlineCardBalanceUpdateRequest = 30;
-  OfflineCardSyncRequest offlineCardSyncRequest = 31;
-  TimeSyncRequest timeSyncRequest = 32;
-  StartChargeResponse startChargeResponse = 33;
-}
-
-message DownlinkResponseMessage {
-  bool success = 1;
-  optional string error = 2;
-}
-
+// 会话关闭事件
 message SessionCloseEventProto {
   string pileCode = 2;                // 充电桩编码
   SessionCloseReason reason = 3;      // 会话关闭原因
   optional string additionalInfo = 20; // 附加信息
 }
 
+// 会话关闭原因枚举
 enum SessionCloseReason {
   SESSION_CLOSE_UNKNOWN = 0;          // 未知原因
   SESSION_CLOSE_DESTRUCTION = 1;      // 自然销毁（空闲超时）
@@ -127,6 +62,7 @@ enum SessionCloseReason {
   SESSION_CLOSE_MANUALLY = 3;         // 手动关闭
 }
 
+// 登录请求
 message LoginRequest {
   string pileCode = 2;
   string credential = 3;
@@ -138,6 +74,7 @@ message LoginRequest {
   optional string additionalInfo = 20;
 }
 
+// 启动充电请求
 message StartChargeRequest {
   int64 ts = 1;
   string pileCode = 2;                  // 桩编号
@@ -150,36 +87,7 @@ message StartChargeRequest {
   optional string additionalInfo = 20;  // 附加信息
 }
 
-message StartChargeResponse {
-  string tradeNo = 1;               // 交易流水号
-  string pileCode = 2;              // 桩编号
-  string gunCode = 3;               // 枪编号
-  string logicalCardNo = 4;         // 逻辑卡号
-  string limitYuan = 5;             // 账户余额
-  bool authSuccess = 6;             // 鉴权成功标志
-  string failReason = 7;            // 失败原因
-}
-
-enum FailReason {
-  SUCCESS = 0;                        // 成功
-  ACCOUNT_NOT_EXISTS = 1;             // 账户不存在
-  ACCOUNT_FROZEN = 2;                 // 账户冻结
-  INSUFFICIENT_BALANCE = 3;           // 账户余额不足
-  CARD_HAS_UNPAID_RECORD = 4;         // 该卡存在未结账记录
-  PILE_DISABLED = 5;                  // 桩停用
-  ACCOUNT_NOT_ALLOWED_ON_PILE = 6;    // 该账户不能在此桩上充电
-  PASSWORD_ERROR = 7;                 // 密码错误
-  INSUFFICIENT_STATION_CAPACITY = 8;  // 电站电容不足
-  VIN_CODE_NOT_EXISTS = 9;            // 系统中vin码不存在
-  PILE_HAS_UNPAID_RECORD = 10;        // 该桩存在未结账记录
-  PILE_NOT_SUPPORT_CARD = 11;         // 该桩不支持该卡
-}
-
-message LoginResponse {
-  bool success = 1;
-  string pileCode = 2;
-}
-
+// 心跳请求
 message HeartBeatRequest {
   string pileCode = 3;
   string remoteAddress = 4;
@@ -190,6 +98,7 @@ message HeartBeatRequest {
   optional string additionalInfo = 20;
 }
 
+// 校验计费请求
 message VerifyPricingRequest {
   string pileCode = 4;
   int64 pricingId = 30;
@@ -197,94 +106,13 @@ message VerifyPricingRequest {
   optional string additionalInfo = 20;
 }
 
-message VerifyPricingResponse {
-  bool success = 1;
-  int64 pricingId = 30;
-}
-
+// 查询计费请求
 message QueryPricingRequest {
   string pileCode = 4;
   optional string additionalInfo = 20;
 }
 
-message QueryPricingResponse {
-  string pileCode = 4;
-  int64 pricingId = 30;
-  PricingModelProto pricingModel = 1;
-}
-
-// 计费模型配置 - 支持三种计费方式
-message PricingModelProto {
-  PricingModelType type = 3;  // 计费类型：充电/放电
-  PricingModelRule rule = 4;  // 计费规则：标准/峰谷/时段
-
-  // 计费配置：根据rule字段确定使用哪种配置
-  oneof pricing_config {
-    StandardPricingProto standardPricing = 5;        // 标准计费：固定价格
-    PeakValleyPricingProto peakValleyPricing = 6;    // 峰谷计价：按尖峰平谷分时段
-    TimePeriodPricingProto timePeriodPricing = 7;    // 时段计价：自定义时段价格
-  }
-}
-
-message PeriodProto {
-  int32 sn = 1;
-  string begin = 2;
-  string end = 3;
-  PricingModelFlag flag = 4;
-}
-
-message FlagPriceProto {
-  PricingModelFlag flag = 1;
-  string elec = 2;
-  string serv = 3;
-}
-
-// 标准计费配置 - 全天统一价格
-message StandardPricingProto {
-  string elecPrice = 1;    // 电费价格（元/度）
-  string servPrice = 2;    // 服务费价格（元/度）
-}
-
-// 峰谷计价配置 - 按电网峰谷政策分时计费
-message PeakValleyPricingProto {
-  map<int32, FlagPriceProto> flagPrice = 1;  // 各时段价格映射表
-  repeated PeriodProto period = 2;           // 时段划分配置
-}
-
-// 时段计价配置 - 运营商自定义时段计费
-message TimePeriodPricingProto {
-  repeated TimePeriodItemProto periods = 1;  // 自定义时段列表
-}
-
-// 时段计价单个时段定义
-message TimePeriodItemProto {
-  int32 periodNo = 1;      // 时段编号（从1开始）
-  string startTime = 2;    // 开始时间（HH:mm:ss格式）
-  string endTime = 3;      // 结束时间（HH:mm:ss格式）
-  string elecPrice = 4;    // 该时段电费（元/度）
-  string servPrice = 5;    // 该时段服务费（元/度）
-  optional string description = 6; // 时段名称（如"早高峰"）
-}
-
-enum PricingModelType {
-  CHARGE = 0; // 充电费率模型
-  DISCHARGE = 1; // 放电费率模型
-}
-
-enum PricingModelRule {
-  STANDARD = 0;               // 标准计费：全天统一价格
-  PEAK_VALLEY_PRICING = 1;    // 峰谷计费：按电网峰谷政策
-  TIME_PERIOD_PRICING = 2;    // 时段计费：运营商自定义
-}
-
-enum PricingModelFlag {
-  TOP = 0; // 尖峰
-  PEAK = 1; // 峰
-  FLAT = 2; // 平
-  VALLEY = 3; // 谷
-  DEEP = 4; // 深谷
-}
-
+// 枪运行状态枚举
 enum GunRunStatus {
   IDLE = 0;              // 空闲
   INSERTED = 1;       // 已插枪
@@ -298,6 +126,7 @@ enum GunRunStatus {
   UNKNOWN = 9;           // 未知
 }
 
+// 枪运行状态消息
 message GunRunStatusProto {
   string pileCode = 4;
   string gunCode = 5;
@@ -306,6 +135,7 @@ message GunRunStatusProto {
   optional string additionalInfo = 20;
 }
 
+// 充电进度消息
 message ChargingProgressProto {
   string pileCode = 4;
   string gunCode = 5;
@@ -319,35 +149,14 @@ message ChargingProgressProto {
   optional string additionalInfo = 20;
 }
 
-message SetPricingRequest {
-  string pileCode = 4;
-  int64 pricingId = 30;
-  PricingModelProto pricingModel = 1;
-}
-
+// 设置计费响应
 message SetPricingResponse {
   bool success = 1;
   string pileCode = 4;
   int64 pricingId = 30;
 }
 
-message RemoteStartChargingRequest {
-  string pileCode = 4;
-  string gunCode = 5;
-  string tradeNo = 6;
-  string limitYuan = 7;
-  optional string logicalCardNo = 8;   // 逻辑卡号
-  optional string physicalCardNo = 9;  // 物理卡号
-  optional string parallelNo = 10;     // 并充序号
-  optional string additionalInfo = 20;
-}
-
-message RestartPileRequest {
-  string pileCode = 4;
-  int32 type = 7;
-  optional string additionalInfo = 20;
-}
-
+// 远程启动充电响应
 message RemoteStartChargingResponse {
   string pileCode = 4;
   string gunCode = 5;
@@ -356,16 +165,14 @@ message RemoteStartChargingResponse {
   string failReason = 8;
   optional string additionalInfo = 20;
 }
+
+// 重启充电桩响应
 message RestartPileResponse {
   string pileCode = 4;
   bool success = 7;
 }
 
-message RemoteStopChargingRequest {
-  string pileCode = 4;
-  string gunCode = 5;
-}
-
+// 远程停止充电响应
 message RemoteStopChargingResponse {
   string pileCode = 4;
   string gunCode = 5;
@@ -374,11 +181,13 @@ message RemoteStopChargingResponse {
   optional string additionalInfo = 20;
 }
 
+// 明细类型枚举
 enum DetailType {
   PEAK_VALLEY = 0;  // 峰谷电量明细
   TIME_PERIOD = 1;  // 时段电量明细
 }
 
+// 峰谷电量明细
 message PeakValleyDetail {
   string topEnergyKWh = 1;      // 尖峰电量
   string topAmountYuan = 2;     // 尖峰电费
@@ -392,6 +201,7 @@ message PeakValleyDetail {
   string deepAmountYuan = 10;   // 深谷电费
 }
 
+// 时段电量明细
 message TimePeriodDetail {
   message PeriodItem {
     int32 periodNo = 1;           // 时段序号，从1开始
@@ -403,12 +213,14 @@ message TimePeriodDetail {
   repeated PeriodItem periods = 1; // 时段列表
 }
 
+// 交易明细
 message TransactionDetail {
   DetailType type = 1;                        // 明细类型
   optional PeakValleyDetail peakValley = 2;   // 峰谷电量明细
   optional TimePeriodDetail timePeriod = 3;   // 时段电量明细
 }
 
+// 交易记录请求
 message TransactionRecordRequest {
   string pileCode = 4;                    // 充电桩编码
   string gunCode = 5;                     // 枪编号
@@ -424,6 +236,7 @@ message TransactionRecordRequest {
   optional string additionalInfo = 20;     // 附加信息
 }
 
+// BMS充电错误消息
 message BmsChargingErrorProto {
   string pileCode = 4;
   string gunCode = 5;
@@ -431,12 +244,7 @@ message BmsChargingErrorProto {
   optional string additionalInfo = 20;
 }
 
-message TransactionRecordResponse {
-  string tradeNo = 6;
-  bool success = 7;
-  optional string additionalInfo = 20;
-}
-
+// BMS参数配置上报
 message BmsParamConfigReportProto {
   string pileCode = 2;             // 桩编码
   string gunCode = 3;              // 枪编码
@@ -454,6 +262,7 @@ message BmsParamConfigReportProto {
   string pileMinOutputCurrent = 15; // 电桩最小输出电流 (A)
 }
 
+// BMS充电信息
 message BmsChargingInfoProto {
   string pileCode = 4;
   string gunCode = 5;
@@ -461,26 +270,7 @@ message BmsChargingInfoProto {
   optional string additionalInfo = 20;
 }
 
-message OtaRequest {
-  string pileCode = 1;         // 桩编号
-  int32 pileModel = 2;         // 桩型号
-  int32 pilePower = 3;         // 桩功率
-  string address = 4;          // 升级服务器地址
-  int32 port = 5;              // 升级服务器端口
-  string username = 6;         // 用户名
-  string password = 7;         // 密码
-  string filePath = 8;         // 文件路径
-  int32 executionControl = 9;  // 执行控制
-  int32 downloadTimeout = 10;  // 下载超时时间
-
-}
-
-message OtaResponse {
-  string pileCode = 1;         // 桩编号
-  bool success = 2;
-  optional string errorMsg = 3;
-} 
-
+// BMS中止充电
 message BmsAbortProto {
   string pileCode = 4;
   string gunCode = 5;
@@ -488,6 +278,7 @@ message BmsAbortProto {
   optional string additionalInfo = 20;
 }
 
+// BMS握手信息
 message BmsHandshakeProto {
   string pileCode = 2;                   // 桩编码
   string gunCode = 3;                    // 枪编码
@@ -508,6 +299,14 @@ message BmsHandshakeProto {
   optional string additionalInfo = 20;   // 附加信息
 }
 
+// OTA响应
+message OtaResponse {
+  string pileCode = 1;         // 桩编号
+  bool success = 2;
+  optional string errorMsg = 3;
+}
+
+// 地锁状态上报
 message GroundLockStatusProto {
   string pileCode = 2;                   // 桩编号
   string gunCode = 3;                    // 枪号
@@ -519,13 +318,7 @@ message GroundLockStatusProto {
   optional string additionalInfo = 20;   // 附加信息
 }
 
-message OfflineCardBalanceUpdateRequest {
-  string pileCode = 1;                    // 充电桩编码
-  string gunCode = 2;                     // 枪编号
-  string cardNo = 3;                      // 物理卡号
-  string limitYuan = 4;                   // 余额
-}
-
+// 离线卡余额更新响应
 message OfflineCardBalanceUpdateResponse {
   string pileCode = 1;                    // 充电桩编码
   string cardNo = 2;                      // 物理卡号
@@ -533,34 +326,20 @@ message OfflineCardBalanceUpdateResponse {
   optional string errorMsg = 4;
 }
 
-message OfflineCardSyncRequest {
-  string pileCode = 1;                    // 充电桩编码
-  int32 total = 2;                        // 下发卡个数
-  repeated CardInfo cardInfo = 3;         // 卡号集合
-}
-
-message CardInfo {
-  string cardNo = 1;                      // 物理卡号
-  string logicCardNo = 2;                 // 逻辑卡号
-}
-
-
+// 离线卡同步响应
 message OfflineCardSyncResponse {
   string pileCode = 1;                    // 充电桩编码
   bool success = 3;
   optional string errorMsg = 4;
 }
 
-message TimeSyncRequest {
-  string pileCode = 1;
-  string time = 2;
-}
-
+// 时间同步响应
 message TimeSyncResponse {
   string pileCode = 1;
   string time = 2;
 }
 
+// BMS需求充电机输出
 message BmsDemandChargerOutputProto {
   string pileCode = 4;
   string gunCode = 5;

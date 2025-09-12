@@ -18,7 +18,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import sanbing.jcpp.app.service.DownlinkCallService;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
 
 import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.*;
 

@@ -17,7 +17,7 @@ import sanbing.jcpp.infrastructure.queue.memory.InMemoryQueueConsumer;
 import sanbing.jcpp.infrastructure.queue.memory.InMemoryQueueProducer;
 import sanbing.jcpp.infrastructure.queue.memory.InMemoryStorage;
 import sanbing.jcpp.infrastructure.queue.settings.QueueAppSettings;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 @Slf4j
 @Component

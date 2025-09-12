@@ -7,9 +7,9 @@
 package sanbing.jcpp.infrastructure.proto.model;
 
 import lombok.*;
-import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag;
-import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelRule;
-import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelType;
+import sanbing.jcpp.proto.gen.DownlinkProto.PricingModelFlag;
+import sanbing.jcpp.proto.gen.DownlinkProto.PricingModelRule;
+import sanbing.jcpp.proto.gen.DownlinkProto.PricingModelType;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;

@@ -7,7 +7,11 @@
 package sanbing.jcpp.app.service;
 
 import sanbing.jcpp.infrastructure.queue.Callback;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
+import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardBalanceUpdateRequest;
+import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardSyncRequest;
+import sanbing.jcpp.proto.gen.DownlinkProto.OtaRequest;
+import sanbing.jcpp.proto.gen.DownlinkProto.SetPricingRequest;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -14,7 +14,7 @@ import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.LoginResponse;
+import sanbing.jcpp.proto.gen.DownlinkProto.LoginResponse;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.PROTOCOL_SESSION_SCHEDULED;
-import static sanbing.jcpp.proto.gen.ProtocolProto.SessionCloseReason.SESSION_CLOSE_MANUALLY;
+import static sanbing.jcpp.proto.gen.UplinkProto.SessionCloseReason.SESSION_CLOSE_MANUALLY;
 import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.LOGIN_ACK;
 import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.SYNC_TIME_REQUEST;
 import static sanbing.jcpp.protocol.listener.tcp.TcpSession.SCHEDULE_KEY_AUTO_SYNC_TIME;

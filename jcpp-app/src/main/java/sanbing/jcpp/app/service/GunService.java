@@ -12,7 +12,7 @@ import sanbing.jcpp.app.adapter.request.GunUpdateRequest;
 import sanbing.jcpp.app.adapter.response.GunWithStatusResponse;
 import sanbing.jcpp.app.adapter.response.PageResponse;
 import sanbing.jcpp.app.dal.entity.Gun;
-import sanbing.jcpp.proto.gen.ProtocolProto.GunRunStatus;
+import sanbing.jcpp.proto.gen.UplinkProto.GunRunStatus;
 
 import java.util.UUID;
 

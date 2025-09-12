@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.stats.StatsCounter;
 import sanbing.jcpp.infrastructure.stats.StatsFactory;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 import java.time.Duration;
 import java.util.*;

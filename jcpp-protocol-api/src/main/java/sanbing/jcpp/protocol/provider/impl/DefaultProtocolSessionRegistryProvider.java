@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sanbing.jcpp.infrastructure.util.async.JCPPThreadFactory;
 import sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration;
-import sanbing.jcpp.proto.gen.ProtocolProto.SessionCloseReason;
+import sanbing.jcpp.proto.gen.UplinkProto.SessionCloseReason;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
 import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 

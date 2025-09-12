@@ -9,7 +9,7 @@ package sanbing.jcpp.protocol.yunkuaichong;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
 
 import java.io.Serializable;
 import java.util.UUID;

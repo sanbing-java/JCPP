@@ -8,7 +8,7 @@ package sanbing.jcpp.app.service;
 
 import sanbing.jcpp.app.dal.entity.Pile;
 import sanbing.jcpp.app.data.PileSession;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 import java.util.List;
 import java.util.Optional;

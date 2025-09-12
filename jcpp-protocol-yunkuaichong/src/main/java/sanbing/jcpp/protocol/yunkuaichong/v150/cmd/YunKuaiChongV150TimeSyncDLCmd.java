@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.TimeSyncRequest;
+import sanbing.jcpp.proto.gen.DownlinkProto.TimeSyncRequest;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;

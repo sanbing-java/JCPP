@@ -13,7 +13,7 @@ import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.JCPPPair;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;

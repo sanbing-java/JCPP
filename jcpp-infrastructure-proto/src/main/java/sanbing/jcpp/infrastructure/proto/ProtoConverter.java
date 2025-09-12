@@ -13,7 +13,8 @@ import sanbing.jcpp.infrastructure.proto.model.PricingModel.Period;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel.TimePeriodItem;
 import sanbing.jcpp.infrastructure.util.trace.Tracer;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
+import sanbing.jcpp.proto.gen.DownlinkProto.*;
+import sanbing.jcpp.proto.gen.GrpcProto.TracerProto;
 
 import java.util.Map;
 

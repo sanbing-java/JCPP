@@ -25,7 +25,7 @@ import sanbing.jcpp.infrastructure.cache.TransactionalCache;
 import sanbing.jcpp.infrastructure.queue.common.TopicPartitionInfo;
 import sanbing.jcpp.infrastructure.queue.discovery.PartitionProvider;
 import sanbing.jcpp.infrastructure.queue.discovery.ServiceType;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 import java.util.ArrayList;
 import java.util.List;

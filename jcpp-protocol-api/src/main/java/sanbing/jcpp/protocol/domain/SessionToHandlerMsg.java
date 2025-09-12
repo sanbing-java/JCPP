@@ -6,7 +6,7 @@
  */
 package sanbing.jcpp.protocol.domain;
 
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
 
 /**
  * @author 九筒

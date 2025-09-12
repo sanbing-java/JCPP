@@ -11,9 +11,8 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import sanbing.jcpp.proto.gen.ProtocolProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
-import sanbing.jcpp.proto.gen.ProtocolProto.SessionCloseReason;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.SessionCloseReason;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
 
@@ -83,7 +82,7 @@ public class TcpSession extends ProtocolSession {
     }
 
     @Override
-    public void close(ProtocolProto.SessionCloseReason reason) {
+    public void close(SessionCloseReason reason) {
         super.close(reason);
 
         ctx.flush();

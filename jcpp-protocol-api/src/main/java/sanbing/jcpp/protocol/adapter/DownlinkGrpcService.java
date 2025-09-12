@@ -24,8 +24,9 @@ import org.springframework.stereotype.Service;
 import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.infrastructure.util.trace.TracerRunnable;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.GrpcProto.*;
 import sanbing.jcpp.proto.gen.ProtocolInterfaceGrpc.ProtocolInterfaceImplBase;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
 import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 

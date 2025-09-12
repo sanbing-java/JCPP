@@ -11,8 +11,10 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import sanbing.jcpp.proto.gen.ProtocolProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.SessionCloseEventProto;
+import sanbing.jcpp.proto.gen.UplinkProto.SessionCloseReason;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.forwarder.Forwarder;
 
 import java.io.Closeable;
@@ -66,10 +68,10 @@ public abstract class ProtocolSession implements Closeable {
 
     @Override
     public void close() {
-        close(ProtocolProto.SessionCloseReason.SESSION_CLOSE_DESTRUCTION);
+        close(SessionCloseReason.SESSION_CLOSE_DESTRUCTION);
     }
 
-    public void close(ProtocolProto.SessionCloseReason reason) {
+    public void close(SessionCloseReason reason) {
         log.info("[{}] Protocol会话关闭，原因: {}", this, reason);
 
         scheduledFutures.values().forEach(scheduledFuture -> scheduledFuture.cancel(true));
@@ -79,13 +81,13 @@ public abstract class ProtocolSession implements Closeable {
         if (forwarder != null && !pileCodeSet.isEmpty()) {
             
             for (String pileCode : pileCodeSet) {
-                ProtocolProto.SessionCloseEventProto sessionCloseEvent = ProtocolProto.SessionCloseEventProto.newBuilder()
+                SessionCloseEventProto sessionCloseEvent = SessionCloseEventProto.newBuilder()
                         .setPileCode(pileCode)
                         .setReason(reason)
                         .setAdditionalInfo("Session closed: " + reason)
                         .build();
                 
-                ProtocolProto.UplinkQueueMessage uplinkQueueMessage = ProtocolProto.UplinkQueueMessage.newBuilder()
+                UplinkQueueMessage uplinkQueueMessage = UplinkQueueMessage.newBuilder()
                         .setMessageIdMSB(UUID.randomUUID().getMostSignificantBits())
                         .setMessageIdLSB(UUID.randomUUID().getLeastSignificantBits())
                         .setSessionIdMSB(id.getMostSignificantBits())

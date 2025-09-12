@@ -22,7 +22,7 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.Tracer;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;

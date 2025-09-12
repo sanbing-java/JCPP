@@ -14,9 +14,9 @@ import sanbing.jcpp.app.service.cache.session.PileSessionCacheKey;
 import sanbing.jcpp.infrastructure.cache.CacheValueWrapper;
 import sanbing.jcpp.infrastructure.cache.TransactionalCache;
 import sanbing.jcpp.infrastructure.queue.discovery.ServiceInfoProvider;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
-import sanbing.jcpp.proto.gen.ProtocolProto.LoginRequest;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.LoginRequest;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.adapter.DownlinkController;
 
 import java.util.UUID;

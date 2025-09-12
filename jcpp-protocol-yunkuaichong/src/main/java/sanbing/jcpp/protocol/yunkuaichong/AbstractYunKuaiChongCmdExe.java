@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.StringUtils;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.PeriodProto;
+import sanbing.jcpp.proto.gen.DownlinkProto.PeriodProto;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;

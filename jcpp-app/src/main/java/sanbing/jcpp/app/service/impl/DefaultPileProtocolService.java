@@ -26,7 +26,8 @@ import sanbing.jcpp.infrastructure.proto.model.PricingModel.Period;
 import sanbing.jcpp.infrastructure.queue.Callback;
 import sanbing.jcpp.infrastructure.util.async.JCPPAsynchron;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
+import sanbing.jcpp.proto.gen.DownlinkProto.*;
+import sanbing.jcpp.proto.gen.UplinkProto.*;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 
 import java.math.BigDecimal;
@@ -34,9 +35,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
-import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag.*;
-import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelRule.PEAK_VALLEY_PRICING;
-import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelType.CHARGE;
+import static sanbing.jcpp.proto.gen.DownlinkProto.PricingModelFlag.*;
+import static sanbing.jcpp.proto.gen.DownlinkProto.PricingModelRule.PEAK_VALLEY_PRICING;
+import static sanbing.jcpp.proto.gen.DownlinkProto.PricingModelType.CHARGE;
 
 /**
  * @author 九筒

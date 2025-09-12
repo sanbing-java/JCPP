@@ -10,7 +10,7 @@ package sanbing.jcpp.infrastructure.queue.provider;
 import sanbing.jcpp.infrastructure.queue.ProtoQueueMsg;
 import sanbing.jcpp.infrastructure.queue.QueueConsumer;
 import sanbing.jcpp.infrastructure.queue.QueueProducer;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 public interface AppQueueFactory {
 

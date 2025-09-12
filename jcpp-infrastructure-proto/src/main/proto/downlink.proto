@@ -1,0 +1,248 @@
+/**
+ * 开源代码，仅供学习和交流研究使用，商用请联系三丙
+ * 微信：mohan_88888
+ * 抖音：程序员三丙
+ * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ */
+syntax = "proto3";
+
+package infrastructureProto;
+
+option java_package = "sanbing.jcpp.proto.gen";
+option java_outer_classname = "DownlinkProto";
+
+// 下行请求消息（从服务器到充电桩）
+message DownlinkRequestMessage {
+  int64 messageIdMSB = 1;
+  int64 messageIdLSB = 2;
+  int64 sessionIdMSB = 3;
+  int64 sessionIdLSB = 4;
+  string protocolName = 6;
+  string pileCode = 7;
+  optional int64 requestIdMSB = 8;
+  optional int64 requestIdLSB = 9;
+  optional bytes requestData = 10;
+  string downlinkCmd = 20;
+  LoginResponse loginResponse = 21;
+  VerifyPricingResponse verifyPricingResponse = 22;
+  QueryPricingResponse queryPricingResponse = 23;
+  SetPricingRequest setPricingRequest = 24;
+  RemoteStartChargingRequest remoteStartChargingRequest = 25;
+  RemoteStopChargingRequest remoteStopChargingRequest = 26;
+  TransactionRecordResponse transactionRecordResponse = 27;
+  RestartPileRequest restartPileRequest = 28;
+  OtaRequest otaRequest = 29;
+  OfflineCardBalanceUpdateRequest offlineCardBalanceUpdateRequest = 30;
+  OfflineCardSyncRequest offlineCardSyncRequest = 31;
+  TimeSyncRequest timeSyncRequest = 32;
+  StartChargeResponse startChargeResponse = 33;
+}
+
+// 下行响应消息
+message DownlinkResponseMessage {
+  bool success = 1;
+  optional string error = 2;
+}
+
+// 登录响应
+message LoginResponse {
+  bool success = 1;
+  string pileCode = 2;
+}
+
+// 启动充电响应
+message StartChargeResponse {
+  string tradeNo = 1;               // 交易流水号
+  string pileCode = 2;              // 桩编号
+  string gunCode = 3;               // 枪编号
+  string logicalCardNo = 4;         // 逻辑卡号
+  string limitYuan = 5;             // 账户余额
+  bool authSuccess = 6;             // 鉴权成功标志
+  string failReason = 7;            // 失败原因
+}
+
+// 失败原因枚举
+enum FailReason {
+  SUCCESS = 0;                        // 成功
+  ACCOUNT_NOT_EXISTS = 1;             // 账户不存在
+  ACCOUNT_FROZEN = 2;                 // 账户冻结
+  INSUFFICIENT_BALANCE = 3;           // 账户余额不足
+  CARD_HAS_UNPAID_RECORD = 4;         // 该卡存在未结账记录
+  PILE_DISABLED = 5;                  // 桩停用
+  ACCOUNT_NOT_ALLOWED_ON_PILE = 6;    // 该账户不能在此桩上充电
+  PASSWORD_ERROR = 7;                 // 密码错误
+  INSUFFICIENT_STATION_CAPACITY = 8;  // 电站电容不足
+  VIN_CODE_NOT_EXISTS = 9;            // 系统中vin码不存在
+  PILE_HAS_UNPAID_RECORD = 10;        // 该桩存在未结账记录
+  PILE_NOT_SUPPORT_CARD = 11;         // 该桩不支持该卡
+}
+
+// 校验计费响应
+message VerifyPricingResponse {
+  bool success = 1;
+  int64 pricingId = 30;
+}
+
+// 查询计费响应
+message QueryPricingResponse {
+  string pileCode = 4;
+  int64 pricingId = 30;
+  PricingModelProto pricingModel = 1;
+}
+
+// 计费模型配置 - 支持三种计费方式
+message PricingModelProto {
+  PricingModelType type = 3;  // 计费类型：充电/放电
+  PricingModelRule rule = 4;  // 计费规则：标准/峰谷/时段
+
+  // 计费配置：根据rule字段确定使用哪种配置
+  oneof pricing_config {
+    StandardPricingProto standardPricing = 5;        // 标准计费：固定价格
+    PeakValleyPricingProto peakValleyPricing = 6;    // 峰谷计价：按尖峰平谷分时段
+    TimePeriodPricingProto timePeriodPricing = 7;    // 时段计价：自定义时段价格
+  }
+}
+
+// 时段定义
+message PeriodProto {
+  int32 sn = 1;
+  string begin = 2;
+  string end = 3;
+  PricingModelFlag flag = 4;
+}
+
+// 标识价格
+message FlagPriceProto {
+  PricingModelFlag flag = 1;
+  string elec = 2;
+  string serv = 3;
+}
+
+// 标准计费配置 - 全天统一价格
+message StandardPricingProto {
+  string elecPrice = 1;    // 电费价格（元/度）
+  string servPrice = 2;    // 服务费价格（元/度）
+}
+
+// 峰谷计价配置 - 按电网峰谷政策分时计费
+message PeakValleyPricingProto {
+  map<int32, FlagPriceProto> flagPrice = 1;  // 各时段价格映射表
+  repeated PeriodProto period = 2;           // 时段划分配置
+}
+
+// 时段计价配置 - 运营商自定义时段计费
+message TimePeriodPricingProto {
+  repeated TimePeriodItemProto periods = 1;  // 自定义时段列表
+}
+
+// 时段计价单个时段定义
+message TimePeriodItemProto {
+  int32 periodNo = 1;      // 时段编号（从1开始）
+  string startTime = 2;    // 开始时间（HH:mm:ss格式）
+  string endTime = 3;      // 结束时间（HH:mm:ss格式）
+  string elecPrice = 4;    // 该时段电费（元/度）
+  string servPrice = 5;    // 该时段服务费（元/度）
+  optional string description = 6; // 时段名称（如"早高峰"）
+}
+
+// 计费模型类型
+enum PricingModelType {
+  CHARGE = 0; // 充电费率模型
+  DISCHARGE = 1; // 放电费率模型
+}
+
+// 计费模型规则
+enum PricingModelRule {
+  STANDARD = 0;               // 标准计费：全天统一价格
+  PEAK_VALLEY_PRICING = 1;    // 峰谷计费：按电网峰谷政策
+  TIME_PERIOD_PRICING = 2;    // 时段计费：运营商自定义
+}
+
+// 计费模型标识
+enum PricingModelFlag {
+  TOP = 0; // 尖峰
+  PEAK = 1; // 峰
+  FLAT = 2; // 平
+  VALLEY = 3; // 谷
+  DEEP = 4; // 深谷
+}
+
+// 设置计费请求
+message SetPricingRequest {
+  string pileCode = 4;
+  int64 pricingId = 30;
+  PricingModelProto pricingModel = 1;
+}
+
+// 远程启动充电请求
+message RemoteStartChargingRequest {
+  string pileCode = 4;
+  string gunCode = 5;
+  string tradeNo = 6;
+  string limitYuan = 7;
+  optional string logicalCardNo = 8;   // 逻辑卡号
+  optional string physicalCardNo = 9;  // 物理卡号
+  optional string parallelNo = 10;     // 并充序号
+  optional string additionalInfo = 20;
+}
+
+// 远程停止充电请求
+message RemoteStopChargingRequest {
+  string pileCode = 4;
+  string gunCode = 5;
+}
+
+// 交易记录响应
+message TransactionRecordResponse {
+  string tradeNo = 6;
+  bool success = 7;
+  optional string additionalInfo = 20;
+}
+
+// 重启充电桩请求
+message RestartPileRequest {
+  string pileCode = 4;
+  int32 type = 7;
+  optional string additionalInfo = 20;
+}
+
+// OTA升级请求
+message OtaRequest {
+  string pileCode = 1;         // 桩编号
+  int32 pileModel = 2;         // 桩型号
+  int32 pilePower = 3;         // 桩功率
+  string address = 4;          // 升级服务器地址
+  int32 port = 5;              // 升级服务器端口
+  string username = 6;         // 用户名
+  string password = 7;         // 密码
+  string filePath = 8;         // 文件路径
+  int32 executionControl = 9;  // 执行控制
+  int32 downloadTimeout = 10;  // 下载超时时间
+}
+
+// 离线卡余额更新请求
+message OfflineCardBalanceUpdateRequest {
+  string pileCode = 1;                    // 充电桩编码
+  string gunCode = 2;                     // 枪编号
+  string cardNo = 3;                      // 物理卡号
+  string limitYuan = 4;                   // 余额
+}
+
+// 离线卡同步请求
+message OfflineCardSyncRequest {
+  string pileCode = 1;                    // 充电桩编码
+  int32 total = 2;                        // 下发卡个数
+  repeated CardInfo cardInfo = 3;         // 卡号集合
+}
+
+// 卡信息
+message CardInfo {
+  string cardNo = 1;                      // 物理卡号
+  string logicCardNo = 2;                 // 逻辑卡号
+}
+
+// 时间同步请求
+message TimeSyncRequest {
+  string pileCode = 1;
+  string time = 2;
+}

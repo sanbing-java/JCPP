@@ -10,7 +10,7 @@ import com.google.protobuf.ByteString;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 

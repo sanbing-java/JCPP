@@ -13,8 +13,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 import sanbing.jcpp.app.service.DownlinkCallService;
 import sanbing.jcpp.app.service.grpc.DownlinkGrpcClient;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
-import sanbing.jcpp.proto.gen.ProtocolProto.RequestMsg;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.GrpcProto.RequestMsg;
 
 import static sanbing.jcpp.infrastructure.proto.ProtoConverter.toTracerProto;
 

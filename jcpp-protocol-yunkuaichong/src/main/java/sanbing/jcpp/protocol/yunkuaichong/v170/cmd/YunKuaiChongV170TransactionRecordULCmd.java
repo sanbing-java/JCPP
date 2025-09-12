@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
+import sanbing.jcpp.proto.gen.UplinkProto.*;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;

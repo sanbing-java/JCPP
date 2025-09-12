@@ -26,9 +26,10 @@ import sanbing.jcpp.infrastructure.util.async.JCPPThreadFactory;
 import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.infrastructure.util.trace.TracerRunnable;
+import sanbing.jcpp.proto.gen.DownlinkProto.DownlinkResponseMessage;
+import sanbing.jcpp.proto.gen.GrpcProto.*;
 import sanbing.jcpp.proto.gen.ProtocolInterfaceGrpc;
 import sanbing.jcpp.proto.gen.ProtocolInterfaceGrpc.ProtocolInterfaceStub;
-import sanbing.jcpp.proto.gen.ProtocolProto.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,7 +17,7 @@ import sanbing.jcpp.infrastructure.queue.QueueProducer;
 import sanbing.jcpp.infrastructure.queue.discovery.ServiceInfoProvider;
 import sanbing.jcpp.infrastructure.queue.kafka.*;
 import sanbing.jcpp.infrastructure.queue.settings.QueueAppSettings;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 @Component
 @ConditionalOnExpression("'${queue.type:null}'=='kafka'")
