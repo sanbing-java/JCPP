@@ -395,6 +395,36 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
+    public void onStartChargeRequest(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电桩启动充电请求 {}", uplinkQueueMessage);
+
+        StartChargeRequest startChargeRequest = uplinkQueueMessage.getStartChargeRequest();
+        String pileCode = startChargeRequest.getPileCode();
+        String gunCode = startChargeRequest.getGunCode();
+        // TODO 处理相关业务逻辑
+
+        // 构造下行回复
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, startChargeRequest.getPileCode());
+
+        downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.START_CHARGE_ACK.name());
+        downlinkMessageBuilder.setStartChargeResponse(StartChargeResponse.newBuilder()
+                        .setTradeNo("")
+                        .setPileCode(startChargeRequest.getPileCode())
+                        .setGunCode(startChargeRequest.getGunCode())
+                        .setLogicalCardNo("")
+                        .setLimitYuan("0")
+                        .setAuthSuccess(false)
+                        .setFailReason(FailReason.ACCOUNT_NOT_ALLOWED_ON_PILE.name())
+        );
+                        
+        log.info("业务[充电桩启动充电请求应答] 发送下行消息到充电桩: {}, 充电枪: {}", pileCode, gunCode);
+        downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder,pileCode);
+
+        callback.onSuccess();
+    }
+
+
+    @Override
     public void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo, 
                            String logicalCardNo, String physicalCardNo, String parallelNo) {
 

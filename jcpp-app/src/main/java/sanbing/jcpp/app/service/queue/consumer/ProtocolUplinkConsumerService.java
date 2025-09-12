@@ -70,7 +70,7 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService {
     private AppQueueConsumerManager<ProtoQueueMsg<UplinkQueueMessage>, AppQueueConfig> appConsumer;
 
     private final StatsFactory statsFactory;
-    
+
     private AppConsumerStats stats;
 
     public ProtocolUplinkConsumerService(PartitionProvider partitionProvider,
@@ -87,7 +87,7 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService {
     @PostConstruct
     public void init() {
         super.init("jcpp-app");
-        
+
         this.stats = new AppConsumerStats(statsFactory, timerTopN);
 
         log.info("Initializing Protocol Uplink Messages Queue Subscriptions.");
@@ -249,7 +249,11 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService {
 
                             pileProtocolService.postBmsDemandChargerOutput(uplinkQueueMsg, callback);
 
-                        }else {
+                        } else if (uplinkQueueMsg.hasStartChargeRequest()) {
+
+                            pileProtocolService.onStartChargeRequest(uplinkQueueMsg, callback);
+
+                        } else {
 
                             callback.onSuccess();
                         }

@@ -42,6 +42,7 @@ public class YunKuaiChongDownlinkCmdConverter implements DownlinkCmdConverter {
         COMMAND_MAP.put(DownlinkCmdEnum.VERIFY_PRICING_ACK, 0x06);
         COMMAND_MAP.put(DownlinkCmdEnum.QUERY_PRICING_ACK, 0X0A);
         COMMAND_MAP.put(DownlinkCmdEnum.SET_PRICING, 0x58);
+        COMMAND_MAP.put(DownlinkCmdEnum.START_CHARGE_ACK, 0x32);
         COMMAND_MAP.put(DownlinkCmdEnum.REMOTE_START_CHARGING, 0x34);
         COMMAND_MAP.put(DownlinkCmdEnum.REMOTE_STOP_CHARGING, 0x36);
         COMMAND_MAP.put(DownlinkCmdEnum.TRANSACTION_RECORD_ACK, 0x40);

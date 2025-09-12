@@ -80,6 +80,7 @@ message UplinkQueueMessage {
   OfflineCardSyncResponse offlineCardSyncResponse = 41;
   TimeSyncResponse timeSyncResponse = 42;
   BmsDemandChargerOutputProto bmsDemandChargerOutputProto = 43;
+  StartChargeRequest startChargeRequest = 44;
 }
 
 message DownlinkRequestMessage {
@@ -105,6 +106,7 @@ message DownlinkRequestMessage {
   OfflineCardBalanceUpdateRequest offlineCardBalanceUpdateRequest = 30;
   OfflineCardSyncRequest offlineCardSyncRequest = 31;
   TimeSyncRequest timeSyncRequest = 32;
+  StartChargeResponse startChargeResponse = 33;
 }
 
 message DownlinkResponseMessage {
@@ -134,6 +136,43 @@ message LoginRequest {
   int32 nodeRestPort = 12;
   int32 nodeGrpcPort = 13;
   optional string additionalInfo = 20;
+}
+
+message StartChargeRequest {
+  int64 ts = 1;
+  string pileCode = 2;                  // 桩编号
+  string gunCode = 3;                   // 枪编号
+  string startType = 4;                 // 启动类型
+  string cardNo = 5;                    // 账号或物理卡号
+  bool needPassword = 6;                // 是否需要密码
+  string password = 7;                  // 密码
+  string carVinCode = 8;               // 车辆识别码(VIN)
+  optional string additionalInfo = 20;  // 附加信息
+}
+
+message StartChargeResponse {
+  string tradeNo = 1;               // 交易流水号
+  string pileCode = 2;              // 桩编号
+  string gunCode = 3;               // 枪编号
+  string logicalCardNo = 4;         // 逻辑卡号
+  string limitYuan = 5;             // 账户余额
+  bool authSuccess = 6;             // 鉴权成功标志
+  string failReason = 7;            // 失败原因
+}
+
+enum FailReason {
+  SUCCESS = 0;                        // 成功
+  ACCOUNT_NOT_EXISTS = 1;             // 账户不存在
+  ACCOUNT_FROZEN = 2;                 // 账户冻结
+  INSUFFICIENT_BALANCE = 3;           // 账户余额不足
+  CARD_HAS_UNPAID_RECORD = 4;         // 该卡存在未结账记录
+  PILE_DISABLED = 5;                  // 桩停用
+  ACCOUNT_NOT_ALLOWED_ON_PILE = 6;    // 该账户不能在此桩上充电
+  PASSWORD_ERROR = 7;                 // 密码错误
+  INSUFFICIENT_STATION_CAPACITY = 8;  // 电站电容不足
+  VIN_CODE_NOT_EXISTS = 9;            // 系统中vin码不存在
+  PILE_HAS_UNPAID_RECORD = 10;        // 该桩存在未结账记录
+  PILE_NOT_SUPPORT_CARD = 11;         // 该桩不支持该卡
 }
 
 message LoginResponse {

@@ -73,6 +73,11 @@ public interface PileProtocolService {
     void onTransactionRecordRequest(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
+     * 充电桩主动申请启动充电
+     */
+    void onStartChargeRequest(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
      * 启动充电（支持卡号和并充序号）
      * 当 parallelNo 不为空时，自动使用并充启机命令
      */
