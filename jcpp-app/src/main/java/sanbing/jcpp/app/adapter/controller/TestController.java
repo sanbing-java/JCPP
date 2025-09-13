@@ -90,8 +90,8 @@ public class TestController extends BaseController {
         return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/setPricing")
-    public ResponseEntity<String> setPricing() {
+    @GetMapping("/setTimePeriodPricingPricing")
+    public ResponseEntity<String> setTimePeriodPricingPricing() {
 
         String pileCode = "20231212000010";
 
@@ -205,9 +205,9 @@ public class TestController extends BaseController {
         return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/timePeriodPricing")
-    public ResponseEntity<String> testTimePeriodPricing() {
-        String pileCode = "TEST001";
+    @GetMapping("/setTimePeriodPricing")
+    public ResponseEntity<String> setTimePeriodPricing() {
+        String pileCode = "20231212000010";
 
         // 创建时段计价列表
         List<TimePeriodItemProto> timePeriodItems = new ArrayList<>();
