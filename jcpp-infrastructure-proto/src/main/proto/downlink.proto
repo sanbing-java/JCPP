@@ -272,3 +272,4 @@ message OfflineCardQueryRequest {
   int32 total = 2;                        // 查询离线卡的个数
   repeated string cardNo = 3;             // 物理卡号集合
 }
+
