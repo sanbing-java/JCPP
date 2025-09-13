@@ -261,6 +261,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService {
 
                             pileProtocolService.onStartChargeRequest(uplinkQueueMsg, callback);
 
+                        } else if (uplinkQueueMsg.hasSetQrcodeResponse()) {
+
+                            pileProtocolService.onSetQrcodeResponse(uplinkQueueMsg, callback);
+
                         } else {
 
                             callback.onSuccess();

@@ -42,6 +42,9 @@ public class LvnengDownlinkCmdConverter implements DownlinkCmdConverter {
         COMMAND_MAP.put(DownlinkCmdEnum.TRANSACTION_RECORD_ACK, 201);
         COMMAND_MAP.put(DownlinkCmdEnum.HEARTBEAT_ACK, 101);  // 心跳应答
         COMMAND_MAP.put(DownlinkCmdEnum.REAL_TIME_DATA_ACK, 103);  // 实时数据应答
+        COMMAND_MAP.put(DownlinkCmdEnum.SET_PRICING, 1103);//设置价格模型应答
+        COMMAND_MAP.put(DownlinkCmdEnum.REMOTE_STOP_CHARGING, 5);//远程停止充电
+        COMMAND_MAP.put(DownlinkCmdEnum.SET_QRCODE, 3);//设置二维码
         // 绿能协议支持以上命令，其他命令返回null
     }
 

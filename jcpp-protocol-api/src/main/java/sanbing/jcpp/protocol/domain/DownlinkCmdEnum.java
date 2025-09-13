@@ -23,6 +23,8 @@ public enum DownlinkCmdEnum {
 
     SET_PRICING,
 
+    SET_QRCODE,
+
     REMOTE_START_CHARGING,
 
     REMOTE_STOP_CHARGING,

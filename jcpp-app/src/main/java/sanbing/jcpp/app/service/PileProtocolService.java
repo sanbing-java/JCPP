@@ -13,6 +13,8 @@ import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardSyncRequest;
 import sanbing.jcpp.proto.gen.DownlinkProto.OtaRequest;
 import sanbing.jcpp.proto.gen.DownlinkProto.SetPricingRequest;
 import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.DownlinkProto.SetQrcodeRequest;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -208,4 +210,12 @@ public interface PileProtocolService {
      */
     void postBmsDemandChargerOutput(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
+    /**
+     * 服务器下发充电桩字符型参数
+     */
+    void setQrcode( SetQrcodeRequest setQrcodeRequest );
+    /**
+     * 服务器下发充电桩字符型参数反馈
+     */
+    void onSetQrcodeResponse(UplinkQueueMessage uplinkQueueMsg, Callback callback);
 }
