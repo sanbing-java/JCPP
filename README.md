@@ -46,7 +46,5 @@ http://localhost:8080/page/dashboard
 4. 加入社群
 5. 新建 Pull Request
 
-#### 版权
-开源部分，仅供学习和交流研究使用
 
   
