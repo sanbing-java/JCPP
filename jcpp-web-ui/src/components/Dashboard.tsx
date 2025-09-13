@@ -334,7 +334,7 @@ const Dashboard: React.FC = () => {
               border: '1px solid #f0f0f0',
               boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
             }}
-            bodyStyle={{ padding: '20px' }}
+            styles={{ body: { padding: '20px' } }}
           >
             <Statistic
               title="充电站数量"
@@ -351,7 +351,7 @@ const Dashboard: React.FC = () => {
               border: '1px solid #f0f0f0',
               boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
             }}
-            bodyStyle={{ padding: '20px' }}
+            styles={{ body: { padding: '20px' } }}
           >
             <Statistic
               title="充电桩数量"
@@ -368,7 +368,7 @@ const Dashboard: React.FC = () => {
               border: '1px solid #f0f0f0',
               boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
             }}
-            bodyStyle={{ padding: '20px' }}
+            styles={{ body: { padding: '20px' } }}
           >
             <Statistic
               title="充电枪数量"
@@ -391,7 +391,7 @@ const Dashboard: React.FC = () => {
                 boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
                 height: '380px'
               }}
-              bodyStyle={{ padding: '16px', height: '100%' }}
+              styles={{ body: { padding: '16px', height: '100%' } }}
               loading={loading}
             >
               <div 
@@ -412,7 +412,7 @@ const Dashboard: React.FC = () => {
                 boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
                 height: '380px'
               }}
-              bodyStyle={{ padding: '16px', height: '100%' }}
+              styles={{ body: { padding: '16px', height: '100%' } }}
               loading={loading}
             >
               <div 

@@ -7,9 +7,30 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {message} from 'antd';
 
+// 获取API基础URL的函数
+const getApiBaseUrl = (): string => {
+  // 如果设置了环境变量，优先使用环境变量
+  if (process.env.REACT_APP_API_BASE_URL) {
+    return process.env.REACT_APP_API_BASE_URL;
+  }
+  
+  // 根据构建环境决定API基础URL
+  const env = process.env.REACT_APP_ENV || 'development';
+  
+  if (env === 'production') {
+    // 生产环境：使用当前页面的协议和域名
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    return `${protocol}//${host}`;
+  } else {
+    // 开发环境：使用localhost:8080
+    return 'http://localhost:8080';
+  }
+};
+
 // 创建axios实例
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080',
+  baseURL: getApiBaseUrl(),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
