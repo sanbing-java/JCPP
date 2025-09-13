@@ -85,8 +85,10 @@ public class TcpSession extends ProtocolSession {
     public void close(SessionCloseReason reason) {
         super.close(reason);
 
-        ctx.flush();
-        ctx.close();
+        if (ctx != null) {
+            ctx.flush();
+            ctx.close();
+        }
     }
 
     public void writeAndFlush(ByteBuf byteBuf) {
