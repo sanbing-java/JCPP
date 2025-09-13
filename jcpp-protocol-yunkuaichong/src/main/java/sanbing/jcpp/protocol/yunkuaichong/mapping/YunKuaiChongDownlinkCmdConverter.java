@@ -52,6 +52,10 @@ public class YunKuaiChongDownlinkCmdConverter implements DownlinkCmdConverter {
         COMMAND_MAP.put(DownlinkCmdEnum.OFFLINE_CARD_BALANCE_UPDATE_REQUEST, 0x42);
         COMMAND_MAP.put(DownlinkCmdEnum.OFFLINE_CARD_SYNC_REQUEST, 0x44);
         COMMAND_MAP.put(DownlinkCmdEnum.SYNC_TIME_REQUEST, 0x56);
+        COMMAND_MAP.put(DownlinkCmdEnum.OFFLINE_CARD_CLEAR_REQUEST, 0x46);
+        COMMAND_MAP.put(DownlinkCmdEnum.OFFLINE_CARD_QUERY_REQUEST, 0x48);
+
+
     }
 
     /**

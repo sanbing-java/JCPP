@@ -245,6 +245,14 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService {
 
                             pileProtocolService.onTimeSyncResponse(uplinkQueueMsg, callback);
 
+                        }else if (uplinkQueueMsg.hasOfflineCardClearResponse()) {
+
+                            pileProtocolService.onOfflineCardClearResponse(uplinkQueueMsg, callback);
+
+                        }else if (uplinkQueueMsg.hasOfflineCardQueryResponse()) {
+
+                            pileProtocolService.onOfflineCardQueryResponse(uplinkQueueMsg, callback);
+
                         } else if (uplinkQueueMsg.hasBmsDemandChargerOutputProto()) {
 
                             pileProtocolService.postBmsDemandChargerOutput(uplinkQueueMsg, callback);

@@ -49,6 +49,8 @@ public class AbstractYunKuaiChongCmdExe {
     private static final DecimalFormat PRICING_ID_DECIMAL_FORMAT = new DecimalFormat("0000");
 
 
+    protected static final String SUCCESS = "成功";
+
     protected static final String UNKNOWN_MSG = "未知的异常";
 
 
@@ -82,7 +84,7 @@ public class AbstractYunKuaiChongCmdExe {
     }
 
     protected static byte[] encodePileCode(String pileCode) {
-        if (StringUtils.length(pileCode) > 32) {
+        if (StringUtils.length(pileCode) > 14) {
             throw new IllegalArgumentException("云快充可接受最大桩编号为14位");
         }
 
@@ -113,14 +115,14 @@ public class AbstractYunKuaiChongCmdExe {
 
     /**
      * 编码卡号为BCD格式
-     * 云快充协议卡号为6字节（12位BCD码），需要做长度校验和补0操作
+     * 云快充协议卡号为8字节（16位BCD码），需要做长度校验和补0操作
      */
     protected static byte[] encodeCardNo(String cardNo) {
-        if (StringUtils.length(cardNo) > 12) {
-            throw new IllegalArgumentException("云快充可接受最大卡号为12位");
+        if (StringUtils.length(cardNo) > 16) {
+            throw new IllegalArgumentException("云快充可接受最大卡号为16位");
         }
 
-        String cardNoStr = StringUtils.leftPad(cardNo, 12, '0');
+        String cardNoStr = StringUtils.leftPad(cardNo, 16, '0');
 
         return BCDUtil.toBytes(cardNoStr);
     }

@@ -45,6 +45,8 @@ message UplinkQueueMessage {
   TimeSyncResponse timeSyncResponse = 42;
   BmsDemandChargerOutputProto bmsDemandChargerOutputProto = 43;
   StartChargeRequest startChargeRequest = 44;
+  OfflineCardClearResponse offlineCardClearResponse = 45;
+  OfflineCardQueryResponse offlineCardQueryResponse = 46;
 }
 
 // 会话关闭事件
@@ -338,6 +340,34 @@ message TimeSyncResponse {
   string pileCode = 1;
   string time = 2;
 }
+
+
+
+message OfflineCardClearResponse {
+  string pileCode = 1;                    // 充电桩编码
+  repeated ClearResult clearResult = 2;   // 清除卡号结果集合
+}
+
+message ClearResult {
+  string cardNo = 1;                      // 物理卡号
+  bool success = 2;
+  optional string errorMsg = 3;
+}
+
+
+
+message OfflineCardQueryResponse {
+  string pileCode = 1;                    // 充电桩编码
+  repeated QueryResult queryResult = 2;   // 查询卡号结果集合
+}
+
+message QueryResult {
+  string cardNo = 1;                      // 物理卡号
+  bool exist = 2;
+
+}
+
+
 
 // BMS需求充电机输出
 message BmsDemandChargerOutputProto {

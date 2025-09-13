@@ -9,7 +9,6 @@ package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
-import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardSyncRequest;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
@@ -41,7 +40,7 @@ public class YunKuaiChongV150OfflineCardSyncRequestDLCmd extends YunKuaiChongDow
 
         OfflineCardSyncRequest request = message.getMsg().getOfflineCardSyncRequest();
 
-        if (request.getTotal() > 15) {
+        if (request.getTotal()>15 || request.getCardInfoCount()>15) {
             log.error("云快充1.5.0 离线卡数据同步 下发卡个数最大支持: 15个当前: {}个", request.getTotal());
             return;
         }
@@ -50,8 +49,8 @@ public class YunKuaiChongV150OfflineCardSyncRequestDLCmd extends YunKuaiChongDow
         msgBody.writeBytes(encodePileCode(request.getPileCode()));
         msgBody.writeIntLE(request.getTotal());
         request.getCardInfoList().forEach(cardInfo -> {
-            msgBody.writeBytes(BCDUtil.toBytes(cardInfo.getLogicCardNo()));
-            msgBody.writeBytes(BCDUtil.toBytes(cardInfo.getCardNo()));
+            msgBody.writeBytes(encodeCardNo(cardInfo.getLogicCardNo()));
+            msgBody.writeBytes(encodeCardNo(cardInfo.getCardNo()));
         });
 
         super.encodeAndWriteFlush(OFFLINE_CARD_SYNC_REQUEST, msgBody, tcpSession);

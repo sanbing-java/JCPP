@@ -15,6 +15,8 @@ import java.util.function.Function;
 
 public class PropertyUtils {
 
+    private PropertyUtils() {}
+
     public static Map<String, String> getProps(String properties) {
         Map<String, String> configs = new HashMap<>();
         if (StringUtils.isNotEmpty(properties)) {

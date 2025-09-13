@@ -36,6 +36,8 @@ message DownlinkRequestMessage {
   OfflineCardSyncRequest offlineCardSyncRequest = 31;
   TimeSyncRequest timeSyncRequest = 32;
   StartChargeResponse startChargeResponse = 33;
+  OfflineCardClearRequest offlineCardClearRequest = 34;
+  OfflineCardQueryRequest offlineCardQueryRequest = 35;
 }
 
 // 下行响应消息
@@ -245,4 +247,16 @@ message CardInfo {
 message TimeSyncRequest {
   string pileCode = 1;
   string time = 2;
+}
+
+message OfflineCardClearRequest {
+  string pileCode = 1;                    // 充电桩编码
+  int32 total = 2;                        // 清除离线卡的个数
+  repeated string cardNo = 3;             // 物理卡号集合
+}
+
+message OfflineCardQueryRequest {
+  string pileCode = 1;                    // 充电桩编码
+  int32 total = 2;                        // 查询离线卡的个数
+  repeated string cardNo = 3;             // 物理卡号集合
 }

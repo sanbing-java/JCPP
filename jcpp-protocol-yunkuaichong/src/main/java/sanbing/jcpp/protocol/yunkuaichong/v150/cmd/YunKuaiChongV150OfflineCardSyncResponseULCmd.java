@@ -35,10 +35,6 @@ public class YunKuaiChongV150OfflineCardSyncResponseULCmd extends YunKuaiChongUp
 
     private static final Map<Byte, Map<Byte, String>> FAILURE_REASON;
 
-
-    private static final String SUCCESS = "成功";
-
-
     static {
         FAILURE_REASON = Map.of(
             (byte) 0x00,Map.of((byte)0x01,"卡号格式错误",(byte)0x02,"储存空间不足"),

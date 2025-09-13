@@ -748,6 +748,57 @@ public class DefaultPileProtocolService implements PileProtocolService {
         callback.onSuccess();
     }
 
+    @Override
+    public void offlineCardClearRequest(OfflineCardClearRequest request) {
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(request.getPileCode())
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.OFFLINE_CARD_CLEAR_REQUEST.name())
+                .setOfflineCardClearRequest(request);
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
+    }
+
+    @Override
+    public void onOfflineCardClearResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电桩离线卡数据清除应答 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
+
+        callback.onSuccess();
+    }
+
+    @Override
+    public void offlineCardQueryRequest(OfflineCardQueryRequest request) {
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(request.getPileCode())
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.OFFLINE_CARD_QUERY_REQUEST.name())
+                .setOfflineCardQueryRequest(request);
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
+    }
+
+    @Override
+    public void onOfflineCardQueryResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电桩离线卡数据查询应答 {}", uplinkQueueMessage);
+
+
+        // TODO 处理相关业务逻辑
+
+        callback.onSuccess();
+    }
+
     private static Period createPeriod(int sn, LocalTime beginTime, LocalTime endTime, PricingModelFlag flag) {
         Period period = new Period();
         period.setSn(sn);

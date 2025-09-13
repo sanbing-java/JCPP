@@ -7,12 +7,12 @@
 package sanbing.jcpp.app.service;
 
 import sanbing.jcpp.infrastructure.queue.Callback;
+import sanbing.jcpp.proto.gen.DownlinkProto;
 import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardBalanceUpdateRequest;
 import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardSyncRequest;
 import sanbing.jcpp.proto.gen.DownlinkProto.OtaRequest;
 import sanbing.jcpp.proto.gen.DownlinkProto.SetPricingRequest;
 import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -184,6 +184,25 @@ public interface PileProtocolService {
      */
     void onTimeSyncResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
+    /**
+     * 离线卡数据清除
+     */
+    void offlineCardClearRequest(DownlinkProto.OfflineCardClearRequest request);
+
+    /**
+     * 离线卡数据清除应答
+     */
+    void onOfflineCardClearResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 离线卡数据查询
+     */
+    void offlineCardQueryRequest(DownlinkProto.OfflineCardQueryRequest request);
+
+    /**
+     * 离线卡数据查询应答
+     */
+    void onOfflineCardQueryResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
     /**
      * 充电过程BMS需求与充电机输出
      */

@@ -323,4 +323,33 @@ public class TestController extends BaseController {
         return ResponseEntity.ok("success");
     }
 
+    @GetMapping("/api/offlineCardClearRequest")
+    public ResponseEntity<String> offlineCardClearRequest() {
+
+        List<String> cardNoList = Lists.newArrayList("1000000000123456", "1000000000123457", "1000000000123458", "1000000000123459", "1000000000123460");
+
+        pileProtocolService.offlineCardClearRequest(OfflineCardClearRequest.newBuilder()
+                .setPileCode("20231212000010")
+                .setTotal(cardNoList.size())
+                .addAllCardNo(cardNoList)
+                .build());
+
+        return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/api/offlineCardQueryRequest")
+    public ResponseEntity<String> offlineCardQueryRequest() {
+
+        List<String> cardNoList = Lists.newArrayList("1000000000123456", "1000000000123457", "1000000000123458", "1000000000123459", "1000000000123460");
+
+
+        pileProtocolService.offlineCardQueryRequest(OfflineCardQueryRequest.newBuilder()
+                .setPileCode("20231212000010")
+                .setTotal(cardNoList.size())
+                .addAllCardNo(cardNoList)
+                .build());
+
+        return ResponseEntity.ok("success");
+    }
+
 }
