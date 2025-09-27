@@ -140,6 +140,12 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
                 .addAllFaultMessages(faults)
                 .setAdditionalInfo(additionalInfo.toString());
 
+        // 会话添加充电桩编码
+        tcpSession.addPileCode(pileCode);
+
+        // 注册前置会话
+        ctx.getProtocolSessionRegistryProvider().register(tcpSession);
+
         // 转发到后端
         UplinkQueueMessage gunRunStatusMessage = uplinkMessageBuilder(pileCode, tcpSession, yunKuaiChongUplinkMessage)
                 .setGunRunStatusProto(gunRunStatusProtoBuilder)

@@ -23,7 +23,7 @@ import sanbing.jcpp.proto.gen.DownlinkProto.*;
 
 /**
  * RPC控制器 - 通用化的充电桩下行指令接口
- *
+ * 
  * @author 九筒
  */
 @RestController
@@ -156,7 +156,7 @@ public class RpcController extends BaseController {
     /**
      * 处理离线卡余额更新指令
      */
-    private void handleOfflineCardBalanceUpdate(JsonNode parameter) {
+    private void handleOfflineCardBalanceUpdate(JsonNode parameter) throws Exception {
         OfflineCardBalanceUpdateRequest request = JacksonUtil.fromJson(parameter, OfflineCardBalanceUpdateRequest.class);
         pileProtocolService.offlineCardBalanceUpdateRequest(request);
     }

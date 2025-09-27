@@ -219,7 +219,7 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
         //46 预留 1
         byteBuf.skipBytes(1);
 
-
+        // 会话添加充电桩编码
         tcpSession.addPileCode(pileCode);
 
         // 注册前置会话

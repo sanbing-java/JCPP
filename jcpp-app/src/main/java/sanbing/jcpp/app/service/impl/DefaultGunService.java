@@ -198,7 +198,7 @@ public class DefaultGunService implements GunService {
                 // 保存充电枪状态到属性表
                 saveGunStatusChange(gun.getId(), dbStatus.name(), ts);
 
-                log.info("充电枪状态更新成功: 桩编码={}, 枪编号={}, 原状态={}, 新状态={}",
+                log.info("充电枪状态更新成功: 桩编码={}, 枪编号={}, 原状态={}, 新状态={}", 
                         pileCode, gunNo, currentStatus, dbStatus);
                 
                 // 根据充电枪状态判断是否需要更新充电桩状态

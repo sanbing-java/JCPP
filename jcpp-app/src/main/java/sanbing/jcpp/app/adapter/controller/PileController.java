@@ -94,7 +94,7 @@ public class PileController extends BaseController {
             // 通过AttributeService获取充电桩状态
             ListenableFuture<Optional<AttributeKvEntry>> attributeFuture =
                     attributeService.find(pile.getId(), AttrKeyEnum.STATUS.getCode());
-
+            
             Optional<AttributeKvEntry> attributeResult = attributeFuture.get();
             String status = null;
             if (attributeResult.isPresent()) {

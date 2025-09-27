@@ -505,6 +505,13 @@ const StationManagement: React.FC = () => {
     setSearchParams(newParams);
   };
 
+    // 刷新数据
+    const handleRefresh = () => {
+        // 使用当前的搜索参数重新加载数据
+        setSearchParams({...searchParams});
+        setSelectedRowKeys([]);
+    };
+
   // 显示创建模态框
   const showCreateModal = () => {
     setIsEdit(false);
@@ -929,20 +936,30 @@ const StationManagement: React.FC = () => {
       <Card
         title="充电站列表"
         extra={
-          <Dropdown 
-            menu={columnSelectorMenu} 
-            placement="bottomRight" 
-            trigger={['click']}
-            overlayStyle={{ minWidth: 180 }}
-          >
-            <Button 
-              icon={<TableOutlined />} 
-              type="text" 
-              size="small"
-              style={{ padding: '4px 8px' }}
-              title="自定义列"
-            />
-          </Dropdown>
+            <Space size="small">
+                <Button
+                    icon={<ReloadOutlined/>}
+                    type="text"
+                    size="small"
+                    style={{padding: '4px 8px'}}
+                    title="刷新数据"
+                    onClick={handleRefresh}
+                />
+                <Dropdown
+                    menu={columnSelectorMenu}
+                    placement="bottomRight"
+                    trigger={['click']}
+                    overlayStyle={{minWidth: 180}}
+                >
+                    <Button
+                        icon={<TableOutlined/>}
+                        type="text"
+                        size="small"
+                        style={{padding: '4px 8px'}}
+                        title="自定义列"
+                    />
+                </Dropdown>
+            </Space>
         }
       >
         <Table

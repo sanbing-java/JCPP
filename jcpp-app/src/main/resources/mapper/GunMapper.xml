@@ -101,8 +101,8 @@
 
     <!-- 根据充电桩编码和充电枪编号查询充电枪 -->
     <select id="selectByPileCodeAndGunNo" resultType="sanbing.jcpp.app.dal.entity.Gun">
-        SELECT g.* FROM t_gun g 
-        INNER JOIN t_pile p ON g.pile_id = p.id
+        SELECT g.* FROM t_gun g
+                            INNER JOIN t_pile p ON g.pile_id = p.id
         WHERE p.pile_code = #{pileCode}
           AND g.gun_no = #{gunNo}
     </select>
@@ -139,8 +139,8 @@
         <!-- 状态相关属性 -->
         a_run_status.str_v as run_status
 
-        FROM t_gun g
-
+        FROM t_gun g 
+        
         <!-- LEFT JOIN 获取充电站信息 -->
         LEFT JOIN t_station s ON g.station_id = s.id
 

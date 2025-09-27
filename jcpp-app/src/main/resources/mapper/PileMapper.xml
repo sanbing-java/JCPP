@@ -36,9 +36,9 @@
 
         <!-- 充电枪数量 - 使用LEFT JOIN优化子查询 -->
         COALESCE(g.gun_count, 0) as gun_count
-            
-        FROM t_pile p
 
+        FROM t_pile p 
+        
         <!-- 单次JOIN获取所有属性，避免多次JOIN -->
         LEFT JOIN t_attr a ON (
         a.entity_id = p.id AND

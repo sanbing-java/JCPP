@@ -630,7 +630,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         String additionalInfo = bmsHandshakeProto.getAdditionalInfo();
         
         log.info("BMS充电握手信息: 交易流水号: {}, 桩编码: {}, 枪号: {}, 车辆VIN: {}, BMS协议版本: {}, " +
-                "电池类型: {}, 电池容量: {}Ah, 附加信息: {}",
+                        "电池类型: {}, 电池容量: {}Ah, 附加信息: {}",
                 tradeNo, pileCode, gunNo, carVinCode, bmsProtocolVersion, 
                 bmsBatteryType, bmsPowerCapacity, additionalInfo);
         

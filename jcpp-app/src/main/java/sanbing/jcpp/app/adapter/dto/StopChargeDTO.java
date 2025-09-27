@@ -11,7 +11,7 @@ import lombok.Data;
 
 /**
  * 停止充电DTO
- *
+ * 
  * @author 九筒
  */
 @Data

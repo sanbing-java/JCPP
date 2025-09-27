@@ -13,7 +13,7 @@ import sanbing.jcpp.proto.gen.DownlinkProto.SetPricingRequest;
 
 /**
  * 设置计费策略DTO
- *
+ * 
  * @author 九筒
  */
 @Data

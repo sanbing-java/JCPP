@@ -23,7 +23,7 @@ import {
     Tag,
     Typography
 } from 'antd';
-import {DeleteOutlined, PlusOutlined, TableOutlined} from '@ant-design/icons';
+import {DeleteOutlined, PlusOutlined, ReloadOutlined, TableOutlined} from '@ant-design/icons';
 import type {ColumnsType, TableProps} from 'antd/es/table';
 import {pileService} from '../services/pileService';
 import * as stationService from '../services/stationService';
@@ -585,6 +585,13 @@ const PileManagement: React.FC = () => {
     setSearchParams(newParams);
   };
 
+    // 刷新数据
+    const handleRefresh = () => {
+        // 使用当前的搜索参数重新加载数据
+        setSearchParams({...searchParams});
+        setSelectedRowKeys([]);
+    };
+
   // 显示新建Modal
   const showCreateModal = async () => {
     form.resetFields();
@@ -969,20 +976,30 @@ const PileManagement: React.FC = () => {
       <Card
         title="充电桩列表"
         extra={
-          <Dropdown 
-            menu={columnSelectorMenu} 
-            placement="bottomRight" 
-            trigger={['click']}
-            overlayStyle={{ minWidth: 180 }}
-          >
-            <Button 
-              icon={<TableOutlined />} 
-              type="text" 
-              size="small"
-              style={{ padding: '4px 8px' }}
-              title="自定义列"
-            />
-          </Dropdown>
+            <Space size="small">
+                <Button
+                    icon={<ReloadOutlined/>}
+                    type="text"
+                    size="small"
+                    style={{padding: '4px 8px'}}
+                    title="刷新数据"
+                    onClick={handleRefresh}
+                />
+                <Dropdown
+                    menu={columnSelectorMenu}
+                    placement="bottomRight"
+                    trigger={['click']}
+                    overlayStyle={{minWidth: 180}}
+                >
+                    <Button
+                        icon={<TableOutlined/>}
+                        type="text"
+                        size="small"
+                        style={{padding: '4px 8px'}}
+                        title="自定义列"
+                    />
+                </Dropdown>
+            </Space>
         }
       >
         <Table

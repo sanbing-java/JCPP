@@ -7,7 +7,7 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import {Alert, Breadcrumb, Button, Card, Descriptions, Divider, message, Space, Spin, Typography} from 'antd';
-import {ArrowLeftOutlined, BugOutlined, HomeOutlined, PlayCircleOutlined} from '@ant-design/icons';
+import {ArrowLeftOutlined, BugOutlined, CopyOutlined, HomeOutlined, PlayCircleOutlined} from '@ant-design/icons';
 import {Gun} from '../types';
 import * as gunService from '../services/gunService';
 import {api, getErrorMessage} from '../services/api';
@@ -91,6 +91,47 @@ const GunDebug: React.FC = () => {
         navigate(returnUrl);
     };
 
+    // 获取完整的请求头信息（类似Swagger）
+    const getCompleteHeaders = () => {
+        const token = localStorage.getItem('token');
+        const headers: Record<string, string> = {
+            'Accept': 'application/json;charset=UTF-8',
+            'Content-Type': 'application/json;charset=UTF-8',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        return headers;
+    };
+
+    // 生成curl命令（类似Swagger UI）
+    const generateCurlCommand = (url: string, method: string, headers: Record<string, string>, requestBody: any) => {
+        let curlCommand = `curl -X ${method} "${url}"`;
+
+        // 添加请求头
+        Object.entries(headers).forEach(([key, value]) => {
+            curlCommand += ` \\\n  -H "${key}: ${value}"`;
+        });
+
+        // 添加请求体（如果有）
+        if (requestBody && method !== 'GET') {
+            curlCommand += ` \\\n  -d '${JSON.stringify(requestBody)}'`;
+        }
+
+        return curlCommand;
+    };
+
+    // 复制curl命令到剪贴板
+    const copyCurlCommand = (curlCommand: string) => {
+        navigator.clipboard.writeText(curlCommand).then(() => {
+            message.success('cURL命令已复制到剪贴板');
+        }).catch(() => {
+            message.error('复制失败，请手动复制');
+        });
+    };
+
     // 执行充电枪状态查询调试
     const handleDebugGunStatus = async () => {
         if (!gun) return;
@@ -98,16 +139,16 @@ const GunDebug: React.FC = () => {
         // 清除充电桩调试结果，只显示充电枪调试结果
         setPileDebugResult(null);
         setDebugLoading(true);
-        try {
-            const headers = {
-                'Content-Type': 'application/json',
-            };
 
+        const fullUrl = `${api.defaults.baseURL}/api/guns/status/${gun.gunCode}`;
+        const headers = getCompleteHeaders();
+
+        try {
             // 直接调用现有的正确API接口
             const response = await api.get(`/api/guns/status/${gun.gunCode}`);
 
             setDebugResult({
-                url: `/api/guns/status/${gun.gunCode}`,
+                url: fullUrl,
                 method: 'GET',
                 headers,
                 requestBody: null,
@@ -123,9 +164,9 @@ const GunDebug: React.FC = () => {
             }
         } catch (error: any) {
             const errorResult = {
-                url: `/api/guns/status/${gun.gunCode}`,
+                url: fullUrl,
                 method: 'GET',
-                headers: {'Content-Type': 'application/json'},
+                headers,
                 requestBody: null,
                 response: {success: false, message: getErrorMessage(error)},
                 timestamp: new Date().toLocaleString(),
@@ -149,16 +190,16 @@ const GunDebug: React.FC = () => {
         // 清除充电枪调试结果，只显示充电桩调试结果
         setDebugResult(null);
         setPileDebugLoading(true);
-        try {
-            const headers = {
-                'Content-Type': 'application/json',
-            };
 
+        const fullUrl = `${api.defaults.baseURL}/api/piles/status/${gun.pileCode}`;
+        const headers = getCompleteHeaders();
+
+        try {
             // 直接调用现有的正确API接口
             const response = await api.get(`/api/piles/status/${gun.pileCode}`);
 
             setPileDebugResult({
-                url: `/api/piles/status/${gun.pileCode}`,
+                url: fullUrl,
                 method: 'GET',
                 headers,
                 requestBody: null,
@@ -174,9 +215,9 @@ const GunDebug: React.FC = () => {
             }
         } catch (error: any) {
             const errorResult = {
-                url: `/api/piles/status/${gun.pileCode}`,
+                url: fullUrl,
                 method: 'GET',
-                headers: {'Content-Type': 'application/json'},
+                headers,
                 requestBody: null,
                 response: {success: false, message: getErrorMessage(error)},
                 timestamp: new Date().toLocaleString(),
@@ -302,6 +343,30 @@ const GunDebug: React.FC = () => {
                             </Descriptions.Item>
                         </Descriptions>
 
+                        <Divider orientation="left">
+                            cURL 命令
+                            <Button
+                                type="link"
+                                size="small"
+                                icon={<CopyOutlined/>}
+                                onClick={() => copyCurlCommand(generateCurlCommand(debugResult.url, debugResult.method, debugResult.headers, debugResult.requestBody))}
+                                style={{marginLeft: 8}}
+                            >
+                                复制
+                            </Button>
+                        </Divider>
+                        <pre style={{
+                            background: '#1f1f1f',
+                            color: '#f8f8f2',
+                            padding: 12,
+                            borderRadius: 4,
+                            fontSize: 12,
+                            overflow: 'auto',
+                            fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace'
+                        }}>
+              {generateCurlCommand(debugResult.url, debugResult.method, debugResult.headers, debugResult.requestBody)}
+            </pre>
+
                         <Divider orientation="left">请求头 (Headers)</Divider>
                         <pre style={{
                             background: '#f5f5f5',
@@ -321,7 +386,7 @@ const GunDebug: React.FC = () => {
                             fontSize: 12,
                             overflow: 'auto'
                         }}>
-              {JSON.stringify(debugResult.requestBody, null, 2)}
+              {debugResult.requestBody ? JSON.stringify(debugResult.requestBody, null, 2) : 'null'}
             </pre>
 
                         <Divider orientation="left">响应结果 (Response)</Divider>
@@ -361,6 +426,30 @@ const GunDebug: React.FC = () => {
                             </Descriptions.Item>
                         </Descriptions>
 
+                        <Divider orientation="left">
+                            cURL 命令
+                            <Button
+                                type="link"
+                                size="small"
+                                icon={<CopyOutlined/>}
+                                onClick={() => copyCurlCommand(generateCurlCommand(pileDebugResult.url, pileDebugResult.method, pileDebugResult.headers, pileDebugResult.requestBody))}
+                                style={{marginLeft: 8}}
+                            >
+                                复制
+                            </Button>
+                        </Divider>
+                        <pre style={{
+                            background: '#1f1f1f',
+                            color: '#f8f8f2',
+                            padding: 12,
+                            borderRadius: 4,
+                            fontSize: 12,
+                            overflow: 'auto',
+                            fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace'
+                        }}>
+              {generateCurlCommand(pileDebugResult.url, pileDebugResult.method, pileDebugResult.headers, pileDebugResult.requestBody)}
+            </pre>
+
                         <Divider orientation="left">请求头 (Headers)</Divider>
                         <pre style={{
                             background: '#f5f5f5',
@@ -380,7 +469,7 @@ const GunDebug: React.FC = () => {
                             fontSize: 12,
                             overflow: 'auto'
                         }}>
-              {JSON.stringify(pileDebugResult.requestBody, null, 2)}
+              {pileDebugResult.requestBody ? JSON.stringify(pileDebugResult.requestBody, null, 2) : 'null'}
             </pre>
 
                         <Divider orientation="left">响应结果 (Response)</Divider>

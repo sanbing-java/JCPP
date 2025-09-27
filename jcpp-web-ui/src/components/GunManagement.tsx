@@ -597,6 +597,13 @@ const GunManagement: React.FC = () => {
       updateSearchParams(newParams);
   };
 
+    // 刷新数据
+    const handleRefresh = () => {
+        // 使用当前的搜索参数重新加载数据
+        updateSearchParams({...searchParams});
+        setSelectedRowKeys([]);
+    };
+
   // 显示新建模态框
   const showCreateModal = () => {
     setIsEdit(false);
@@ -942,20 +949,30 @@ const GunManagement: React.FC = () => {
       <Card
         title="充电枪列表"
         extra={
-          <Dropdown 
-            menu={columnSelectorMenu} 
-            placement="bottomRight" 
-            trigger={['click']}
-            overlayStyle={{ minWidth: 180 }}
-          >
-            <Button 
-              icon={<TableOutlined />} 
-              type="text" 
-              size="small"
-              style={{ padding: '4px 8px' }}
-              title="自定义列"
-            />
-          </Dropdown>
+            <Space size="small">
+                <Button
+                    icon={<ReloadOutlined/>}
+                    type="text"
+                    size="small"
+                    style={{padding: '4px 8px'}}
+                    title="刷新数据"
+                    onClick={handleRefresh}
+                />
+                <Dropdown
+                    menu={columnSelectorMenu}
+                    placement="bottomRight"
+                    trigger={['click']}
+                    overlayStyle={{minWidth: 180}}
+                >
+                    <Button
+                        icon={<TableOutlined/>}
+                        type="text"
+                        size="small"
+                        style={{padding: '4px 8px'}}
+                        title="自定义列"
+                    />
+                </Dropdown>
+            </Space>
         }
       >
         <Table

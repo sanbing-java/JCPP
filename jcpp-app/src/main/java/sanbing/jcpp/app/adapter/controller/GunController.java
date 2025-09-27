@@ -82,7 +82,7 @@ public class GunController extends BaseController {
             // 通过AttributeService获取充电枪运行状态
             ListenableFuture<Optional<AttributeKvEntry>> attributeFuture =
                     attributeService.find(gun.getId(), AttrKeyEnum.GUN_RUN_STATUS.getCode());
-
+            
             Optional<AttributeKvEntry> attributeResult = attributeFuture.get();
             String status = null;
             if (attributeResult.isPresent()) {
