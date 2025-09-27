@@ -40,7 +40,7 @@ public class YunKuaiChongV150RemoteStartDLCmd extends YunKuaiChongDownlinkCmdExe
 
         RemoteStartChargingRequest remoteStartChargingRequest = yunKuaiChongDwonlinkMessage.getMsg().getRemoteStartChargingRequest();
         String pileCode = remoteStartChargingRequest.getPileCode();
-        String gunCode = remoteStartChargingRequest.getGunCode();
+        String gunCode = remoteStartChargingRequest.getGunNo();
         String tradeNo = remoteStartChargingRequest.getTradeNo();
         String limitYuan = remoteStartChargingRequest.getLimitYuan();
         

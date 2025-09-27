@@ -177,7 +177,7 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         // 构建交易记录
         TransactionRecordRequest transactionRecordRequest = TransactionRecordRequest.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setTradeNo(tradeNo)
                 .setStartTs(startTime.toEpochMilli())
                 .setEndTs(endTime.toEpochMilli())

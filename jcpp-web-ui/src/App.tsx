@@ -17,6 +17,7 @@ import Dashboard from './components/Dashboard';
 import StationManagement from './components/StationManagement';
 import PileManagement from './components/PileManagement';
 import GunManagement from './components/GunManagement';
+import GunDebug from './components/GunDebug';
 import NotFoundRedirect from './components/NotFoundRedirect';
 import './App.css';
 
@@ -71,6 +72,13 @@ const App: React.FC = () => {
                 </Layout>
               </ProtectedRoute>
             } />
+              <Route path="/page/guns/:gunCode/debug" element={
+                  <ProtectedRoute>
+                      <Layout>
+                          <GunDebug/>
+                      </Layout>
+                  </ProtectedRoute>
+              }/>
             
             {/* 智能404重定向 - 根据登录状态决定重定向目标 */}
             <Route path="*" element={<NotFoundRedirect />} />

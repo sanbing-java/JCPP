@@ -160,6 +160,13 @@ queue:
       enabled: "${QUEUE_APP_STATS_ENABLED:true}"
       print-interval-ms: "${QUEUE_APP_STATS_PRINT_INTERVAL_MS:60000}"
       timer-top-n: "${QUEUE_APP_STATS_TIMER_TOP_N:5}"
+#  rpc:
+#    topic: "${QUEUE_RPC_TOPIC:app_rpc}"
+#    poll-interval: "${QUEUE_RPC_POLL_INTERVAL_MS:5}"
+#    pack-processing-timeout: "${QUEUE_RPC_PACK_PROCESSING_TIMEOUT_MS:2000}"
+#    consumer-per-partition: "${QUEUE_RPC_CONSUMER_PER_PARTITION:true}"
+#    partitions: "${QUEUE_RPC_PARTITIONS:10}"
+#    decoder: "${QUEUE_RPC_DECODER:protobuf}"
 
 # 应用程序缓存配置
 cache:

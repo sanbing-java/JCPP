@@ -31,3 +31,8 @@ export const getGun = async (id: string): Promise<Gun> => {
   return response.data.data;
 };
 
+export const getGunByCode = async (gunCode: string): Promise<Gun> => {
+    const response = await api.get(`/api/guns/code/${gunCode}`);
+    return response.data.data;
+};
+

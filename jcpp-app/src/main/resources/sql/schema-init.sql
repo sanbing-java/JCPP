@@ -96,11 +96,13 @@ CREATE TABLE IF NOT EXISTS t_gun
     version                 int                                 default 1
 );
 
-CREATE INDEX IF NOT EXISTS idx_gun_pile_id
-    on t_gun (pile_id);
+-- pile_id + gun_no 唯一索引，确保同一充电桩下枪号唯一
+CREATE UNIQUE INDEX IF NOT EXISTS uni_gun_pile_gun_no
+    on t_gun (pile_id, gun_no);
 
-CREATE INDEX IF NOT EXISTS idx_gun_pile_gun_code
-    on t_gun (pile_id, gun_code);
+-- gun_code 唯一索引，确保充电枪编码全局唯一
+CREATE UNIQUE INDEX IF NOT EXISTS uni_gun_code
+    on t_gun (gun_code);
 
 
 

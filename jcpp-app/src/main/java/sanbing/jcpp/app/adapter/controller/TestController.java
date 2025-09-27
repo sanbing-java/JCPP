@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sanbing.jcpp.app.adapter.dto.*;
 import sanbing.jcpp.app.service.PileProtocolService;
 import sanbing.jcpp.proto.gen.DownlinkProto.*;
 
@@ -39,8 +40,16 @@ public class TestController extends BaseController {
         String logicalCardNo = RandomStringUtils.secure().nextNumeric(12);
         String physicalCardNo = RandomStringUtils.secure().nextNumeric(12);
 
-        pileProtocolService.startCharge("20231212000010", "01", new BigDecimal("50"), orderNo,
-                logicalCardNo, physicalCardNo, null);
+        StartChargeDTO startChargeDto = new StartChargeDTO();
+        startChargeDto.setPileCode("20231212000010");
+        startChargeDto.setGunNo("01");
+        startChargeDto.setLimitYuan(new BigDecimal("50"));
+        startChargeDto.setOrderNo(orderNo);
+        startChargeDto.setLogicalCardNo(logicalCardNo);
+        startChargeDto.setPhysicalCardNo(physicalCardNo);
+        startChargeDto.setParallelNo(null);
+
+        pileProtocolService.startCharge(startChargeDto);
 
         return ResponseEntity.ok("success");
     }
@@ -53,8 +62,16 @@ public class TestController extends BaseController {
         String physicalCardNo = RandomStringUtils.secure().nextNumeric(12);
         String parallelNo = RandomStringUtils.secure().nextNumeric(6);
 
-        pileProtocolService.startCharge("20231212000010", "01", new BigDecimal("100"),
-                orderNo, logicalCardNo, physicalCardNo, parallelNo);
+        StartChargeDTO startChargeDto = new StartChargeDTO();
+        startChargeDto.setPileCode("20231212000010");
+        startChargeDto.setGunNo("01");
+        startChargeDto.setLimitYuan(new BigDecimal("100"));
+        startChargeDto.setOrderNo(orderNo);
+        startChargeDto.setLogicalCardNo(logicalCardNo);
+        startChargeDto.setPhysicalCardNo(physicalCardNo);
+        startChargeDto.setParallelNo(parallelNo);
+
+        pileProtocolService.startCharge(startChargeDto);
 
         return ResponseEntity.ok("success");
     }
@@ -62,7 +79,11 @@ public class TestController extends BaseController {
     @GetMapping("/stopCharge")
     public ResponseEntity<String> stopCharge() {
 
-        pileProtocolService.stopCharge("20231212000010", "01");
+        StopChargeDTO stopChargeDto = new StopChargeDTO();
+        stopChargeDto.setPileCode("20231212000010");
+        stopChargeDto.setGunNo("01");
+
+        pileProtocolService.stopCharge(stopChargeDto);
 
         return ResponseEntity.ok("success");
     }
@@ -85,7 +106,11 @@ public class TestController extends BaseController {
     @GetMapping("/restartPile")
     public ResponseEntity<String> restartPile() {
 
-        pileProtocolService.restartPile("20231212000010", 1);
+        RestartPileDTO restartPileDto = new RestartPileDTO();
+        restartPileDto.setPileCode("20231212000010");
+        restartPileDto.setType(1);
+
+        pileProtocolService.restartPile(restartPileDto);
 
         return ResponseEntity.ok("success");
     }
@@ -195,12 +220,15 @@ public class TestController extends BaseController {
                 .setPeakValleyPricing(peakValleyPricing) // 设置峰谷计价配置
                 .build();
 
-        pileProtocolService.setPricing(pileCode,
-                SetPricingRequest.newBuilder()
+        SetPricingDTO setPricingDto = new SetPricingDTO();
+        setPricingDto.setPileCode(pileCode);
+        setPricingDto.setSetPricingRequest(SetPricingRequest.newBuilder()
                         .setPileCode(pileCode)
                         .setPricingId(1000L)
                         .setPricingModel(pricingModel)
                         .build());
+
+        pileProtocolService.setPricing(setPricingDto);
 
         return ResponseEntity.ok("success");
     }
@@ -274,12 +302,15 @@ public class TestController extends BaseController {
                 .setTimePeriodPricing(timePeriodPricing) // 设置时段计价配置
                 .build();
 
-        pileProtocolService.setPricing(pileCode,
-                SetPricingRequest.newBuilder()
+        SetPricingDTO setPricingDto = new SetPricingDTO();
+        setPricingDto.setPileCode(pileCode);
+        setPricingDto.setSetPricingRequest(SetPricingRequest.newBuilder()
                         .setPileCode(pileCode)
                         .setPricingId(2000L)
                         .setPricingModel(pricingModel)
                         .build());
+
+        pileProtocolService.setPricing(setPricingDto);
 
         return ResponseEntity.ok("Time period pricing test success");
     }
@@ -309,7 +340,7 @@ public class TestController extends BaseController {
         pileProtocolService.offlineCardBalanceUpdateRequest(OfflineCardBalanceUpdateRequest.newBuilder()
                 .setCardNo("1000000000123456")
                 .setPileCode("20231212000010")
-                .setGunCode("01")
+                .setGunNo("01")
                 .setLimitYuan("1000")
                 .build());
 
@@ -334,7 +365,11 @@ public class TestController extends BaseController {
 
     @GetMapping("/timeSync")
     public ResponseEntity<String> timeSync() {
-        pileProtocolService.timeSync("20231212000010", LocalDateTime.now());
+        TimeSyncDTO timeSyncDto = new TimeSyncDTO();
+        timeSyncDto.setPileCode("20231212000010");
+        timeSyncDto.setTime(LocalDateTime.now());
+
+        pileProtocolService.timeSync(timeSyncDto);
         return ResponseEntity.ok("success");
     }
 

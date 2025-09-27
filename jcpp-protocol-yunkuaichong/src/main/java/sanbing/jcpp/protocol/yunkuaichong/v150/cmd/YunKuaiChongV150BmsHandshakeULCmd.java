@@ -105,7 +105,7 @@ public class YunKuaiChongV150BmsHandshakeULCmd extends YunKuaiChongUplinkCmdExe 
         // 构建BmsHandshakeProto对象
         BmsHandshakeProto bmsHandshakeProto = BmsHandshakeProto.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setTradeNo(tradeNo)
                 .setBmsProtocolVersion(HexUtil.encodeHexStr(bmsConnectVersionBytes))
                 .setBmsBatteryType(bmsBatteryType)

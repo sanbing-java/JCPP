@@ -9,7 +9,7 @@
     "@types/node": "^16.18.126",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
-    "antd": "^5.27.2",
+    "antd": "^5.27.4",
     "axios": "^1.11.0",
     "china-division": "^2.7.0",
     "echarts": "^6.0.0",

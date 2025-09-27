@@ -13,27 +13,33 @@ import java.io.Serial;
 import java.util.UUID;
 
 @Builder
-public record GunCacheKey(UUID gunId, String pileCode, String gunCode) implements VersionedCacheKey {
+public record GunCacheKey(UUID gunId, String pileCode, String gunNo, String gunCode) implements VersionedCacheKey {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     public GunCacheKey(UUID gunId) {
-        this(gunId, null, null);
+        this(gunId, null, null, null);
     }
 
-    public GunCacheKey(String pileCode, String gunCode) {
-        this(null, pileCode, gunCode);
+    public GunCacheKey(String pileCode, String gunNo) {
+        this(null, pileCode, gunNo, null);
+    }
+
+    public GunCacheKey(String gunCode) {
+        this(null, null, null, gunCode);
     }
 
     @Override
     public String toString() {
         if (gunId != null) {
             return gunId.toString();
-        } else if (pileCode != null && gunCode != null) {
-            return pileCode + ":" + gunCode;
+        } else if (pileCode != null && gunNo != null) {
+            return pileCode + ":" + gunNo;
+        } else if (gunCode != null) {
+            return "gunCode:" + gunCode;
         } else {
-            throw new IllegalStateException("GunCacheKey 必须包含有效的 gunId 或者 pileCode+gunCode 组合");
+            throw new IllegalStateException("GunCacheKey 必须包含有效的 gunId、pileCode+gunNo 组合或者 gunCode");
         }
     }
 

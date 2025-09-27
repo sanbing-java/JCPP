@@ -57,7 +57,7 @@ message LoginResponse {
 message StartChargeResponse {
   string tradeNo = 1;               // 交易流水号
   string pileCode = 2;              // 桩编号
-  string gunCode = 3;               // 枪编号
+  string gunNo = 3;                 // 枪编号
   string logicalCardNo = 4;         // 逻辑卡号
   string limitYuan = 5;             // 账户余额
   bool authSuccess = 6;             // 鉴权成功标志
@@ -180,7 +180,7 @@ message SetPricingRequest {
 // 远程启动充电请求
 message RemoteStartChargingRequest {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   string tradeNo = 6;
   string limitYuan = 7;
   optional string logicalCardNo = 8;   // 逻辑卡号
@@ -192,7 +192,7 @@ message RemoteStartChargingRequest {
 // 远程停止充电请求
 message RemoteStopChargingRequest {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
 }
 
 // 交易记录响应
@@ -226,7 +226,7 @@ message OtaRequest {
 // 离线卡余额更新请求
 message OfflineCardBalanceUpdateRequest {
   string pileCode = 1;                    // 充电桩编码
-  string gunCode = 2;                     // 枪编号
+  string gunNo = 2;                       // 枪编号
   string cardNo = 3;                      // 物理卡号
   string limitYuan = 4;                   // 余额
 }

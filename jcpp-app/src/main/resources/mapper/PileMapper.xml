@@ -10,7 +10,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="sanbing.jcpp.app.dal.mapper.PileMapper">
 
-    <!-- 充电桩带状态信息的分页查询 -->
+    <!-- 充电桩带状态信息的分页查询 - 性能优化版本 -->
     <select id="selectPileWithStatusPage" resultType="sanbing.jcpp.app.adapter.response.PileWithStatusResponse">
         SELECT 
             <!-- 充电桩基本信息 -->
@@ -27,38 +27,30 @@
             p.type, 
             p.additional_info, 
             p.version,
+
+        <!-- 状态相关属性 - 使用CASE WHEN优化多次JOIN -->
+        MAX(CASE WHEN a.attr_key = #{statusKey.code} THEN a.str_v END) as status,
+        MAX(CASE WHEN a.attr_key = #{connectedAtKey.code} THEN a.last_update_ts END) as connected_at,
+        MAX(CASE WHEN a.attr_key = #{disconnectedAtKey.code} THEN a.last_update_ts END) as disconnected_at,
+        MAX(CASE WHEN a.attr_key = #{lastActiveTimeKey.code} THEN a.last_update_ts END) as last_active_time,
+
+        <!-- 充电枪数量 - 使用LEFT JOIN优化子查询 -->
+        COALESCE(g.gun_count, 0) as gun_count
             
-            <!-- 状态相关属性 -->
-            a_status.str_v as status,
-            a_connected.last_update_ts as connected_at,
-            a_disconnected.last_update_ts as disconnected_at,
-            a_last_active.last_update_ts as last_active_time
-            
-        FROM t_pile p 
-        
-        <!-- LEFT JOIN 获取充电桩状态属性 -->
-        LEFT JOIN t_attr a_status ON (
-            a_status.entity_id = p.id AND 
-            a_status.attr_key = #{statusKey.code}
+        FROM t_pile p
+
+        <!-- 单次JOIN获取所有属性，避免多次JOIN -->
+        LEFT JOIN t_attr a ON (
+        a.entity_id = p.id AND
+        a.attr_key IN (#{statusKey.code}, #{connectedAtKey.code}, #{disconnectedAtKey.code}, #{lastActiveTimeKey.code})
         )
-        
-        <!-- LEFT JOIN 获取最后连接时间属性 -->
-        LEFT JOIN t_attr a_connected ON (
-            a_connected.entity_id = p.id AND 
-            a_connected.attr_key = #{connectedAtKey.code}
-        )
-        
-        <!-- LEFT JOIN 获取最后断开时间属性 -->
-        LEFT JOIN t_attr a_disconnected ON (
-            a_disconnected.entity_id = p.id AND 
-            a_disconnected.attr_key = #{disconnectedAtKey.code}
-        )
-        
-        <!-- LEFT JOIN 获取最后活跃时间属性 -->
-        LEFT JOIN t_attr a_last_active ON (
-            a_last_active.entity_id = p.id AND 
-            a_last_active.attr_key = #{lastActiveTimeKey.code}
-        )
+
+        <!-- LEFT JOIN 获取充电枪数量统计 -->
+        LEFT JOIN (
+        SELECT pile_id, COUNT(*) as gun_count
+        FROM t_gun
+        GROUP BY pile_id
+        ) g ON g.pile_id = p.id
         
         <!-- 动态WHERE条件 -->
         <where>
@@ -87,9 +79,18 @@
                 AND p.type = #{request.type}
             </if>
             <if test="request.status != null">
+                AND EXISTS (
+                SELECT 1 FROM t_attr a_status
+                WHERE a_status.entity_id = p.id
+                AND a_status.attr_key = #{statusKey.code}
                 AND a_status.str_v = #{request.status.code}
+                )
             </if>
         </where>
+
+        <!-- GROUP BY 子句 - 因为使用了聚合函数 -->
+        GROUP BY p.id, p.created_time, p.updated_time, p.pile_name, p.pile_code, p.protocol,
+        p.station_id, p.brand, p.model, p.manufacturer, p.type, p.additional_info, p.version, g.gun_count
         
         <!-- 动态ORDER BY -->
         ORDER BY 
@@ -116,16 +117,19 @@
                 p.type ${request.sortOrder}
             </when>
             <when test="request.sortField == 'status'">
-                a_status.str_v ${request.sortOrder}
+                MAX(CASE WHEN a.attr_key = #{statusKey.code} THEN a.str_v END) ${request.sortOrder}
             </when>
             <when test="request.sortField == 'connectedAt'">
-                a_connected.last_update_ts ${request.sortOrder}
+                MAX(CASE WHEN a.attr_key = #{connectedAtKey.code} THEN a.last_update_ts END) ${request.sortOrder}
             </when>
             <when test="request.sortField == 'disconnectedAt'">
-                a_disconnected.last_update_ts ${request.sortOrder}
+                MAX(CASE WHEN a.attr_key = #{disconnectedAtKey.code} THEN a.last_update_ts END) ${request.sortOrder}
             </when>
             <when test="request.sortField == 'lastActiveTime'">
-                a_last_active.last_update_ts ${request.sortOrder}
+                MAX(CASE WHEN a.attr_key = #{lastActiveTimeKey.code} THEN a.last_update_ts END) ${request.sortOrder}
+            </when>
+            <when test="request.sortField == 'gunCount'">
+                COALESCE(g.gun_count, 0) ${request.sortOrder}
             </when>
             <when test="request.sortField == 'createdTime'">
                 p.created_time ${request.sortOrder}

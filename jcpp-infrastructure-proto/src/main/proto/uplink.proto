@@ -81,7 +81,7 @@ message LoginRequest {
 message StartChargeRequest {
   int64 ts = 1;
   string pileCode = 2;                  // 桩编号
-  string gunCode = 3;                   // 枪编号
+  string gunNo = 3;                     // 枪编号
   string startType = 4;                 // 启动类型
   string cardNo = 5;                    // 账号或物理卡号
   bool needPassword = 6;                // 是否需要密码
@@ -132,7 +132,7 @@ enum GunRunStatus {
 // 枪运行状态消息
 message GunRunStatusProto {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   GunRunStatus GunRunStatus = 41;
   repeated string faultMessages = 6;
   optional string additionalInfo = 20;
@@ -141,7 +141,7 @@ message GunRunStatusProto {
 // 充电进度消息
 message ChargingProgressProto {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   string tradeNo = 6;
   string outputVoltage = 7;
   string outputCurrent = 8;
@@ -162,7 +162,7 @@ message SetPricingResponse {
 // 远程启动充电响应
 message RemoteStartChargingResponse {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   string tradeNo = 6;
   bool success = 7;
   string failReason = 8;
@@ -178,7 +178,7 @@ message RestartPileResponse {
 // 远程停止充电响应
 message RemoteStopChargingResponse {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   bool success = 7;
   string failReason = 8;
   optional string additionalInfo = 20;
@@ -226,7 +226,7 @@ message TransactionDetail {
 // 交易记录请求
 message TransactionRecordRequest {
   string pileCode = 4;                    // 充电桩编码
-  string gunCode = 5;                     // 枪编号
+  string gunNo = 5;                     // 枪编号
   string tradeNo = 6;                     // 交易流水号
   int64 startTs = 51;                     // 开始时间戳
   int64 endTs = 52;                       // 结束时间戳
@@ -242,7 +242,7 @@ message TransactionRecordRequest {
 // BMS充电错误消息
 message BmsChargingErrorProto {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   string tradeNo = 6;
   optional string additionalInfo = 20;
 }
@@ -250,7 +250,7 @@ message BmsChargingErrorProto {
 // BMS参数配置上报
 message BmsParamConfigReportProto {
   string pileCode = 2;             // 桩编码
-  string gunCode = 3;              // 枪编码
+  string gunNo = 3;                // 枪编号
   string tradeNo = 4;              // 交易号
   string maxSingleCellVoltage = 5;  // BMS单体最高允许充电电压 (V)
   string maxChargeCurrent = 6;      // BMS最高允许充电电流 (A)
@@ -268,7 +268,7 @@ message BmsParamConfigReportProto {
 // BMS充电信息
 message BmsChargingInfoProto {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   string tradeNo = 6;
   optional string additionalInfo = 20;
 }
@@ -276,7 +276,7 @@ message BmsChargingInfoProto {
 // BMS中止充电
 message BmsAbortProto {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   string tradeNo = 6;
   optional string additionalInfo = 20;
 }
@@ -284,7 +284,7 @@ message BmsAbortProto {
 // BMS握手信息
 message BmsHandshakeProto {
   string pileCode = 2;                   // 桩编码
-  string gunCode = 3;                    // 枪编码
+  string gunNo = 3;                      // 枪编号
   string tradeNo = 4;                    // 交易流水号
   string bmsProtocolVersion = 5;         // BMS通信协议版本号
   int32 bmsBatteryType = 6;              // BMS电池类型
@@ -312,7 +312,7 @@ message OtaResponse {
 // 地锁状态上报
 message GroundLockStatusProto {
   string pileCode = 2;                   // 桩编号
-  string gunCode = 3;                    // 枪号
+  string gunNo = 3;                      // 枪号
   int32 lockStatus = 4;                  // 车位锁状态
   int32 parkStatus = 5;                  // 车位状态
   int32 lockBattery = 6;                 // 地锁电量状态 (百分比值0~100)
@@ -373,7 +373,7 @@ message QueryResult {
 // BMS需求充电机输出
 message BmsDemandChargerOutputProto {
   string pileCode = 4;
-  string gunCode = 5;
+  string gunNo = 5;
   string tradeNo = 6;
   optional string additionalInfo = 20;
 }

@@ -55,7 +55,7 @@ public class YunKuaiChongV150RemoteStopResultULCmd extends YunKuaiChongUplinkCmd
 
         RemoteStopChargingResponse remoteStopChargingResponse = RemoteStopChargingResponse.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setSuccess(isSuccess)
                 .setFailReason(failReason)
                 .setAdditionalInfo(additionalInfo.toString())

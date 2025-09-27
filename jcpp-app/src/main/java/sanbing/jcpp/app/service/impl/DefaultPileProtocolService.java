@@ -13,6 +13,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
+import sanbing.jcpp.app.adapter.dto.*;
 import sanbing.jcpp.app.dal.config.ibatis.enums.GunRunStatusEnum;
 import sanbing.jcpp.app.dal.config.ibatis.enums.PileStatusEnum;
 import sanbing.jcpp.app.dal.entity.Gun;
@@ -309,12 +310,12 @@ public class DefaultPileProtocolService implements PileProtocolService {
         try {
             GunRunStatusProto gunRunStatusProto = uplinkQueueMessage.getGunRunStatusProto();
             String pileCode = gunRunStatusProto.getPileCode();
-            String gunCode = gunRunStatusProto.getGunCode();
+            String gunNo = gunRunStatusProto.getGunNo();
             long ts = uplinkQueueMessage.getTs();
             GunRunStatus protoStatus = gunRunStatusProto.getGunRunStatus();
 
             // 委托给 GunService 处理充电枪状态逻辑
-            boolean needUpdatePileStatus = gunService.handleGunRunStatus(pileCode, gunCode, protoStatus, ts);
+            boolean needUpdatePileStatus = gunService.handleGunRunStatus(pileCode, gunNo, protoStatus, ts);
 
             // 如果需要，根据充电枪状态更新充电桩状态
             if (needUpdatePileStatus) {
@@ -401,7 +402,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
         StartChargeRequest startChargeRequest = uplinkQueueMessage.getStartChargeRequest();
         String pileCode = startChargeRequest.getPileCode();
-        String gunCode = startChargeRequest.getGunCode();
+        String gunNo = startChargeRequest.getGunNo();
         // TODO 处理相关业务逻辑
         String orderNo = "ORD" + RandomStringUtils.secure().nextNumeric(20);
         String logicalCardNo = RandomStringUtils.secure().nextNumeric(12);
@@ -413,29 +414,35 @@ public class DefaultPileProtocolService implements PileProtocolService {
         downlinkMessageBuilder.setStartChargeResponse(StartChargeResponse.newBuilder()
                 .setTradeNo(orderNo)
                 .setPileCode(startChargeRequest.getPileCode())
-                .setGunCode(startChargeRequest.getGunCode())
+                .setGunNo(startChargeRequest.getGunNo())
                 .setLogicalCardNo(logicalCardNo)
                 .setLimitYuan("50")
                 .setAuthSuccess(true)
                 .setFailReason(FailReason.ACCOUNT_NOT_ALLOWED_ON_PILE.name())
         );
 
-        log.info("业务[充电桩启动充电请求应答] 发送下行消息到充电桩: {}, 充电枪: {}", pileCode, gunCode);
+        log.info("业务[充电桩启动充电请求应答] 发送下行消息到充电桩: {}, 充电枪: {}", pileCode, gunNo);
         downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder,pileCode);
 
         callback.onSuccess();
     }
 
     @Override
-    public void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo, 
-                           String logicalCardNo, String physicalCardNo, String parallelNo) {
+    public void startCharge(StartChargeDTO startChargeDto) {
+        String pileCode = startChargeDto.getPileCode();
+        String gunNo = startChargeDto.getGunNo();
+        BigDecimal limitYuan = startChargeDto.getLimitYuan();
+        String orderNo = startChargeDto.getOrderNo();
+        String logicalCardNo = startChargeDto.getLogicalCardNo();
+        String physicalCardNo = startChargeDto.getPhysicalCardNo();
+        String parallelNo = startChargeDto.getParallelNo();
 
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
 
         RemoteStartChargingRequest.Builder requestBuilder = RemoteStartChargingRequest.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunNo)
                 .setLimitYuan(limitYuan.toPlainString())
                 .setTradeNo(orderNo);
 
@@ -464,12 +471,14 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setDownlinkCmd(downlinkCmd.name())
                 .setRemoteStartChargingRequest(requestBuilder.build());
 
-        log.info("业务[远程启动充电] 发送下行消息到充电桩: {}, 充电枪: {}, 订单号: {}", pileCode, gunCode, orderNo);
+        log.info("业务[远程启动充电] 发送下行消息到充电桩: {}, 充电枪: {}, 订单号: {}", pileCode, gunNo, orderNo);
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
     @Override
-    public void stopCharge(String pileCode, String gunCode) {
+    public void stopCharge(StopChargeDTO stopChargeDto) {
+        String pileCode = stopChargeDto.getPileCode();
+        String gunNo = stopChargeDto.getGunNo();
 
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
@@ -483,19 +492,20 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setDownlinkCmd(DownlinkCmdEnum.REMOTE_STOP_CHARGING.name())
                 .setRemoteStopChargingRequest(RemoteStopChargingRequest.newBuilder()
                         .setPileCode(pileCode)
-                        .setGunCode(gunCode)
+                        .setGunNo(gunNo)
                         .build());
 
-        log.info("业务[远程停止充电] 发送下行消息到充电桩: {}, 充电枪: {}", pileCode, gunCode);
+        log.info("业务[远程停止充电] 发送下行消息到充电桩: {}, 充电枪: {}", pileCode, gunNo);
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
     @Override
-    public void restartPile(String pileCode, Integer type) {
+    public void restartPile(RestartPileDTO restartPileDto) {
+        String pileCode = restartPileDto.getPileCode();
+        Integer type = restartPileDto.getType();
 
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
-
 
         DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
                 .setMessageIdMSB(messageId.getMostSignificantBits())
@@ -514,7 +524,10 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
-    public void setPricing(String pileCode, SetPricingRequest setPricingRequest) {
+    public void setPricing(SetPricingDTO setPricingDto) {
+        String pileCode = setPricingDto.getPileCode();
+        SetPricingRequest setPricingRequest = setPricingDto.getSetPricingRequest();
+        
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
 
@@ -557,9 +570,9 @@ public class DefaultPileProtocolService implements PileProtocolService {
         BmsChargingInfoProto bmsCharingInfoProto = uplinkQueueMessage.getBmsChargingInfoProto();
         String tradeNo = bmsCharingInfoProto.getTradeNo();
         String pileCode = bmsCharingInfoProto.getPileCode();
-        String gunCode = bmsCharingInfoProto.getGunCode();
+        String gunNo = bmsCharingInfoProto.getGunNo();
         String additionalInfo = bmsCharingInfoProto.getAdditionalInfo();
-        log.info("BMS充电信息: 交易流水号: {}, 桩编码: {}, 枪号: {}, 附加信息: {}", tradeNo, pileCode, gunCode, additionalInfo);
+        log.info("BMS充电信息: 交易流水号: {}, 桩编码: {}, 枪号: {}, 附加信息: {}", tradeNo, pileCode, gunNo, additionalInfo);
         // TODO 处理相关业务逻辑
         callback.onSuccess();
     }
@@ -609,7 +622,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         BmsHandshakeProto bmsHandshakeProto = uplinkQueueMessage.getBmsHandshakeProto();
         String tradeNo = bmsHandshakeProto.getTradeNo();
         String pileCode = bmsHandshakeProto.getPileCode();
-        String gunCode = bmsHandshakeProto.getGunCode();
+        String gunNo = bmsHandshakeProto.getGunNo();
         String carVinCode = bmsHandshakeProto.getCarVinCode();
         String bmsProtocolVersion = bmsHandshakeProto.getBmsProtocolVersion();
         int bmsBatteryType = bmsHandshakeProto.getBmsBatteryType();
@@ -617,8 +630,8 @@ public class DefaultPileProtocolService implements PileProtocolService {
         String additionalInfo = bmsHandshakeProto.getAdditionalInfo();
         
         log.info("BMS充电握手信息: 交易流水号: {}, 桩编码: {}, 枪号: {}, 车辆VIN: {}, BMS协议版本: {}, " +
-                "电池类型: {}, 电池容量: {}Ah, 附加信息: {}", 
-                tradeNo, pileCode, gunCode, carVinCode, bmsProtocolVersion, 
+                "电池类型: {}, 电池容量: {}Ah, 附加信息: {}",
+                tradeNo, pileCode, gunNo, carVinCode, bmsProtocolVersion, 
                 bmsBatteryType, bmsPowerCapacity, additionalInfo);
         
         // TODO 处理相关业务逻辑，比如保存握手信息到数据库
@@ -627,7 +640,10 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
-    public void timeSync(String pileCode, LocalDateTime time) {
+    public void timeSync(TimeSyncDTO timeSyncDto) {
+        String pileCode = timeSyncDto.getPileCode();
+        LocalDateTime time = timeSyncDto.getTime();
+        
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
         DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
@@ -689,32 +705,33 @@ public class DefaultPileProtocolService implements PileProtocolService {
         log.info("接收到地锁状态信息 {}", uplinkQueueMessage);
         GroundLockStatusProto groundLockStatusProto = uplinkQueueMessage.getGroundLockStatusProto();
         String pileCode = groundLockStatusProto.getPileCode();
-        String gunCode = groundLockStatusProto.getGunCode();
+        String gunNo = groundLockStatusProto.getGunNo();
         int lockStatus = groundLockStatusProto.getLockStatus();
         int parkStatus = groundLockStatusProto.getParkStatus();
         int lockBattery = groundLockStatusProto.getLockBattery();
         int alarmStatus = groundLockStatusProto.getAlarmStatus();
 
         log.info("地锁状态信息: 桩编码: {}, 枪号: {}, 车位锁状态: {}, 车位状态: {}, 地锁电量: {}%, 报警状态: {}",
-                pileCode, gunCode, lockStatus, parkStatus, lockBattery, alarmStatus);
+                pileCode, gunNo, lockStatus, parkStatus, lockBattery, alarmStatus);
 
         try {
             // 获取时间戳
             long ts = uplinkQueueMessage.getTs();
 
             // 获取充电枪信息
-            Gun gun = gunService.findByPileCodeAndGunCode(pileCode, gunCode);
+            // 注意：充电桩上报的gunNo实际上是枪编号(gun_no)，不是完整的枪编码(gun_code)
+            Gun gun = gunService.findByPileCodeAndGunNo(pileCode, gunNo);
             if (gun != null) {
                 // 保存地锁状态到属性表
                 saveLockStatusToAttributes(gun.getId(), lockStatus, parkStatus, lockBattery, alarmStatus, ts);
 
                 log.info("地锁和车位状态已保存: 桩编码={}, 枪编码={}, 地锁状态={}, 车位状态={}",
-                        pileCode, gunCode, lockStatus, parkStatus);
+                        pileCode, gunNo, lockStatus, parkStatus);
             } else {
-                log.warn("未找到充电枪，无法保存地锁状态: 桩编码={}, 枪编码={}", pileCode, gunCode);
+                log.warn("未找到充电枪，无法保存地锁状态: 桩编码={}, 枪编码={}", pileCode, gunNo);
             }
         } catch (Exception e) {
-            log.error("保存地锁状态失败: 桩编码={}, 枪编码={}", pileCode, gunCode, e);
+            log.error("保存地锁状态失败: 桩编码={}, 枪编码={}", pileCode, gunNo, e);
             callback.onFailure(e);
             return;
         }
@@ -855,11 +872,11 @@ public class DefaultPileProtocolService implements PileProtocolService {
         log.info("接收到充电过程BMS需求与充电机输出信息:{}", uplinkQueueMessage);
         BmsDemandChargerOutputProto bmsDemandChargerOutputProto = uplinkQueueMessage.getBmsDemandChargerOutputProto();
         String pileCode = bmsDemandChargerOutputProto.getPileCode();
-        String gunCode = bmsDemandChargerOutputProto.getGunCode();
+        String gunNo = bmsDemandChargerOutputProto.getGunNo();
         String tradeNo = bmsDemandChargerOutputProto.getTradeNo();
         String additionalInfo = bmsDemandChargerOutputProto.getAdditionalInfo();
         log.info("充电过程BMS需求与充电机输出信息: 桩编码: {}, 枪号: {}, 交易流水号: {}, 附加信息: {}",
-                pileCode, gunCode, tradeNo, additionalInfo);
+                pileCode, gunNo, tradeNo, additionalInfo);
         // TODO 处理相关业务逻辑
         callback.onSuccess();
     }

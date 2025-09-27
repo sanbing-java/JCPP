@@ -5,6 +5,7 @@
  * 付费课程知识星球：https://t.zsxq.com/aKtXo
  */
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {
     Button,
     Card,
@@ -44,6 +45,8 @@ const { confirm } = Modal;
 
 
 const PileManagement: React.FC = () => {
+    const navigate = useNavigate();
+  
   // 状态管理
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<Pile[]>([]);
@@ -95,6 +98,7 @@ const PileManagement: React.FC = () => {
     { key: 'manufacturer', title: '制造商', defaultVisible: false },
     { key: 'type', title: '类型', defaultVisible: false },
     { key: 'status', title: '状态', defaultVisible: true },
+      {key: 'gunCount', title: '充电枪数量', defaultVisible: true},
     { key: 'connectedAt', title: '连接时间', defaultVisible: true },
     { key: 'disconnectedAt', title: '断线时间', defaultVisible: true },
     { key: 'lastActiveTime', title: '最后活跃时间', defaultVisible: true },
@@ -200,6 +204,27 @@ const PileManagement: React.FC = () => {
       )
     },
     {
+        title: '充电枪数量',
+        dataIndex: 'gunCount',
+        key: 'gunCount',
+        width: 100,
+        sorter: true,
+        render: (gunCount: number, record: Pile) => (
+            <Button
+                type="link"
+                size="small"
+                onClick={() => handleGunCountClick(record.pileCode)}
+                style={{
+                    padding: 0,
+                    height: 'auto',
+                    color: gunCount > 0 ? '#1890ff' : '#999'
+                }}
+            >
+                {gunCount || 0}
+            </Button>
+        )
+    },
+      {
       title: '连接时间',
       dataIndex: 'connectedAt',
       key: 'connectedAt',
@@ -593,6 +618,16 @@ const PileManagement: React.FC = () => {
     await loadInitialStationOptions();
     setModalVisible(true);
   };
+
+    // 处理充电枪数量点击
+    const handleGunCountClick = (pileCode: string) => {
+        // 跳转到充电枪管理页面，并设置搜索条件
+        navigate('/page/guns', {
+            state: {
+                searchPileCode: pileCode
+            }
+        });
+    };
 
 
   // 生成充电桩编码

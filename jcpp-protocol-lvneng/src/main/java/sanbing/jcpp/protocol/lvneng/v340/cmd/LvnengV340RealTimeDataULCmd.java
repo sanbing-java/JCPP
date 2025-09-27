@@ -229,7 +229,7 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
         GunRunStatus gunRunStatus = parseGunRunStatus(pileStatus);
         GunRunStatusProto gunRunStatusProto = GunRunStatusProto.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode + "")
+                .setGunNo(gunCode + "")
                 .setGunRunStatus(gunRunStatus)
                 .addAllFaultMessages(Stream.of(alarmCodeDesc).collect(Collectors.toList()))
                 .setAdditionalInfo(additionalInfo.toString())
@@ -247,7 +247,7 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
             // 充电进度
             ChargingProgressProto.Builder chargingProgressProtoBuilder = ChargingProgressProto.newBuilder()
                     .setPileCode(pileCode)
-                    .setGunCode(gunCode + "")
+                    .setGunNo(gunCode + "")
                     .setTradeNo(tradeNo)
                     .setOutputVoltage(String.valueOf(DCV))
                     .setOutputCurrent(String.valueOf(DCC))

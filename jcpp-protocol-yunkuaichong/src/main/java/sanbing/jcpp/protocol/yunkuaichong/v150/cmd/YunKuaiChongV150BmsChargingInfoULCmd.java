@@ -78,7 +78,7 @@ public class YunKuaiChongV150BmsChargingInfoULCmd extends YunKuaiChongUplinkCmdE
         BmsChargingInfoProto bmsCharingInfoProto = BmsChargingInfoProto.newBuilder()
                 .setPileCode(pileCode)
                 .setTradeNo(tradeNo)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();
         UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(bmsCharingInfoProto.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)

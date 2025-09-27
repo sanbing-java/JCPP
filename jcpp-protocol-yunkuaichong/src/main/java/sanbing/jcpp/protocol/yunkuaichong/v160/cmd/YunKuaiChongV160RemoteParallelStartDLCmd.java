@@ -47,7 +47,7 @@ public class YunKuaiChongV160RemoteParallelStartDLCmd extends YunKuaiChongDownli
 
         DownlinkProto.RemoteStartChargingRequest remoteStartChargingRequest = yunKuaiChongDwonlinkMessage.getMsg().getRemoteStartChargingRequest();
         String pileCode = remoteStartChargingRequest.getPileCode();
-        String gunCode = remoteStartChargingRequest.getGunCode();
+        String gunCode = remoteStartChargingRequest.getGunNo();
         String tradeNo = remoteStartChargingRequest.getTradeNo();
         String limitYuan = remoteStartChargingRequest.getLimitYuan();
 

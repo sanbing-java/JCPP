@@ -15,5 +15,6 @@ public class GunCacheEvictEvent {
 
     private UUID gunId;
     private String pileCode;
+    private String gunNo;
     private String gunCode;
 }

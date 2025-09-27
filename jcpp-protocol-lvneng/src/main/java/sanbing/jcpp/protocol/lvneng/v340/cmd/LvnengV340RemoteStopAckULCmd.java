@@ -74,7 +74,7 @@ public class LvnengV340RemoteStopAckULCmd extends LvnengUplinkCmdExe {
 
         RemoteStopChargingResponse remoteStopChargingResponse = RemoteStopChargingResponse.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode+"")
+                .setGunNo(gunCode + "")
                 .setSuccess(isSuccess)
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();

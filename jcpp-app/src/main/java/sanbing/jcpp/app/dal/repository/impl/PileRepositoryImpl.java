@@ -6,7 +6,7 @@
  */
 package sanbing.jcpp.app.dal.repository.impl;
 
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -26,10 +26,10 @@ import static sanbing.jcpp.infrastructure.util.validation.Validator.validateStri
  */
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class PileRepositoryImpl extends CachedVersionedEntityRepository<PileCacheKey, Pile, PileCacheEvictEvent> implements PileRepository {
 
-    @Resource
-    PileMapper pileMapper;
+    private final PileMapper pileMapper;
 
     @TransactionalEventListener(classes = PileCacheEvictEvent.class)
     @Override

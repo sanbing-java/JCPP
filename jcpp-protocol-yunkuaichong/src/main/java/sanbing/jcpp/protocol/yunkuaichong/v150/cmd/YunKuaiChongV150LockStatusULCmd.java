@@ -71,7 +71,7 @@ public class YunKuaiChongV150LockStatusULCmd extends YunKuaiChongUplinkCmdExe {
         // 构建转发消息
         GroundLockStatusProto groundLockStatusProto = GroundLockStatusProto.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setLockStatus(lockStatus)
                 .setParkStatus(parkStatus)
                 .setLockBattery(lockBattery)

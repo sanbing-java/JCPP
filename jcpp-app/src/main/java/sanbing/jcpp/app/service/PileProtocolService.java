@@ -6,17 +6,14 @@
  */
 package sanbing.jcpp.app.service;
 
+import sanbing.jcpp.app.adapter.dto.*;
 import sanbing.jcpp.infrastructure.queue.Callback;
 import sanbing.jcpp.proto.gen.DownlinkProto;
 import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardBalanceUpdateRequest;
 import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardSyncRequest;
 import sanbing.jcpp.proto.gen.DownlinkProto.OtaRequest;
-import sanbing.jcpp.proto.gen.DownlinkProto.SetPricingRequest;
-import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 import sanbing.jcpp.proto.gen.DownlinkProto.SetQrcodeRequest;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import sanbing.jcpp.proto.gen.UplinkProto.UplinkQueueMessage;
 
 /**
  * @author 九筒
@@ -87,23 +84,22 @@ public interface PileProtocolService {
      * 启动充电（支持卡号和并充序号）
      * 当 parallelNo 不为空时，自动使用并充启机命令
      */
-    void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo,
-                     String logicalCardNo, String physicalCardNo, String parallelNo);
+    void startCharge(StartChargeDTO startChargeDto);
 
     /**
      * 停止充电
      */
-    void stopCharge(String pileCode, String gunCode);
+    void stopCharge(StopChargeDTO stopChargeDto);
 
     /**
-     * 重启充电
+     * 重启充电桩
      */
-    void restartPile(String pileCode, Integer type);
+    void restartPile(RestartPileDTO restartPileDto);
 
     /**
-     * 下发计费
+     * 下发计费策略
      */
-    void setPricing(String pileCode, SetPricingRequest setPricingRequest);
+    void setPricing(SetPricingDTO setPricingDto);
 
     /**
      * 充电桩与 BMS 充电错误上报
@@ -179,7 +175,7 @@ public interface PileProtocolService {
     /**
      * 实时同步桩时间
      */
-    void timeSync(String pileCode, LocalDateTime time);
+    void timeSync(TimeSyncDTO timeSyncDto);
 
     /**
      * 实时同步桩时间应答

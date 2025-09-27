@@ -85,7 +85,7 @@ public class YunKuaiChongV150StartChargeULCmd extends YunKuaiChongUplinkCmdExe {
         UplinkProto.StartChargeRequest startChargingRequest = UplinkProto.StartChargeRequest.newBuilder()
                 .setTs(ts)
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setStartType(startType)
                 .setNeedPassword(needPassword)
                 .setCardNo(cardNo)

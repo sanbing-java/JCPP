@@ -95,7 +95,7 @@ public class YunKuaiChongV150BmsDemandChargerOutputULCmd extends YunKuaiChongUpl
 
         BmsDemandChargerOutputProto proto = BmsDemandChargerOutputProto.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setTradeNo(tradeNo)
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();

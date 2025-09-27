@@ -37,7 +37,7 @@ public class YunKuaiChongV150RemoteStopDLCmd extends YunKuaiChongDownlinkCmdExe 
 
         RemoteStopChargingRequest remoteStopChargingRequest = yunKuaiChongDwonlinkMessage.getMsg().getRemoteStopChargingRequest();
         String pileCode = remoteStopChargingRequest.getPileCode();
-        String gunCode = remoteStopChargingRequest.getGunCode();
+        String gunCode = remoteStopChargingRequest.getGunNo();
 
         ByteBuf msgBody = Unpooled.buffer(44);
         // 桩编码

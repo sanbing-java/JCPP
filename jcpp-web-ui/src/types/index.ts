@@ -45,6 +45,7 @@ export interface Pile {
   connectedAt?: number;
   disconnectedAt?: number;
   lastActiveTime?: number;
+    gunCount?: number;
   createdTime: number;
   updatedTime?: number;
 }

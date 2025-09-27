@@ -54,3 +54,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Cursor ###
+.cursor/

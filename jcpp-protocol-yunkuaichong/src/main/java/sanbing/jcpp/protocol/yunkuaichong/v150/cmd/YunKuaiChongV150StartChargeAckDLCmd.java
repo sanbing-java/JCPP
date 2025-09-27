@@ -46,7 +46,7 @@ public class YunKuaiChongV150StartChargeAckDLCmd extends YunKuaiChongDownlinkCmd
         DownlinkProto.StartChargeResponse startChargeResponse = yunKuaiChongDwonlinkMessage.getMsg().getStartChargeResponse();
         String tradeNo = startChargeResponse.getTradeNo();
         String pileCode = startChargeResponse.getPileCode();
-        String gunCode = startChargeResponse.getGunCode();
+        String gunCode = startChargeResponse.getGunNo();
         String logicalCardNo = startChargeResponse.getLogicalCardNo();
         String limitYuan = startChargeResponse.getLimitYuan();
         String failReasonValue = startChargeResponse.getFailReason();

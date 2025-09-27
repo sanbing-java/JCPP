@@ -195,7 +195,7 @@ public class LvnengV340TransactionRecordULCmd extends LvnengUplinkCmdExe {
         // 转发到后端
         TransactionRecordRequest transactionRecord = TransactionRecordRequest.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode + "")
+                .setGunNo(gunCode + "")
                 .setTradeNo(tradeNo)
                 .setStartTs(startTs)
                 .setEndTs(endTs)

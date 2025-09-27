@@ -20,11 +20,20 @@ import java.util.UUID;
  * @author 九筒
  */
 public interface GunMapper extends BaseMapper<Gun> {
-    
+
+
     /**
-     * 根据充电桩编码和充电枪编码查询充电枪
+     * 根据充电桩编码和充电枪编号查询充电枪
+     * 充电桩上报的是 pile_code + gun_no 的组合，这个组合是唯一的
      */
-    Gun selectByPileCodeAndGunCode(@Param("pileCode") String pileCode, @Param("gunCode") String gunCode);
+    Gun selectByPileCodeAndGunNo(@Param("pileCode") String pileCode, @Param("gunNo") String gunNo);
+
+    /**
+     * 根据枪编号查询充电枪
+     */
+    Gun selectByGunCode(@Param("gunCode") String gunCode);
+
+    GunWithStatusResponse selectGunWithStatusByCode(@Param("gunCode") String gunCode);
 
     /**
      * 分页查询充电枪及其状态信息

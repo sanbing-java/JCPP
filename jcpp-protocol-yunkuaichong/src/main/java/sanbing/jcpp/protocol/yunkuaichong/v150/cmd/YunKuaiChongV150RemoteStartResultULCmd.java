@@ -61,7 +61,7 @@ public class YunKuaiChongV150RemoteStartResultULCmd extends YunKuaiChongUplinkCm
 
         RemoteStartChargingResponse remoteStartChargingResponse = RemoteStartChargingResponse.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setTradeNo(tradeNo)
                 .setSuccess(isSuccess)
                 .setFailReason(failReason)

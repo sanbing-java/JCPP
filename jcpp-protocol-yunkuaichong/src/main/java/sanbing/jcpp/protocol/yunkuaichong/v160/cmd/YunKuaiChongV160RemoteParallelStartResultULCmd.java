@@ -72,7 +72,7 @@ public class YunKuaiChongV160RemoteParallelStartResultULCmd extends YunKuaiChong
 
         RemoteStartChargingResponse remoteStartChargingResponse = RemoteStartChargingResponse.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setTradeNo(tradeNo)
                 .setSuccess(isSuccess)
                 .setFailReason(failReason)

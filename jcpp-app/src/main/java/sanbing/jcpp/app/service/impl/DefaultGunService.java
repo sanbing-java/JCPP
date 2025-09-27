@@ -126,9 +126,20 @@ public class DefaultGunService implements GunService {
                 .build();
     }
 
+
     @Override
-    public Gun findByPileCodeAndGunCode(String pileCode, String gunCode) {
-        return gunRepository.findByPileCodeAndGunCode(pileCode, gunCode);
+    public Gun findByPileCodeAndGunNo(String pileCode, String gunNo) {
+        return gunRepository.findByPileCodeAndGunNo(pileCode, gunNo);
+    }
+
+    @Override
+    public Gun findByGunCode(String gunCode) {
+        return gunRepository.findByGunCode(gunCode);
+    }
+
+    @Override
+    public GunWithStatusResponse findGunWithStatusByCode(String gunCode) {
+        return gunRepository.findGunWithStatusByCode(gunCode);
     }
     
     @Override
@@ -167,33 +178,33 @@ public class DefaultGunService implements GunService {
     }
 
     @Override
-    public boolean handleGunRunStatus(String pileCode, String gunCode, GunRunStatus protoStatus, long ts) {
-        log.info("处理充电枪状态上报: 桩编码={}, 枪编码={}, 状态={}", pileCode, gunCode, protoStatus);
+    public boolean handleGunRunStatus(String pileCode, String gunNo, GunRunStatus protoStatus, long ts) {
+        log.info("处理充电枪状态上报: 桩编码={}, 枪编号={}, 状态={}", pileCode, gunNo, protoStatus);
         
         // 将Proto状态转换为数据库枚举
         GunRunStatusEnum dbStatus = convertProtoStatusToDbStatus(protoStatus);
         
         if (dbStatus != null) {
             // 获取充电枪信息（使用缓存）
-            Gun gun = findByPileCodeAndGunCode(pileCode, gunCode);
+            Gun gun = findByPileCodeAndGunNo(pileCode, gunNo);
             if (gun != null) {
                 // 检查状态是否真的发生了变化，避免重复保存
                 String currentStatus = findGunStatus(gun.getId());
                 if (dbStatus.name().equals(currentStatus)) {
-                    log.debug("充电枪状态未发生变化，跳过更新: 桩编码={}, 枪编码={}, 状态={}", pileCode, gunCode, dbStatus);
+                    log.debug("充电枪状态未发生变化，跳过更新: 桩编码={}, 枪编号={}, 状态={}", pileCode, gunNo, dbStatus);
                     return false;
                 }
                 
                 // 保存充电枪状态到属性表
                 saveGunStatusChange(gun.getId(), dbStatus.name(), ts);
-                
-                log.info("充电枪状态更新成功: 桩编码={}, 枪编码={}, 原状态={}, 新状态={}", 
-                        pileCode, gunCode, currentStatus, dbStatus);
+
+                log.info("充电枪状态更新成功: 桩编码={}, 枪编号={}, 原状态={}, 新状态={}",
+                        pileCode, gunNo, currentStatus, dbStatus);
                 
                 // 根据充电枪状态判断是否需要更新充电桩状态
                 return shouldUpdatePileStatus(dbStatus);
             } else {
-                log.warn("未找到充电枪: 桩编码={}, 枪编码={}", pileCode, gunCode);
+                log.warn("未找到充电枪: 桩编码={}, 枪编号={}", pileCode, gunNo);
             }
         } else {
             log.warn("未知的充电枪状态: {}, 跳过更新", protoStatus);

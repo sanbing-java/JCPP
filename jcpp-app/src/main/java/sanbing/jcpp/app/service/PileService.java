@@ -32,6 +32,11 @@ public interface PileService {
      * 根据ID查询充电桩
      */
     Pile findById(UUID id);
+
+    /**
+     * 根据桩编号查询充电桩
+     */
+    Pile findByPileCode(String pileCode);
     
     /**
      * 更新充电桩

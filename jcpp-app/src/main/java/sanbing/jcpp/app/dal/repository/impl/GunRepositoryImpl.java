@@ -6,10 +6,11 @@
  */
 package sanbing.jcpp.app.dal.repository.impl;
 
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.event.TransactionalEventListener;
+import sanbing.jcpp.app.adapter.response.GunWithStatusResponse;
 import sanbing.jcpp.app.dal.entity.Gun;
 import sanbing.jcpp.app.dal.mapper.GunMapper;
 import sanbing.jcpp.app.dal.repository.GunRepository;
@@ -30,10 +31,10 @@ import static sanbing.jcpp.infrastructure.util.validation.Validator.validateStri
  */
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class GunRepositoryImpl extends CachedVersionedEntityRepository<GunCacheKey, Gun, GunCacheEvictEvent> implements GunRepository {
 
-    @Resource
-    GunMapper gunMapper;
+    private final GunMapper gunMapper;
 
     @TransactionalEventListener(classes = GunCacheEvictEvent.class)
     @Override
@@ -45,22 +46,36 @@ public class GunRepositoryImpl extends CachedVersionedEntityRepository<GunCacheK
         if (event.getGunId() != null) {
             toEvict.add(new GunCacheKey(event.getGunId()));
         }
-        
-        // 基于pileCode+gunCode的缓存key
-        if (event.getPileCode() != null && event.getGunCode() != null) {
-            toEvict.add(new GunCacheKey(event.getPileCode(), event.getGunCode()));
+
+        // 基于pileCode+gunNo的缓存key
+        if (event.getPileCode() != null && event.getGunNo() != null) {
+            toEvict.add(new GunCacheKey(event.getPileCode(), event.getGunNo()));
+        }
+
+        // 基于gunCode的缓存key
+        if (event.getGunCode() != null) {
+            toEvict.add(new GunCacheKey(event.getGunCode()));
         }
         
         cache.evict(toEvict);
     }
 
+
     @Override
-    public Gun findByPileCodeAndGunCode(String pileCode, String gunCode) {
+    public Gun findByPileCodeAndGunNo(String pileCode, String gunNo) {
         validateString(pileCode, code -> "无效的桩编号: " + pileCode);
+        validateString(gunNo, no -> "无效的枪编号: " + gunNo);
+
+        return cache.get(new GunCacheKey(pileCode, gunNo),
+                () -> gunMapper.selectByPileCodeAndGunNo(pileCode, gunNo));
+    }
+
+    @Override
+    public Gun findByGunCode(String gunCode) {
         validateString(gunCode, code -> "无效的枪编号: " + gunCode);
-        
-        return cache.get(new GunCacheKey(pileCode, gunCode),
-                () -> gunMapper.selectByPileCodeAndGunCode(pileCode, gunCode));
+
+        return cache.get(new GunCacheKey(gunCode),
+                () -> gunMapper.selectByGunCode(gunCode));
     }
 
     @Override
@@ -69,5 +84,13 @@ public class GunRepositoryImpl extends CachedVersionedEntityRepository<GunCacheK
         
         return cache.get(new GunCacheKey(gunId),
                 () -> gunMapper.selectById(gunId));
+    }
+
+    @Override
+    public GunWithStatusResponse findGunWithStatusByCode(String gunCode) {
+        validateString(gunCode, code -> "无效的枪编号: " + gunCode);
+
+        // 这个方法不使用缓存，因为它包含状态信息，需要实时查询
+        return gunMapper.selectGunWithStatusByCode(gunCode);
     }
 }

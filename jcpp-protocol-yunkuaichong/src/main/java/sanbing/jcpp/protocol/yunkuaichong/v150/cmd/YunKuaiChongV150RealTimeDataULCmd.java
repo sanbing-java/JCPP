@@ -135,7 +135,7 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
         GunRunStatus gunRunStatus = parseGunRunStatus(gunStatus, gunInsert, tradeNo);
         GunRunStatusProto.Builder gunRunStatusProtoBuilder = GunRunStatusProto.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setGunRunStatus(gunRunStatus)
                 .addAllFaultMessages(faults)
                 .setAdditionalInfo(additionalInfo.toString());
@@ -152,7 +152,7 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
             // 充电进度
             ChargingProgressProto.Builder chargingProgressProtoBuilder = ChargingProgressProto.newBuilder()
                     .setPileCode(pileCode)
-                    .setGunCode(gunCode)
+                    .setGunNo(gunCode)
                     .setTradeNo(tradeNo)
                     .setOutputVoltage(outputVoltage.toPlainString())
                     .setOutputCurrent(outputCurrent.toPlainString())

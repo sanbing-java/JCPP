@@ -21,7 +21,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
-    
+
+    private boolean success;
     private String errorCode;
     private String message;
     private T data;
@@ -29,6 +30,7 @@ public class ApiResponse<T> {
     
     public static <T> ApiResponse<T> success(T data) {
         return ApiResponse.<T>builder()
+                .success(true)
                 .message("操作成功")
                 .data(data)
                 .timestamp(System.currentTimeMillis())
@@ -37,6 +39,7 @@ public class ApiResponse<T> {
     
     public static <T> ApiResponse<T> success(String message, T data) {
         return ApiResponse.<T>builder()
+                .success(true)
                 .message(message)
                 .data(data)
                 .timestamp(System.currentTimeMillis())
@@ -45,6 +48,7 @@ public class ApiResponse<T> {
     
     public static <T> ApiResponse<T> error(String errorCode, String message) {
         return ApiResponse.<T>builder()
+                .success(false)
                 .errorCode(errorCode)
                 .message(message)
                 .timestamp(System.currentTimeMillis())
@@ -53,6 +57,7 @@ public class ApiResponse<T> {
     
     public static <T> ApiResponse<T> error(ErrorCode errorCode, String message) {
         return ApiResponse.<T>builder()
+                .success(false)
                 .errorCode(errorCode.getCode())
                 .message(message)
                 .timestamp(System.currentTimeMillis())
@@ -61,6 +66,7 @@ public class ApiResponse<T> {
     
     public static <T> ApiResponse<T> error(ErrorCode errorCode) {
         return ApiResponse.<T>builder()
+                .success(false)
                 .errorCode(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .timestamp(System.currentTimeMillis())

@@ -83,6 +83,11 @@ public class DefaultPileService implements PileService {
     }
 
     @Override
+    public Pile findByPileCode(String pileCode) {
+        return pileRepository.findPileByCode(pileCode);
+    }
+
+    @Override
     public Pile updatePile(UUID id, PileUpdateRequest request) throws JCPPException {
         Pile existingPile = findById(id);
         if (existingPile == null) {

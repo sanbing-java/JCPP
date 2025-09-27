@@ -5,6 +5,7 @@
  * 付费课程知识星球：https://t.zsxq.com/aKtXo
  */
 import React, {useEffect, useMemo, useState} from 'react';
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
 import {
     Button,
     Card,
@@ -22,7 +23,14 @@ import {
     Tag,
     Typography
 } from 'antd';
-import {DeleteOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, TableOutlined} from '@ant-design/icons';
+import {
+    BugOutlined,
+    DeleteOutlined,
+    PlusOutlined,
+    ReloadOutlined,
+    SearchOutlined,
+    TableOutlined
+} from '@ant-design/icons';
 import type {ColumnsType, TableProps} from 'antd/es/table';
 import {formatTimestamp, generateGunCode, showMessage} from '../utils';
 import {getErrorMessage} from '../services/api';
@@ -34,6 +42,9 @@ import type {Gun, GunCreateRequest, GunUpdateRequest, PileOption, StationOption}
 const { confirm } = Modal;
 
 const GunManagement: React.FC = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const [dataSource, setDataSource] = useState<Gun[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchForm] = Form.useForm();
@@ -54,6 +65,29 @@ const GunManagement: React.FC = () => {
     showQuickJumper: true,
     showTotal: (total: number) => `共 ${total} 条记录`
   });
+
+    // 从URL参数初始化搜索参数
+    const initSearchParams = (): {
+        page: number;
+        size: number;
+        gunName?: string;
+        gunCode?: string;
+        gunNo?: string;
+        stationId?: string;
+        sortField?: string;
+        sortOrder?: string;
+    } => {
+        return {
+            page: parseInt(urlSearchParams.get('page') || '1'),
+            size: parseInt(urlSearchParams.get('size') || '10'),
+            gunName: urlSearchParams.get('gunName') || undefined,
+            gunCode: urlSearchParams.get('gunCode') || undefined,
+            gunNo: urlSearchParams.get('gunNo') || undefined,
+            stationId: urlSearchParams.get('stationId') || undefined,
+            sortField: urlSearchParams.get('sortField') || undefined,
+            sortOrder: urlSearchParams.get('sortOrder') || undefined,
+        };
+    };
 
   const [searchParams, setSearchParams] = useState<{
     page: number;
@@ -236,8 +270,13 @@ const GunManagement: React.FC = () => {
           <Button type="link" size="small" onClick={() => handleEdit(record)}>
             编辑
           </Button>
-          <Button type="link" size="small" onClick={() => handleView(record)}>
-            查看
+            <Button
+                type="link"
+                size="small"
+                icon={<BugOutlined/>}
+                onClick={() => handleDebug(record)}
+            >
+                调试
           </Button>
           <Popconfirm
             title="确认删除充电枪"
@@ -429,17 +468,94 @@ const GunManagement: React.FC = () => {
     }
   };
 
-  // 监听搜索参数变化
-  useEffect(() => {
-    loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+    // 更新搜索参数的函数，同时更新URL
+    const updateSearchParams = (newParams: any) => {
+        setSearchParams(newParams);
+
+        // 更新URL参数
+        const urlParams = new URLSearchParams();
+        Object.entries(newParams).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== '') {
+                urlParams.set(key, String(value));
+            }
+        });
+        setUrlSearchParams(urlParams);
+    };
+
+    // 标记是否已经初始化URL参数
+    const [urlParamsInitialized, setUrlParamsInitialized] = useState(false);
 
   // 初始化加载充电站选项和充电桩选项
   useEffect(() => {
     loadStationOptions();
     loadPileOptions();
   }, []);
+
+    // 组件挂载后立即从URL参数初始化搜索参数
+    useEffect(() => {
+        const urlParams = initSearchParams();
+        // 只有当URL参数与当前searchParams不同时才更新
+        const hasUrlParams = urlParams.gunName || urlParams.gunCode || urlParams.gunNo ||
+            urlParams.stationId || urlParams.sortField || urlParams.sortOrder ||
+            urlParams.page !== 1 || urlParams.size !== 10;
+
+        if (hasUrlParams) {
+            console.log('从URL初始化搜索参数:', urlParams);
+            setSearchParams(urlParams);
+        }
+        setUrlParamsInitialized(true);
+    }, [urlSearchParams]); // 依赖urlSearchParams，确保URL变化时重新初始化
+
+    // 监听搜索参数变化，但只有在URL参数初始化完成后才加载数据
+    useEffect(() => {
+        if (urlParamsInitialized) {
+            loadData();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams, urlParamsInitialized]);
+
+    // 初始化表单值（从URL参数）
+    useEffect(() => {
+        const initialValues = {
+            gunName: searchParams.gunName || '',
+            gunCode: searchParams.gunCode || '',
+            gunNo: searchParams.gunNo || '',
+            stationId: searchParams.stationId || '',
+        };
+        searchForm.setFieldsValue(initialValues);
+    }, [searchForm, searchParams.gunName, searchParams.gunCode, searchParams.gunNo, searchParams.stationId]);
+
+    // 初始化时如果URL有搜索参数，需要触发一次数据加载
+    useEffect(() => {
+        // 检查是否有搜索条件（除了page和size之外的参数）
+        const hasSearchConditions = searchParams.gunName || searchParams.gunCode ||
+            searchParams.gunNo || searchParams.stationId;
+
+        if (hasSearchConditions) {
+            // 如果有搜索条件，确保数据会被重新加载
+            // 这里不需要手动调用loadData，因为searchParams的变化会触发useEffect中的loadData
+            console.log('检测到URL搜索参数，将自动加载数据:', searchParams);
+        }
+    }, []); // 只在组件初始化时执行一次
+
+    // 处理从充电桩管理页面传来的搜索参数
+    useEffect(() => {
+        const state = location.state as { searchPileCode?: string } | null;
+        if (state?.searchPileCode) {
+            // 设置搜索表单的值
+            searchForm.setFieldValue('gunCode', state.searchPileCode);
+
+            // 更新搜索参数并触发搜索
+            updateSearchParams({
+                ...searchParams,
+                gunCode: state.searchPileCode,
+                page: 1 // 重置到第一页
+            });
+
+            // 清除location.state，避免重复处理
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
 
   // 处理表格变化
   const handleTableChange: TableProps<Gun>['onChange'] = (pag, filters, sorter) => {
@@ -458,7 +574,7 @@ const GunManagement: React.FC = () => {
       delete newParams.sortOrder;
     }
 
-    setSearchParams(newParams);
+      updateSearchParams(newParams);
   };
 
   // 搜索处理
@@ -468,7 +584,7 @@ const GunManagement: React.FC = () => {
       size: pagination.pageSize,
       ...values
     };
-    setSearchParams(newParams);
+      updateSearchParams(newParams);
   };
 
   // 重置搜索
@@ -478,7 +594,7 @@ const GunManagement: React.FC = () => {
       page: 1,
       size: pagination.pageSize
     };
-    setSearchParams(newParams);
+      updateSearchParams(newParams);
   };
 
   // 显示新建模态框
@@ -500,9 +616,18 @@ const GunManagement: React.FC = () => {
     });
   };
 
-  // 处理查看
-  const handleView = (record: Gun) => {
-    showMessage.info('查看功能待实现');
+    // 处理调试 - 跳转到调试页面，携带当前查询参数
+    const handleDebug = (record: Gun) => {
+        // 直接从URL中获取当前的查询参数，确保获取到最新的参数
+        const currentUrlParams = new URLSearchParams(window.location.search);
+        const queryString = currentUrlParams.toString();
+        const returnUrl = queryString ? `/page/guns?${queryString}` : '/page/guns';
+
+        console.log('调试跳转 - 当前URL参数:', queryString);
+        console.log('调试跳转 - 返回URL:', returnUrl);
+
+        // 将returnUrl作为URL参数传递
+        navigate(`/page/guns/${record.gunCode}/debug?returnUrl=${encodeURIComponent(returnUrl)}`);
   };
 
   // 生成充电枪编码
@@ -971,6 +1096,7 @@ const GunManagement: React.FC = () => {
           </Row>
         </Form>
       </Modal>
+
     </div>
   );
 };

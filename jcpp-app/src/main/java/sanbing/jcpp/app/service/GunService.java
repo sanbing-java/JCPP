@@ -42,11 +42,20 @@ public interface GunService {
      * 分页查询充电枪及状态信息
      */
     PageResponse<GunWithStatusResponse> queryGunsWithStatus(GunQueryRequest request);
-    
+
+
     /**
-     * 根据充电桩编码和充电枪编码查询充电枪
+     * 根据充电桩编码和充电枪编号查询充电枪
+     * 充电桩上报的是 pile_code + gun_no 的组合，这个组合是唯一的
      */
-    Gun findByPileCodeAndGunCode(String pileCode, String gunCode);
+    Gun findByPileCodeAndGunNo(String pileCode, String gunNo);
+
+    /**
+     * 根据枪编号查询充电枪
+     */
+    Gun findByGunCode(String gunCode);
+
+    GunWithStatusResponse findGunWithStatusByCode(String gunCode);
     
     /**
      * 查询充电枪状态
@@ -69,11 +78,11 @@ public interface GunService {
      * 处理充电枪状态上报
      * 
      * @param pileCode 充电桩编码
-     * @param gunCode 充电枪编码
+     * @param gunNo 充电枪编号 (如: "01", "02")
      * @param protoStatus Proto状态
      * @param ts 时间戳
      * @return 是否需要更新充电桩状态
      */
-    boolean handleGunRunStatus(String pileCode, String gunCode, GunRunStatus protoStatus, long ts);
+    boolean handleGunRunStatus(String pileCode, String gunNo, GunRunStatus protoStatus, long ts);
     
 }

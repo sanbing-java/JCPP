@@ -98,11 +98,62 @@
         </choose>
     </select>
 
-    <!-- 根据充电桩编码和充电枪编码查询充电枪 -->
-    <select id="selectByPileCodeAndGunCode" resultType="sanbing.jcpp.app.dal.entity.Gun">
+
+    <!-- 根据充电桩编码和充电枪编号查询充电枪 -->
+    <select id="selectByPileCodeAndGunNo" resultType="sanbing.jcpp.app.dal.entity.Gun">
         SELECT g.* FROM t_gun g 
-        INNER JOIN t_pile p ON g.pile_id = p.id 
-        WHERE p.pile_code = #{pileCode} AND g.gun_code = #{gunCode}
+        INNER JOIN t_pile p ON g.pile_id = p.id
+        WHERE p.pile_code = #{pileCode}
+          AND g.gun_no = #{gunNo}
+    </select>
+
+    <!-- 根据枪编号查询充电枪 -->
+    <select id="selectByGunCode" resultType="sanbing.jcpp.app.dal.entity.Gun">
+        SELECT *
+        FROM t_gun
+        WHERE gun_code = #{gunCode}
+    </select>
+
+    <!-- 根据枪编号查询充电枪详细信息（包含关联信息） -->
+    <select id="selectGunWithStatusByCode" resultType="sanbing.jcpp.app.adapter.response.GunWithStatusResponse">
+        SELECT
+        <!-- 充电枪基本信息 -->
+        g.id,
+        g.created_time,
+        g.updated_time,
+        g.gun_name,
+        g.gun_no,
+        g.gun_code,
+        g.station_id,
+        g.pile_id,
+        g.additional_info,
+        g.version,
+
+        <!-- 充电站信息 -->
+        s.station_name,
+
+        <!-- 充电桩信息 -->
+        p.pile_name,
+        p.pile_code,
+
+        <!-- 状态相关属性 -->
+        a_run_status.str_v as run_status
+
+        FROM t_gun g
+
+        <!-- LEFT JOIN 获取充电站信息 -->
+        LEFT JOIN t_station s ON g.station_id = s.id
+
+        <!-- LEFT JOIN 获取充电桩信息 -->
+        LEFT JOIN t_pile p ON g.pile_id = p.id
+
+        <!-- LEFT JOIN 获取充电枪运行状态属性 -->
+        LEFT JOIN t_attr a_run_status ON (
+        a_run_status.entity_id = g.id AND
+        a_run_status.attr_key = 'gunRunStatus'
+        )
+
+        WHERE g.gun_code = #{gunCode}
     </select>
 
     <!-- 统计充电桩下的充电枪数量 -->

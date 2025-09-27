@@ -68,7 +68,7 @@ public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
 
         BmsAbortProto proto = BmsAbortProto.newBuilder()
                 .setPileCode(pileCode)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setTradeNo(tradeNo)
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();

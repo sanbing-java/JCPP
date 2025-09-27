@@ -93,7 +93,7 @@ public class YunKuaiChongV150BmsParamConfigReportULCmd extends YunKuaiChongUplin
         BmsParamConfigReportProto bmsParamConfigReportProto = BmsParamConfigReportProto.newBuilder()
                 .setPileCode(pileCode)
                 .setTradeNo(tradeNo)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setMaxSingleCellVoltage(maxSingleCellVoltage.toPlainString())
                 .setMaxChargeCurrent(maxChargeCurrent.toPlainString())
                 .setRatedEnergy(ratedEnergy.toPlainString())

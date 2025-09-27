@@ -117,7 +117,7 @@ public class YunKuaiChongV150BmsChargingErrorULCmd extends YunKuaiChongUplinkCmd
         BmsChargingErrorProto bmsChargingErrorProto = BmsChargingErrorProto.newBuilder()
                 .setPileCode(pileCode)
                 .setTradeNo(tradeNo)
-                .setGunCode(gunCode)
+                .setGunNo(gunCode)
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();
         UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(bmsChargingErrorProto.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)

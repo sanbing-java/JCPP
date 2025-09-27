@@ -9,7 +9,6 @@ package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
-import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.proto.gen.DownlinkProto.OfflineCardBalanceUpdateRequest;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.annotation.ProtocolCmd;
@@ -44,7 +43,7 @@ public class YunKuaiChongV150OfflineCardBalanceUpdateRequestDLCmd extends YunKua
         ByteBuf msgBody = Unpooled.buffer(20);
         OfflineCardBalanceUpdateRequest request = message.getMsg().getOfflineCardBalanceUpdateRequest();
         msgBody.writeBytes(encodePileCode(request.getPileCode()));
-        msgBody.writeBytes(encodeGunCode(request.getGunCode()));
+        msgBody.writeBytes(encodeGunCode(request.getGunNo()));
         msgBody.writeBytes(encodeCardNo(request.getCardNo()));
         msgBody.writeIntLE(new BigDecimal(request.getLimitYuan()).movePointRight(2).intValue());
 

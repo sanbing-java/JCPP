@@ -22,12 +22,15 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 
 @Configuration
 @EnableAutoConfiguration(exclude = {RedisAutoConfiguration.class})
+@EnableTransactionManagement
 @MapperScan({"sanbing.jcpp.app.dal.mapper"})
 public class DalConfig {
 
@@ -44,13 +47,11 @@ public class DalConfig {
         return dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
-    @Primary
     @Bean
     public JdbcTemplate jdbcTemplate(@Qualifier("dataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
-    @Primary
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate(@Qualifier("dataSource") DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
@@ -58,7 +59,12 @@ public class DalConfig {
 
     @Primary
     @Bean
-    public TransactionTemplate transactionTemplate(DataSourceTransactionManager transactionManager) {
+    public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean
+    public TransactionTemplate transactionTemplate(@Qualifier("transactionManager") PlatformTransactionManager transactionManager) {
         TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setIsolationLevel(TransactionTemplate.ISOLATION_READ_COMMITTED);
         transactionTemplate.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRED);
@@ -66,7 +72,6 @@ public class DalConfig {
     }
 
     @Bean
-    @Primary
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();

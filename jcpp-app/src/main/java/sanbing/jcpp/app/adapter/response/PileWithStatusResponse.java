@@ -108,4 +108,9 @@ public class PileWithStatusResponse {
      * 最后活跃时间（13位时间戳）
      */
     private Long lastActiveTime;
+
+    /**
+     * 充电枪数量
+     */
+    private Long gunCount;
 }

@@ -38,7 +38,7 @@ public class LvnengV340RemoteStopDLCmd extends LvnengDownlinkCmdExe {
 
         DownlinkProto.RemoteStopChargingRequest remoteStopChargingRequest = lvnengDwonlinkMessage.getMsg().getRemoteStopChargingRequest();
         String pileCode = remoteStopChargingRequest.getPileCode();
-        String gunCode = remoteStopChargingRequest.getGunCode();
+        String gunCode = remoteStopChargingRequest.getGunNo();
 
         ByteBuf msgBody = Unpooled.buffer(44);
         //1预留
