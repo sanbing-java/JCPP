@@ -632,6 +632,7 @@
                         <exclude>**/CHANGELOG.md</exclude>
                         <exclude>**/README.md</exclude>
                         <exclude>**/robots.txt</exclude>
+                        <exclude>.cursor/**</exclude>
                     </excludes>
                     <mapping>
                         <proto>JAVADOC_STYLE</proto>
