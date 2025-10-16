@@ -55,12 +55,11 @@ public class YunKuaiChongV150OfflineCardBalanceUpdateResponseULCmd extends YunKu
         byteBuf.readBytes(pileCodeBytes);
         String pileCode = BCDUtil.toString(pileCodeBytes);
 
-        // 物理卡号
+        // 物理卡号 8字节long值（小端序）
         String cardNo = CharSequenceUtil.EMPTY;
         if(byteBuf.readableBytes() >= 8) {
-            byte[] cardNoBytes = new byte[8];
-            byteBuf.readBytes(cardNoBytes);
-            cardNo = BCDUtil.toString(cardNoBytes);
+            long physicalCardNoLong = byteBuf.readLongLE();
+            cardNo = String.valueOf(physicalCardNoLong);
         }
 
         // 修改结果  0x00-修改成功 0x01-设备编号错误 0x02-卡号错误

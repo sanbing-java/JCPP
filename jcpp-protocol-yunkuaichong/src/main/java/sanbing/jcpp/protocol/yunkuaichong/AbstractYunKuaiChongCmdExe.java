@@ -114,9 +114,41 @@ public class AbstractYunKuaiChongCmdExe {
     }
 
     /**
-     * 编码卡号为BCD格式
-     * 云快充协议卡号为8字节（16位BCD码），需要做长度校验和补0操作
+     * 编码逻辑卡号为BCD格式
+     * 云快充协议逻辑卡号为8字节（16位BCD码），需要做长度校验和补0操作
      */
+    protected static byte[] encodeLogicalCardNo(String cardNo) {
+        if (StringUtils.length(cardNo) > 16) {
+            throw new IllegalArgumentException("云快充可接受最大逻辑卡号为16位");
+        }
+
+        String cardNoStr = StringUtils.leftPad(cardNo, 16, '0');
+
+        return BCDUtil.toBytes(cardNoStr);
+    }
+
+    /**
+     * 编码物理卡号为8字节long值
+     * 根据云快充协议文档，物理卡号为8字节BIN码，直接使用long值
+     */
+    protected static long encodePhysicalCardNo(String cardNo) {
+        if (StringUtils.isEmpty(cardNo)) {
+            return 0L;
+        }
+
+        try {
+            return Long.parseLong(cardNo);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("物理卡号必须是数字: " + cardNo, e);
+        }
+    }
+
+    /**
+     * 编码卡号为BCD格式（保持向后兼容）
+     * 云快充协议卡号为8字节（16位BCD码），需要做长度校验和补0操作
+     * @deprecated 请使用 encodeLogicalCardNo 或 encodePhysicalCardNo 方法
+     */
+    @Deprecated
     protected static byte[] encodeCardNo(String cardNo) {
         if (StringUtils.length(cardNo) > 16) {
             throw new IllegalArgumentException("云快充可接受最大卡号为16位");

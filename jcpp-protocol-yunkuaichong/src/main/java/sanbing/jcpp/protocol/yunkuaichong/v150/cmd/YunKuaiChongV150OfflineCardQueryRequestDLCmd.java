@@ -6,11 +6,6 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
-import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.OFFLINE_CARD_QUERY_REQUEST;
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V150;
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V160;
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V170;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +15,9 @@ import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
+
+import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.OFFLINE_CARD_QUERY_REQUEST;
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 
 
 /**
@@ -50,7 +48,7 @@ public class YunKuaiChongV150OfflineCardQueryRequestDLCmd extends YunKuaiChongDo
         ByteBuf msgBody = Unpooled.buffer(bufferInitialCapacity(request));
         msgBody.writeIntLE(request.getTotal());
         msgBody.writeBytes(encodePileCode(request.getPileCode()));
-        request.getCardNoList().forEach(cardNo -> msgBody.writeBytes(encodeCardNo(cardNo)));
+        request.getCardNoList().forEach(cardNo -> msgBody.writeLongLE(encodePhysicalCardNo(cardNo)));
 
         super.encodeAndWriteFlush(OFFLINE_CARD_QUERY_REQUEST, msgBody, tcpSession);
     }

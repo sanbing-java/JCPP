@@ -49,8 +49,8 @@ public class YunKuaiChongV150OfflineCardSyncRequestDLCmd extends YunKuaiChongDow
         msgBody.writeBytes(encodePileCode(request.getPileCode()));
         msgBody.writeIntLE(request.getTotal());
         request.getCardInfoList().forEach(cardInfo -> {
-            msgBody.writeBytes(encodeCardNo(cardInfo.getLogicCardNo()));
-            msgBody.writeBytes(encodeCardNo(cardInfo.getCardNo()));
+            msgBody.writeBytes(encodeLogicalCardNo(cardInfo.getLogicCardNo()));
+            msgBody.writeLongLE(encodePhysicalCardNo(cardInfo.getCardNo()));
         });
 
         super.encodeAndWriteFlush(OFFLINE_CARD_SYNC_REQUEST, msgBody, tcpSession);

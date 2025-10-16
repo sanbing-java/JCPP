@@ -7,14 +7,7 @@
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
 
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V150;
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V160;
-import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V170;
-
-import java.util.List;
-
 import com.google.common.collect.Lists;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +18,10 @@ import sanbing.jcpp.protocol.annotation.ProtocolCmd;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
+
+import java.util.List;
+
+import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 
 
 /**
@@ -50,10 +47,9 @@ public class YunKuaiChongV150OfflineCardQueryResponseULCmd extends YunKuaiChongU
         // 清除结果集合
         List<UplinkProto.QueryResult> queryResultList = Lists.newArrayList();
         while (byteBuf.readableBytes() >= 9) {
-            byte[] cardNoBytes = new byte[8];
-            // 离线卡物理卡号
-            byteBuf.readBytes(cardNoBytes);
-            String cardNo = BCDUtil.toString(cardNoBytes);
+            // 离线卡物理卡号 8字节long值（小端序）
+            long physicalCardNoLong = byteBuf.readLongLE();
+            String cardNo = String.valueOf(physicalCardNoLong);
             // 查询结果 0x00 不存在 0x01 存在
             byte  queryResultByte = byteBuf.readByte();
             // clearResult

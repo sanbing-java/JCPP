@@ -61,7 +61,7 @@ public class YunKuaiChongV150StartChargeAckDLCmd extends YunKuaiChongDownlinkCmd
         // 枪号
         msgBody.writeBytes(encodeGunCode(gunCode));
         // 逻辑卡号
-        msgBody.writeBytes(encodeCardNo(logicalCardNo));
+        msgBody.writeBytes(encodeLogicalCardNo(logicalCardNo));
         // 账户余额
         msgBody.writeIntLE(new BigDecimal(limitYuan).multiply(new BigDecimal("100")).intValue());
         // 鉴权成功标志

@@ -65,9 +65,9 @@ public class YunKuaiChongV160RemoteParallelStartDLCmd extends YunKuaiChongDownli
         // 枪号
         msgBody.writeBytes(encodeGunCode(gunCode));
         // 逻辑卡号 BCD码
-        msgBody.writeBytes(encodeCardNo(logicalCardNo));
-        // 物理卡号
-        msgBody.writeBytes(encodeCardNo(physicalCardNo));
+        msgBody.writeBytes(encodeLogicalCardNo(logicalCardNo));
+        // 物理卡号 8字节long值（小端序）
+        msgBody.writeLongLE(encodePhysicalCardNo(physicalCardNo));
         // 账户余额
         msgBody.writeIntLE(new BigDecimal(limitYuan).intValue());
         // 并充序号

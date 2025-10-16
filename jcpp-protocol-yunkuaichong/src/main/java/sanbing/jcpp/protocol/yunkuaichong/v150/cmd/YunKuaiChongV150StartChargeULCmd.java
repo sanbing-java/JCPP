@@ -65,10 +65,9 @@ public class YunKuaiChongV150StartChargeULCmd extends YunKuaiChongUplinkCmdExe {
         int needPasswordCode = byteBuf.readUnsignedByte();
         boolean needPassword = YunKuaiChongPasswordRequiredEnum.isPasswordRequired(needPasswordCode);
 
-        // 物理卡号
-        byte[] cardNoBytes = new byte[8];
-        byteBuf.readBytes(cardNoBytes);
-        String cardNo = BCDUtil.toString(cardNoBytes);
+        // 物理卡号 8字节long值（小端序）
+        long physicalCardNoLong = byteBuf.readLongLE();
+        String cardNo = String.valueOf(physicalCardNoLong);
 
         // 密码
         byte[] passwordBytes = new byte[16];

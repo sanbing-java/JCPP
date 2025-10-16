@@ -44,7 +44,7 @@ public class YunKuaiChongV150OfflineCardBalanceUpdateRequestDLCmd extends YunKua
         OfflineCardBalanceUpdateRequest request = message.getMsg().getOfflineCardBalanceUpdateRequest();
         msgBody.writeBytes(encodePileCode(request.getPileCode()));
         msgBody.writeBytes(encodeGunCode(request.getGunNo()));
-        msgBody.writeBytes(encodeCardNo(request.getCardNo()));
+        msgBody.writeLongLE(encodePhysicalCardNo(request.getCardNo()));
         msgBody.writeIntLE(new BigDecimal(request.getLimitYuan()).movePointRight(2).intValue());
 
         super.encodeAndWriteFlush(OFFLINE_CARD_BALANCE_UPDATE_REQUEST, msgBody, tcpSession);

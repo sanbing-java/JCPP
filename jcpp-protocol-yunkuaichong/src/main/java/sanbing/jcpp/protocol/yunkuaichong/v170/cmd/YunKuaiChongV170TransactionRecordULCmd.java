@@ -174,10 +174,9 @@ public class YunKuaiChongV170TransactionRecordULCmd extends YunKuaiChongUplinkCm
         byte stopReasonByte = byteBuf.readByte();
         String stopReason = mapStopReason(stopReasonByte);
 
-        // 35. 物理卡号
-        byte[] cardNoBytes = new byte[8];
-        byteBuf.readBytes(cardNoBytes);
-        String cardNo = BCDUtil.toString(cardNoBytes);
+        // 35. 物理卡号 8字节long值（小端序）
+        long physicalCardNoLong = byteBuf.readLongLE();
+        String cardNo = String.valueOf(physicalCardNoLong);
         additionalInfo.put("物理卡号", cardNo);
 
         // 构建峰谷电量明细

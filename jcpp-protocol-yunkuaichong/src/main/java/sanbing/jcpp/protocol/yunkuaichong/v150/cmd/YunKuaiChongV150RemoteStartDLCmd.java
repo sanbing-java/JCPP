@@ -58,9 +58,9 @@ public class YunKuaiChongV150RemoteStartDLCmd extends YunKuaiChongDownlinkCmdExe
         // 枪号
         msgBody.writeBytes(encodeGunCode(gunCode));
         // 逻辑卡号 BCD码
-        msgBody.writeBytes(encodeCardNo(logicalCardNo));
-        // 物理卡号
-        msgBody.writeBytes(encodeCardNo(physicalCardNo));
+        msgBody.writeBytes(encodeLogicalCardNo(logicalCardNo));
+        // 物理卡号 8字节long值（小端序）
+        msgBody.writeLongLE(encodePhysicalCardNo(physicalCardNo));
         // 账户余额
         msgBody.writeIntLE(new BigDecimal(limitYuan).multiply(new BigDecimal("100")).intValue());
 
