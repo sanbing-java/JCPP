@@ -214,4 +214,19 @@ public interface PileProtocolService {
      * 服务器下发充电桩字符型参数反馈
      */
     void onSetQrcodeResponse(UplinkQueueMessage uplinkQueueMsg, Callback callback);
+
+    /**
+     * 充电桩工作参数设置
+     */
+    void workParamSettingRequest(DownlinkProto.WorkParamSettingRequest request);
+
+    /**
+     * 充电桩工作参数设置应答
+     */
+    void onWorkParamSettingRequest(UplinkQueueMessage uplinkQueueMsg, Callback callback);
+
+    /**
+     * 结束充电
+     */
+    void onEndCharge(UplinkQueueMessage uplinkQueueMsg, Callback callback);
 }

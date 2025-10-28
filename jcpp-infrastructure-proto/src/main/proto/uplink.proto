@@ -48,6 +48,8 @@ message UplinkQueueMessage {
   SetQrcodeResponse setQrcodeResponse = 45;
   OfflineCardClearResponse offlineCardClearResponse = 46;
   OfflineCardQueryResponse offlineCardQueryResponse = 47;
+  EndChargeProto endChargeProto = 48;
+  WorkParamSettingResponse workParamSettingResponse = 49;
 }
 
 // 会话关闭事件
@@ -384,3 +386,19 @@ message SetQrcodeResponse {
   int32 type = 7;
   int32 startAddr = 8;
 }
+
+
+message EndChargeProto {
+  string tradeNo = 1;  // 交易流水号
+  string pileCode = 2; // 桩编号枪号
+  string gunCode = 3;  // 枪号
+  optional string additionalInfo = 4;
+}
+
+message WorkParamSettingResponse {
+  string pileCode = 1;
+  bool success = 2;
+}
+
+
+

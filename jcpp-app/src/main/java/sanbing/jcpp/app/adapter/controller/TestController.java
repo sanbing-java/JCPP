@@ -373,7 +373,7 @@ public class TestController extends BaseController {
         return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/api/offlineCardClearRequest")
+    @GetMapping("/offlineCardClearRequest")
     public ResponseEntity<String> offlineCardClearRequest() {
 
         List<String> cardNoList = Lists.newArrayList("1000000000123456", "1000000000123457", "1000000000123458", "1000000000123459", "1000000000123460");
@@ -387,7 +387,7 @@ public class TestController extends BaseController {
         return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/api/offlineCardQueryRequest")
+    @GetMapping("/offlineCardQueryRequest")
     public ResponseEntity<String> offlineCardQueryRequest() {
 
         List<String> cardNoList = Lists.newArrayList("1000000000123456", "1000000000123457", "1000000000123458", "1000000000123459", "1000000000123460");
@@ -401,5 +401,19 @@ public class TestController extends BaseController {
 
         return ResponseEntity.ok("success");
     }
+
+    @GetMapping("/workParamSettingRequest")
+    public ResponseEntity<String> workParamSettingRequest() {
+
+        pileProtocolService.workParamSettingRequest(WorkParamSettingRequest.newBuilder()
+                .setPileCode("20231212000010")
+                .setAllow(true)
+                .setMaxAllowOutPower(240)
+                .build());
+
+        return ResponseEntity.ok("success");
+    }
+
+
 
 }

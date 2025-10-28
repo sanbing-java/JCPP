@@ -47,5 +47,9 @@ public enum DownlinkCmdEnum {
 
     OFFLINE_CARD_QUERY_REQUEST,
 
-    START_CHARGE_ACK
+    START_CHARGE_ACK,
+
+    WORK_PARAM_SETTING_REQUEST,
+
+    ;
 }

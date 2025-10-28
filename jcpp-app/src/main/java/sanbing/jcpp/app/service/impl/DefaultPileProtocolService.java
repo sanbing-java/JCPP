@@ -970,4 +970,40 @@ public class DefaultPileProtocolService implements PileProtocolService {
         }
     }
 
+    @Override
+    public void workParamSettingRequest(WorkParamSettingRequest request) {
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(request.getPileCode())
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.WORK_PARAM_SETTING_REQUEST.name())
+                .setWorkParamSettingRequest(request);
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
+    }
+
+    @Override
+    public void onWorkParamSettingRequest(UplinkQueueMessage uplinkQueueMsg, Callback callback) {
+        log.info("接收到充电桩工作参数设置应答 {}", uplinkQueueMsg);
+
+
+        // TODO 处理相关业务逻辑
+
+        callback.onSuccess();
+    }
+
+    @Override
+    public void onEndCharge(UplinkQueueMessage uplinkQueueMsg, Callback callback) {
+        log.info("接收到 结束充电 {}", uplinkQueueMsg);
+
+
+        // TODO 处理相关业务逻辑
+
+        callback.onSuccess();
+
+    }
 }

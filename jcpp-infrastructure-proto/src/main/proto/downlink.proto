@@ -39,6 +39,7 @@ message DownlinkRequestMessage {
   SetQrcodeRequest setQrcodeRequest  = 34;
   OfflineCardClearRequest offlineCardClearRequest = 35;
   OfflineCardQueryRequest offlineCardQueryRequest = 36;
+  WorkParamSettingRequest workParamSettingRequest = 37;
 }
 
 // 下行响应消息
@@ -271,5 +272,11 @@ message OfflineCardQueryRequest {
   string pileCode = 1;                    // 充电桩编码
   int32 total = 2;                        // 查询离线卡的个数
   repeated string cardNo = 3;             // 物理卡号集合
+}
+
+message WorkParamSettingRequest {
+  string pileCode = 1;        // 桩编号
+  bool allow = 2;             // 是否允许工作
+  int32 maxAllowOutPower = 3; // 充电桩最大允许输出功率
 }
 
