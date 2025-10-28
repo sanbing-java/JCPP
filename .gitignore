@@ -58,3 +58,4 @@ build/
 
 ### Cursor ###
 .cursor/
+.qoder/
