@@ -26,6 +26,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -57,6 +59,17 @@ public abstract class ProtocolSession implements Closeable {
     @Setter
     private Forwarder forwarder;
 
+    /**
+     * 会话关闭回调，用于通知注册中心清除缓存
+     */
+    @Setter
+    private Consumer<UUID> closeCallback;
+
+    /**
+     * 防止重复关闭
+     */
+    private final AtomicBoolean closed = new AtomicBoolean(false);
+
     protected ProtocolSession(String protocolName) {
         this.protocolName = protocolName;
         this.pileCodeSet = new LinkedHashSet<>();
@@ -72,12 +85,29 @@ public abstract class ProtocolSession implements Closeable {
     }
 
     public void close(SessionCloseReason reason) {
+        // 防止重复关闭
+        if (!closed.compareAndSet(false, true)) {
+            log.debug("[{}] Protocol会话已关闭，忽略重复关闭请求", this);
+            return;
+        }
+
         log.info("[{}] Protocol会话关闭，原因: {}", this, reason);
 
+        // 1. 取消所有定时任务
         scheduledFutures.values().forEach(scheduledFuture -> scheduledFuture.cancel(true));
         scheduledFutures.clear();
 
-        // 转发会话关闭事件到后端
+        // 2. 通知注册中心清除缓存
+        if (closeCallback != null) {
+            try {
+                closeCallback.accept(id);
+                log.debug("[{}] 会话关闭回调执行成功", this);
+            } catch (Exception e) {
+                log.error("[{}] 会话关闭回调执行失败", this, e);
+            }
+        }
+
+        // 3. 转发会话关闭事件到后端
         if (forwarder != null && !pileCodeSet.isEmpty()) {
             
             for (String pileCode : pileCodeSet) {
@@ -105,6 +135,13 @@ public abstract class ProtocolSession implements Closeable {
                 }
             }
         }
+    }
+
+    /**
+     * 检查会话是否已关闭
+     */
+    public boolean isClosed() {
+        return closed.get();
     }
     
 

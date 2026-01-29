@@ -51,8 +51,8 @@ public class DefaultProtocolSessionRegistryProvider implements ProtocolSessionRe
     public void init() {
         scheduledExecutorService.scheduleAtFixedRate(() -> sessionCache.asMap().forEach((id, session) -> {
             if (session.getLastActivityTime().isBefore(LocalDateTime.now().minusSeconds(defaultInactivityTimeoutInSec))) {
+                // 会话超时，主动关闭（会触发 closeCallback 自动清除缓存）
                 session.close(SessionCloseReason.SESSION_CLOSE_DESTRUCTION);
-                unregister(session.getId());
             }
         }), defaultStateCheckIntervalInSec, defaultStateCheckIntervalInSec, TimeUnit.SECONDS);
     }
@@ -68,6 +68,9 @@ public class DefaultProtocolSessionRegistryProvider implements ProtocolSessionRe
         if (log.isDebugEnabled()) {
             log.debug("Registering session {}", protocolSession);
         }
+
+        // 设置会话关闭回调，用于自动清除缓存
+        protocolSession.setCloseCallback(this::unregister);
 
         sessionCache.put(protocolSession.getId(), protocolSession);
 
