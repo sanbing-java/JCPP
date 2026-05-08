@@ -36,6 +36,7 @@ http://localhost:8080/page/dashboard
 
 ##### 文档请到联系作者加入社群
 <img src=https://foruda.gitee.com/images/1734916800586582054/b8d787bc_10604541.jpeg />
+<img src="https://foruda.gitee.com/images/1778221382026042956/d5fc5259_10604541.jpg" width="260" alt="知识星球二维码" />
 
 ------------------------------
 #### 参与贡献
