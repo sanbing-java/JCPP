@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
@@ -18,7 +18,6 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 
 import static sanbing.jcpp.protocol.domain.DownlinkCmdEnum.OFFLINE_CARD_SYNC_REQUEST;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-
 
 /**
  * 云快充1.5.0  离线卡数据同步
@@ -56,7 +55,6 @@ public class YunKuaiChongV150OfflineCardSyncRequestDLCmd extends YunKuaiChongDow
         super.encodeAndWriteFlush(OFFLINE_CARD_SYNC_REQUEST, msgBody, tcpSession);
     }
 
-
     /**
      * 桩编号      BCD 码 7
      * 下发卡个数   BIN 码 1 最大 15 个
@@ -69,6 +67,5 @@ public class YunKuaiChongV150OfflineCardSyncRequestDLCmd extends YunKuaiChongDow
     private int bufferInitialCapacity(OfflineCardSyncRequest request) {
         return (8 + 8) * request.getCardInfoCount() + 7 + 1;
     }
-
 
 }

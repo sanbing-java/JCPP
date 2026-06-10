@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.lvneng.v340.cmd;
 
@@ -61,7 +61,6 @@ public class LvnengV340SetQrcodeModelDLCmd extends LvnengDownlinkCmdExe {
         msgBody.writeBytes(qrcodeModel.getCode().getBytes(StandardCharsets.US_ASCII));
         //获取二维码参数地址
 
-
         // 放进缓存后再下发
         //  tcpSession.getRequestCache().put(pileCode + LvnengDownlinkCmdConverter.getInstance().convertToCmd(SET_PRICING), pricingId);
 
@@ -69,6 +68,5 @@ public class LvnengV340SetQrcodeModelDLCmd extends LvnengDownlinkCmdExe {
                 msgBody,
                 tcpSession);
     }
-
 
 }

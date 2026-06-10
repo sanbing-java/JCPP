@@ -2,10 +2,9 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
-
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -22,7 +21,6 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import java.util.Map;
 
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
-
 
 /**
  * 云快充1.5.0  离线卡数据同步应答
@@ -41,7 +39,6 @@ public class YunKuaiChongV150OfflineCardSyncResponseULCmd extends YunKuaiChongUp
             (byte) 0x01,Map.of((byte)0x00,SUCCESS)
         );
     }
-
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage message, ProtocolContext ctx) {
@@ -73,7 +70,6 @@ public class YunKuaiChongV150OfflineCardSyncResponseULCmd extends YunKuaiChongUp
         tcpSession.getForwarder().sendMessage(queueMessage);
     }
 
-
     private String errorMsg(byte saveResult, byte failureReason) {
         if(saveResult == 0x01) {
             return SUCCESS;
@@ -84,8 +80,6 @@ public class YunKuaiChongV150OfflineCardSyncResponseULCmd extends YunKuaiChongUp
         }
         return saveResultMap.getOrDefault(failureReason,UNKNOWN_MSG);
     }
-
-
 
 }
 

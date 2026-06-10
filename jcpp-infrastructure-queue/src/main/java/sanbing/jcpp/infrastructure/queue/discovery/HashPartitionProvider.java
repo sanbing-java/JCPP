@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.infrastructure.queue.discovery;
 
@@ -70,7 +70,6 @@ public class HashPartitionProvider implements PartitionProvider {
         partitionSizesMap.put(appKey, appPartitions);
     }
 
-
     private TopicPartitionInfo resolve(QueueKey queueKey, int hash) {
         Integer partitionSize = partitionSizesMap.get(queueKey);
         if (partitionSize == null) {
@@ -104,7 +103,6 @@ public class HashPartitionProvider implements PartitionProvider {
         return resolve(queueKey, hash(hashFunction, pileCode));
     }
 
-
     /**
      * 根据服务类型和队列名称获取队列键
      * 此方法用于构造一个队列键对象，并检查该队列键是否存在于分区大小映射中
@@ -125,7 +123,6 @@ public class HashPartitionProvider implements PartitionProvider {
         // 返回最终确定的队列键
         return queueKey;
     }
-
 
     /**
      * 重新计算分区分布
@@ -223,7 +220,6 @@ public class HashPartitionProvider implements PartitionProvider {
         }
     }
 
-
     /**
      * 发布分区变更事件
      * 当分区发生变化时，调用此方法来发布分区变更事件
@@ -251,7 +247,6 @@ public class HashPartitionProvider implements PartitionProvider {
         }
     }
 
-
     private void logServiceInfo(ServiceInfo server) {
         log.info("Found server: {}", server.getServiceId());
     }
@@ -277,7 +272,6 @@ public class HashPartitionProvider implements PartitionProvider {
         }
     }
 
-
     /**
      * 构建主题分区信息
      *
@@ -293,7 +287,6 @@ public class HashPartitionProvider implements PartitionProvider {
         // 如果partitions不为空且包含partition，则表示该分区是有效的
         return buildTopicPartitionInfo(queueKey, partition, partitions != null && partitions.contains(partition));
     }
-
 
     /**
      * 构建主题分区信息对象
@@ -313,6 +306,5 @@ public class HashPartitionProvider implements PartitionProvider {
                 .myPartition(myPartition)
                 .build();
     }
-
 
 }

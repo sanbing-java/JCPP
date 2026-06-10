@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.lvneng.v340.cmd;
 
@@ -56,7 +56,6 @@ public class LvnengV340SetPricingModelDLCmd extends LvnengDownlinkCmdExe {
             DownlinkProto.TimePeriodPricingProto timePeriodPricing = pricingModel.getTimePeriodPricing();
             periodList = timePeriodPricing.getPeriodsList();
 
-
         } else {
             // 未知计费模式
             log.error("未知的计费模式，桩编号: {}, 计费ID: {}, 计费规则: {}", pileCode, pricingId, pricingModel.getRule());
@@ -77,7 +76,6 @@ public class LvnengV340SetPricingModelDLCmd extends LvnengDownlinkCmdExe {
             setPricingAckMsgBody.writeIntLE(buildPrice(x.getElecPrice()));
             setPricingAckMsgBody.writeIntLE(buildPrice(x.getServPrice()));
         }
-
 
         // 放进缓存后再下发
         tcpSession.getRequestCache().put(pileCode + LvnengDownlinkCmdConverter.getInstance().convertToCmd(SET_PRICING), pricingId);

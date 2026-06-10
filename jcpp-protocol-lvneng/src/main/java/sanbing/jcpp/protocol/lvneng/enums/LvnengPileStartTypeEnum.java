@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.lvneng.enums;
 
@@ -27,15 +27,11 @@ public enum LvnengPileStartTypeEnum {
 
     CARD_SWIPE(0, "刷卡启动"),
 
-
     SERVER(1, "服务器启动"),
-
 
     LOCAL_ADMIN(2, "本地管理员启动"),
 
-
     VIN(3, "VIN启动");
-
 
     private final int code;
 
@@ -56,7 +52,6 @@ public enum LvnengPileStartTypeEnum {
             return UNKNOWN_DESC;
         }
         return lvnengPileStartTypeEnum.getDescription();
-
 
     }
 

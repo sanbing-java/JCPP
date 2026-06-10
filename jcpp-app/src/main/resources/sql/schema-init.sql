@@ -2,9 +2,8 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
-
 -- 数据库版本表
 CREATE TABLE IF NOT EXISTS t_schema_version
 (
@@ -80,7 +79,6 @@ CREATE TABLE IF NOT EXISTS t_pile
 CREATE UNIQUE INDEX IF NOT EXISTS uni_pile_code
     on t_pile (pile_code);
 
-
 CREATE TABLE IF NOT EXISTS t_gun
 (
     id                      uuid                                not null
@@ -104,8 +102,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS uni_gun_pile_gun_no
 CREATE UNIQUE INDEX IF NOT EXISTS uni_gun_code
     on t_gun (gun_code);
 
-
-
 CREATE SEQUENCE IF NOT EXISTS attr_kv_version_seq cache 1;
 
 -- 属性表：存储充电桩、充电枪的最新属性数据（如状态等）
@@ -123,8 +119,4 @@ CREATE TABLE IF NOT EXISTS t_attr
     version         int                  default 0    not null,  -- 版本号，用于乐观锁
     PRIMARY KEY (entity_id, attr_key)
 );
-
-
-
-
 

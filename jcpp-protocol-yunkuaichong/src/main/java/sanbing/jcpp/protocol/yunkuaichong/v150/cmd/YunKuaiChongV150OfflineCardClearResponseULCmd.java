@@ -2,10 +2,9 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
-
 
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
@@ -35,14 +34,12 @@ public class YunKuaiChongV150OfflineCardClearResponseULCmd extends YunKuaiChongU
 
     private static final Map<Byte, Map<Byte, String>> CLEAR_RESULT;
 
-
     static {
         CLEAR_RESULT = Map.of(
             (byte) 0x00,Map.of((byte)0x01,"卡号格式错误"),
             (byte) 0x01,Map.of((byte)0x02,SUCCESS)
         );
     }
-
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage message, ProtocolContext ctx) {
@@ -83,7 +80,6 @@ public class YunKuaiChongV150OfflineCardClearResponseULCmd extends YunKuaiChongU
         tcpSession.getForwarder().sendMessage(queueMessage);
     }
 
-
     private String errorMsg(byte clearResult, byte failureReason) {
         if(clearResult == 0x01) {
             return SUCCESS;
@@ -94,8 +90,6 @@ public class YunKuaiChongV150OfflineCardClearResponseULCmd extends YunKuaiChongU
         }
         return clearResultMap.getOrDefault(failureReason,UNKNOWN_MSG);
     }
-
-
 
 }
 

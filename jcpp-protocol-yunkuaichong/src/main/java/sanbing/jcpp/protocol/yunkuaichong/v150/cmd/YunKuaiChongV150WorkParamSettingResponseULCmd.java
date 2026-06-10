@@ -2,10 +2,9 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
-
 
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V150;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.V160;
@@ -31,7 +30,6 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 @ProtocolCmd(value = 0x51, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150WorkParamSettingResponseULCmd extends YunKuaiChongUplinkCmdExe {
 
-
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage message, ProtocolContext ctx) {
         log.info("{} 云快充1.5.0 充电桩工作参数设置应答", tcpSession);
@@ -53,8 +51,6 @@ public class YunKuaiChongV150WorkParamSettingResponseULCmd extends YunKuaiChongU
         // 转发到后端
         tcpSession.getForwarder().sendMessage(queueMessage);
     }
-
-
 
 }
 

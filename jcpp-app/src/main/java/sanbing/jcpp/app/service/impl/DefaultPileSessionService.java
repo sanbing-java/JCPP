@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.app.service.impl;
 
@@ -50,7 +50,6 @@ public class DefaultPileSessionService implements PileSessionService {
     @Resource
     private AttributeService attributeService;
 
-
     @Resource
     private PartitionProvider partitionProvider;
 
@@ -96,12 +95,10 @@ public class DefaultPileSessionService implements PileSessionService {
         return Optional.empty();
     }
 
-
     @Override
     public boolean hasActiveSession(String pileCode) {
         return getSession(pileCode).isPresent();
     }
-
 
     @Override
     public void removeSession(String pileCode) {
@@ -113,7 +110,6 @@ public class DefaultPileSessionService implements PileSessionService {
             log.error("移除PileSession失败: pileCode={}", pileCode, e);
         }
     }
-
 
     @Override
     public List<String> checkActiveSessions(List<String> pileCodes) {
@@ -336,7 +332,6 @@ public class DefaultPileSessionService implements PileSessionService {
         }
     }
 
-
     /**
      * 创建PileSession实例
      * 从原来的DefaultPileProtocolService中提取的逻辑
@@ -362,7 +357,6 @@ public class DefaultPileSessionService implements PileSessionService {
         pileSession.setNodeIp(nodeIp);
         pileSession.setNodeRestPort(restPort);
         pileSession.setNodeGrpcPort(grpcPort);
-
 
         return pileSession;
     }

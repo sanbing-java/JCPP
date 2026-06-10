@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.app.service;
 
@@ -42,7 +42,6 @@ public interface GunService {
      * 分页查询充电枪及状态信息
      */
     PageResponse<GunWithStatusResponse> queryGunsWithStatus(GunQueryRequest request);
-
 
     /**
      * 根据充电桩编码和充电枪编号查询充电枪

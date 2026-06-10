@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.lvneng.v340.cmd;
 
@@ -235,7 +235,6 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();
 
-
         // 转发到后端
         UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(gunRunStatusProto.getPileCode(), tcpSession, lvnengUplinkMessage)
                 .setGunRunStatusProto(gunRunStatusProto)
@@ -282,7 +281,6 @@ public class LvnengV340RealTimeDataULCmd extends LvnengUplinkCmdExe {
     protected static BigDecimal reduceMagnification(long value, int magnification, int scale) {
         return new BigDecimal(value).divide(new BigDecimal(magnification), scale, RoundingMode.HALF_UP);
     }
-
 
     protected static String getBmsChargingTypeDesc(int value) {
         return switch (value) {

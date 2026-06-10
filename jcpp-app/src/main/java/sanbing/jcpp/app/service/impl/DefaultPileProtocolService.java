@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.app.service.impl;
 
@@ -563,7 +563,6 @@ public class DefaultPileProtocolService implements PileProtocolService {
         callback.onSuccess();
     }
 
-
     @Override
     public void onBmsCharingInfo(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩上报BMS充电信息 {}", uplinkQueueMessage);
@@ -739,7 +738,6 @@ public class DefaultPileProtocolService implements PileProtocolService {
         callback.onSuccess();
     }
 
-
     @Override
     public void onOfflineCardBalanceUpdateResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩远程账户余额更新应答 {}", uplinkQueueMessage);
@@ -836,7 +834,6 @@ public class DefaultPileProtocolService implements PileProtocolService {
     @Override
     public void onOfflineCardQueryResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩离线卡数据查询应答 {}", uplinkQueueMessage);
-
 
         // TODO 处理相关业务逻辑
 
@@ -990,7 +987,6 @@ public class DefaultPileProtocolService implements PileProtocolService {
     public void onWorkParamSettingRequest(UplinkQueueMessage uplinkQueueMsg, Callback callback) {
         log.info("接收到充电桩工作参数设置应答 {}", uplinkQueueMsg);
 
-
         // TODO 处理相关业务逻辑
 
         callback.onSuccess();
@@ -999,7 +995,6 @@ public class DefaultPileProtocolService implements PileProtocolService {
     @Override
     public void onEndCharge(UplinkQueueMessage uplinkQueueMsg, Callback callback) {
         log.info("接收到 结束充电 {}", uplinkQueueMsg);
-
 
         // TODO 处理相关业务逻辑
 

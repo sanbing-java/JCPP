@@ -2,10 +2,9 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
-
 
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
@@ -23,7 +22,6 @@ import java.util.List;
 
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.ProtocolNames.*;
 
-
 /**
  * 云快充1.5.0  离线卡数据查询应答
  *
@@ -32,7 +30,6 @@ import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolConstants.P
 @Slf4j
 @ProtocolCmd(value = 0x47, protocolNames = {V150, V160, V170})
 public class YunKuaiChongV150OfflineCardQueryResponseULCmd extends YunKuaiChongUplinkCmdExe {
-
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage message, ProtocolContext ctx) {
@@ -70,7 +67,6 @@ public class YunKuaiChongV150OfflineCardQueryResponseULCmd extends YunKuaiChongU
         // 转发到后端
         tcpSession.getForwarder().sendMessage(queueMessage);
     }
-
 
 }
 

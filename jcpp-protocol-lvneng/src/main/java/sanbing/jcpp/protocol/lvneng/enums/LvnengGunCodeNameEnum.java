@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.lvneng.enums;
 
@@ -62,10 +62,6 @@ public enum LvnengGunCodeNameEnum {
      */
     private final String description;
 
-
-
-
-
     private static final String UNKNOWN_DESC = "未知状态";
     private static final Map<String, LvnengGunCodeNameEnum> CODE_TO_ENUM_MAP = new HashMap<>();
 
@@ -81,7 +77,6 @@ public enum LvnengGunCodeNameEnum {
             return null;
         }
         return lvnengPileStatusEnum.getParameterAddress();
-
 
     }
 

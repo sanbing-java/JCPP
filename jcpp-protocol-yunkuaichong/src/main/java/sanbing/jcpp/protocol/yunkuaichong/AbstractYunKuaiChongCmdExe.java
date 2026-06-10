@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.yunkuaichong;
 
@@ -48,11 +48,9 @@ public class AbstractYunKuaiChongCmdExe {
 
     private static final DecimalFormat PRICING_ID_DECIMAL_FORMAT = new DecimalFormat("0000");
 
-
     protected static final String SUCCESS = "成功";
 
     protected static final String UNKNOWN_MSG = "未知的异常";
-
 
     protected static String decodeTradeNo(byte[] tradeNo) {
         String tradeNoStr = BCDUtil.toString(tradeNo);

@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.app.adapter.controller;
 
@@ -392,7 +392,6 @@ public class TestController extends BaseController {
 
         List<String> cardNoList = Lists.newArrayList("1000000000123456", "1000000000123457", "1000000000123458", "1000000000123459", "1000000000123460");
 
-
         pileProtocolService.offlineCardQueryRequest(OfflineCardQueryRequest.newBuilder()
                 .setPileCode("20231212000010")
                 .setTotal(cardNoList.size())
@@ -413,7 +412,5 @@ public class TestController extends BaseController {
 
         return ResponseEntity.ok("success");
     }
-
-
 
 }

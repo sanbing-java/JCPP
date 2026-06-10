@@ -2,7 +2,7 @@
  * 开源代码，仅供学习和交流研究使用，商用请联系三丙
  * 微信：mohan_88888
  * 抖音：程序员三丙
- * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ * 付费课程：https://www.bilibili.com/cheese/play/ss942400790
  */
 package sanbing.jcpp.protocol.lvneng.v340.cmd;
 
@@ -32,8 +32,6 @@ import static sanbing.jcpp.protocol.lvneng.LvnengProtocolConstants.ProtocolNames
 @ProtocolCmd(value = 6, protocolNames = {V340})
 public class LvnengV340RemoteStopAckULCmd extends LvnengUplinkCmdExe {
 
-
-
     @Override
     public void execute(TcpSession tcpSession, LvnengUplinkMessage lvnengUplinkMessage, ProtocolContext ctx) {
         log.debug("{} 绿能3.4 充电桩对服务器控制命令应答", tcpSession);
@@ -52,7 +50,6 @@ public class LvnengV340RemoteStopAckULCmd extends LvnengUplinkCmdExe {
         byteBuf.readBytes(pileCodeBytes);
         String pileCode = StringUtils.trim(new String(pileCodeBytes, StandardCharsets.US_ASCII));
 
-
         //4 充电枪口
         int gunCode = byteBuf.readByte();
         additionalInfo.put("充电枪口", gunCode);
@@ -68,9 +65,7 @@ public class LvnengV340RemoteStopAckULCmd extends LvnengUplinkCmdExe {
         // 7 命令执行结果 0x00成功 0x01失败
         boolean isSuccess = (byteBuf.readByte() == 0x00);
 
-
         tcpSession.addPileCode(pileCode);
-
 
         RemoteStopChargingResponse remoteStopChargingResponse = RemoteStopChargingResponse.newBuilder()
                 .setPileCode(pileCode)
