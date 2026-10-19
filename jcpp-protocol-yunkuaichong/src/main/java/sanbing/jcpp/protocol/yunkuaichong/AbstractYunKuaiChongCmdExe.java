@@ -6,7 +6,6 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong;
 
-import cn.hutool.core.text.CharSequenceUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +53,9 @@ public class AbstractYunKuaiChongCmdExe {
 
     protected static String decodeTradeNo(byte[] tradeNo) {
         String tradeNoStr = BCDUtil.toString(tradeNo);
-        return CharSequenceUtil.strip(tradeNoStr, "0", null);
+        // 编码时流水号左补 0 到 32 位（见 encodeTradeNo），解码时需要去掉全部前导补位 0；
+        // 原实现使用 strip 只能去掉首个 0，且会误伤流水号尾部的有效 0
+        return tradeNoStr.replaceFirst("^0+", "");
     }
 
     protected byte[] encodePricingId(long pricingId) {

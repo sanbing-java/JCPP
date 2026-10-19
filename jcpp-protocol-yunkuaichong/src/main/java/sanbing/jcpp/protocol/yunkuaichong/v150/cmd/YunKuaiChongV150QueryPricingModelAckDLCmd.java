@@ -71,7 +71,8 @@ public class YunKuaiChongV150QueryPricingModelAckDLCmd extends YunKuaiChongDownl
         queryPricingAckMsgBody.writeBytes(encodePricingId(pricingId));
 
         // 4字节电价+4字节服务费
-        BigDecimal accurate = new BigDecimal(1000);
+        // 云快充协议中电价/服务费精度为 0.00001 元，与 SetPricingModelDLCmd 下发方向的倍率保持一致（#5）
+        BigDecimal accurate = new BigDecimal("100000");
         queryPricingAckMsgBody.writeIntLE(new BigDecimal(flagPriceMap.get(TOP.ordinal()).getElec()).multiply(accurate).intValue());
         queryPricingAckMsgBody.writeIntLE(new BigDecimal(flagPriceMap.get(TOP.ordinal()).getServ()).multiply(accurate).intValue());
         queryPricingAckMsgBody.writeIntLE(new BigDecimal(flagPriceMap.get(PEAK.ordinal()).getElec()).multiply(accurate).intValue());
